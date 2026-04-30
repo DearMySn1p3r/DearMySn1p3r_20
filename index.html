@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ID Card Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=Outfit:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#f4f5f7;--s1:#fff;--b1:rgba(0,0,0,.06);--b2:rgba(0,0,0,.12);--t1:#1a1e2a;--t2:#8890a0;--t3:#bcc2cc;--cw:310px;--ch:480px;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:13px;}
+header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.03);}
+.logo{font-family:'Outfit';font-size:17px;font-weight:800;letter-spacing:2px;color:var(--t1);}
+.tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--b1);padding:0 28px;overflow-x:auto;}
+.tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--t2);font-family:'Noto Sans KR';font-size:11px;font-weight:600;padding:11px 13px;cursor:pointer;white-space:nowrap;transition:all .15s;margin-bottom:-1px;}
+.tab:hover{color:var(--t1);}
+.tab.active{color:var(--t1);border-bottom-color:var(--t1);}
+.workspace{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 86px);}
+.fp{background:var(--s1);border-right:1px solid var(--b1);padding:0 16px 28px;overflow-y:auto;max-height:calc(100vh - 86px);}
+.sec{font-size:7.5px;font-weight:700;letter-spacing:3px;color:var(--t2);display:block;margin:18px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--b1);}
+.sec:first-child{margin-top:14px;}
+.f{margin-bottom:9px;}
+.f label{display:flex;align-items:center;justify-content:space-between;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t2);margin-bottom:3px;}
+.f input,.f select{width:100%;background:var(--bg);border:1px solid var(--b1);color:var(--t1);font-family:'Noto Sans KR';font-size:12px;padding:6px 9px;outline:none;border-radius:5px;transition:border-color .2s;}
+.f input::placeholder{color:var(--t3);}
+.f input:focus,.f select:focus{border-color:var(--b2);}
+.f select{cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238890a0' stroke-width='1.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
+.f select option{background:#fff;}
+.pz{width:100%;height:90px;border:1.5px dashed var(--b2);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;background:var(--bg);}
+.pz:hover{border-color:var(--t2);}
+.pz img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.pz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;}
+.pz-t{font-size:9px;letter-spacing:2px;color:var(--t2);}
+.pc{display:flex;gap:5px;margin-top:4px;align-items:center;}
+.pc input[type=range]{flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--b1);border-radius:2px;outline:none;}
+.pc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--t1);border-radius:50%;cursor:pointer;}
+.pc span{font-size:7.5px;color:var(--t2);letter-spacing:1px;width:36px;}
+.sw-row{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;}
+.sw{width:18px;height:18px;border-radius:50%;cursor:pointer;outline:2px solid transparent;outline-offset:2px;transition:outline-color .15s;}
+.sw.on{outline-color:var(--t1);}
+.gn{background:none;border:none;font-family:'Noto Sans KR';font-size:7.5px;letter-spacing:1px;color:var(--t2);cursor:pointer;text-decoration:underline;}
+.gn:hover{color:var(--t1);}
+.pp{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 16px;gap:14px;}
+.fl{font-size:8px;letter-spacing:3px;color:var(--t2);}
+.lan{display:flex;flex-direction:column;align-items:center;}
+.lr{width:7px;height:7px;border-radius:50%;border:1.5px solid #aaa;}
+.ls{width:2px;height:32px;transition:background .3s;}
+.lc{width:11px;height:5px;background:#aaa;border-radius:1px;margin-bottom:-1px;}
+.sc{perspective:1400px;}
+.wr{width:var(--cw);height:var(--ch);position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.wr.fl2{transform:rotateY(180deg);}
+.face{position:absolute;width:100%;height:100%;backface-visibility:hidden;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.1);border-radius:10px;}
+.back{transform:rotateY(180deg);}
+.ct{display:flex;gap:5px;justify-content:center;}
+.cb{background:var(--s1);border:1px solid var(--b1);color:var(--t1);font-family:'Noto Sans KR';font-size:10px;padding:6px 14px;cursor:pointer;transition:all .2s;border-radius:5px;font-weight:500;}
+.cb:hover{border-color:var(--b2);}
+.cb.p{background:var(--t1);color:#fff;border-color:var(--t1);}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--t1);color:#fff;padding:7px 18px;font-size:10px;letter-spacing:1.5px;opacity:0;transition:all .3s;z-index:999;pointer-events:none;border-radius:6px;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.hidden{display:none!important;}
+.np{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.np-h{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.06);}
+.np-b{width:24px;height:8px;border-radius:12px 12px 0 0;border:1px solid rgba(0,0,0,.04);}
+.bcs{display:block;width:100%;}
+
+/* ── EMPLOYEE ── */
+.emp{height:100%;position:relative;border-radius:10px;overflow:hidden;}
+.emp-dec{position:absolute;pointer-events:none;}
+.emp-corner{position:absolute;width:36px;height:36px;pointer-events:none;}
+.emp-top{padding:16px 18px 6px;position:relative;z-index:1;}
+.emp-corp-row{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.emp-logo{width:26px;height:26px;border:1.5px solid;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:11px;font-weight:800;}
+.emp-corp{font-size:10px;font-weight:700;letter-spacing:2px;}
+.emp-pbox{width:90px;height:112px;margin:0 18px 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
+.emp-pbox img{width:100%;height:100%;object-fit:cover;}
+.emp-info{padding:4px 18px;position:relative;z-index:1;}
+.emp-title{font-size:7.5px;letter-spacing:2.5px;opacity:.4;margin-bottom:2px;}
+.emp-line{width:20px;height:2px;margin-bottom:6px;}
+.emp-nm{font-size:18px;font-weight:700;letter-spacing:1.5px;margin-bottom:1px;}
+.emp-en{font-size:8px;letter-spacing:1.5px;opacity:.35;}
+.emp-fields{padding:6px 18px;position:relative;z-index:1;}
+.emp-fr{display:flex;align-items:baseline;gap:6px;padding:2.5px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.emp-fl{font-size:7px;letter-spacing:1.5px;font-weight:600;width:60px;flex-shrink:0;opacity:.4;}
+.emp-fv{font-size:9.5px;font-weight:600;opacity:.7;}
+.emp-bot{position:absolute;bottom:12px;left:18px;right:18px;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;}
+.emp-id{font-family:'Space Mono';font-size:7.5px;opacity:.35;letter-spacing:1.5px;}
+
+.emp-bk{height:100%;position:relative;border-radius:10px;overflow:hidden;background:#f7f7f5;color:#222;}
+.emp-bk-inner{padding:22px 20px;}
+.emp-bk-corp{font-size:14px;font-weight:700;letter-spacing:1px;margin-bottom:4px;}
+.emp-bk-sep{width:20px;height:2px;margin:8px 0 12px;}
+.emp-bk-notice{font-size:8px;font-weight:700;letter-spacing:2px;margin-bottom:6px;opacity:.4;}
+.emp-bk-rules{font-size:7.5px;color:#888;line-height:2.2;margin-bottom:14px;padding-left:9px;border-left:2px solid;}
+.emp-bk-bar{margin-bottom:10px;}
+.emp-bk-foot{display:flex;justify-content:space-between;align-items:flex-end;}
+.emp-bk-id{font-family:'Space Mono';font-size:7px;color:#bbb;letter-spacing:1px;}
+.emp-bk-qr{width:42px;height:42px;background:#fff;padding:2px;border-radius:3px;display:flex;align-items:center;justify-content:center;}
+
+/* ── SGB ── */
+.sgb{height:100%;position:relative;border-radius:10px;overflow:hidden;}
+.sgb-grid{position:absolute;inset:0;background-image:linear-gradient(var(--ac2) 1px,transparent 1px),linear-gradient(90deg,var(--ac2) 1px,transparent 1px);background-size:18px 18px;opacity:.2;pointer-events:none;}
+.sgb-glow{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;}
+.sgb-hdr{padding:14px 16px 6px;position:relative;display:flex;justify-content:space-between;align-items:flex-start;}
+.sgb-org{display:flex;align-items:center;gap:7px;}
+.sgb-seal{width:30px;height:30px;border:1.5px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.sgb-seal::after{content:'';position:absolute;inset:4px;border:1px solid;border-radius:50%;opacity:.4;}
+.sgb-nm{font-family:'Outfit';font-size:11px;font-weight:800;letter-spacing:4px;}
+.sgb-sub{font-size:6px;letter-spacing:2px;opacity:.3;margin-top:1px;}
+.sgb-type{font-size:7.5px;font-weight:700;letter-spacing:2px;padding:2px 8px;border:1px solid;border-radius:3px;}
+.sgb-class-badge{position:absolute;top:12px;right:16px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:12px;font-weight:800;color:#fff;z-index:2;}
+.sgb-pbox{width:88px;height:110px;margin:4px auto 6px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1.5px solid;position:relative;background:rgba(0,0,0,.3);}
+.sgb-pbox img{width:100%;height:100%;object-fit:cover;}
+.sgb-code{font-family:'Outfit';font-size:20px;font-weight:900;text-align:center;letter-spacing:1px;margin-bottom:2px;color:#e8ecf0;}
+.sgb-ability{text-align:center;margin-bottom:6px;}
+.sgb-pill{display:inline-block;border:1px solid;padding:1.5px 10px;font-size:7px;letter-spacing:2px;font-weight:700;border-radius:3px;}
+.sgb-fields{padding:0 16px;}
+.sgb-fr{display:flex;align-items:baseline;gap:7px;padding:2.5px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.sgb-fl{font-size:7px;letter-spacing:1.5px;font-weight:700;width:72px;flex-shrink:0;}
+.sgb-fv{font-size:10px;font-weight:600;color:rgba(255,255,255,.75);}
+.sgb-bot{position:absolute;bottom:10px;left:16px;right:16px;}
+.sgb-idno{font-family:'Space Mono';font-size:7px;opacity:.25;letter-spacing:1.5px;margin-bottom:2px;}
+.sgb-res{display:flex;gap:.8px;margin-bottom:2px;}
+.sgb-bar-s{width:1.5px;border-radius:1px;}
+
+.sgb-bk{height:100%;position:relative;border-radius:10px;overflow:hidden;}
+.sgb-bk-grid{position:absolute;inset:0;background-image:linear-gradient(var(--ac2) 1px,transparent 1px),linear-gradient(90deg,var(--ac2) 1px,transparent 1px);background-size:18px 18px;opacity:.12;pointer-events:none;}
+.sgb-bk-hdr{padding:14px 16px 8px;border-bottom:1px solid rgba(255,255,255,.05);}
+.sgb-bk-title{font-family:'Outfit';font-size:9px;font-weight:800;letter-spacing:4px;}
+.sgb-bk-sub{font-size:6px;opacity:.5;letter-spacing:2px;margin-top:1px;}
+.sgb-bk-body{padding:10px 16px;}
+.sgb-bk-warn{border:1px solid rgba(255,255,255,.12);padding:8px;margin-bottom:10px;border-radius:3px;}
+.sgb-bk-wl{font-size:6.5px;letter-spacing:2px;font-weight:700;margin-bottom:3px;}
+.sgb-bk-wt{font-size:7px;color:rgba(255,255,255,.65);line-height:1.8;opacity:1;}
+.sgb-bk-bar{margin-bottom:8px;}
+.sgb-bk-qr-row{display:flex;gap:8px;align-items:flex-start;}
+.sgb-bk-qr{width:48px;height:48px;background:#fff;padding:2px;flex-shrink:0;border-radius:2px;display:flex;align-items:center;justify-content:center;}
+.sgb-bk-codes{flex:1;}
+.sgb-cr{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:6.5px;color:rgba(255,255,255,.55);opacity:1;}
+.sgb-cr span:last-child{font-family:'Space Mono';font-size:6px;}
+.sgb-bk-ft{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:6px;letter-spacing:2px;opacity:.25;}
+
+/* ── STUDENT ── */
+.stu{height:100%;position:relative;border-radius:10px;overflow:hidden;}
+.stu-hdr{padding:13px 16px 9px;display:flex;align-items:center;gap:8px;border-radius:10px 10px 0 0;}
+.stu-seal{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stu-school{font-size:11px;font-weight:700;color:#fff;}
+.stu-type{font-size:6.5px;letter-spacing:2px;color:rgba(255,255,255,.45);margin-top:1px;}
+.stu-deco{position:absolute;border-radius:50%;opacity:.07;pointer-events:none;}
+.stu-pbox{width:104px;height:132px;margin:6px auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:2px solid;border-radius:4px;position:relative;z-index:1;}
+.stu-pbox img{width:100%;height:100%;object-fit:cover;}
+.stu-nm{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:2px;position:relative;z-index:1;}
+.stu-fields{padding:0 20px;position:relative;z-index:1;}
+.stu-dr{display:flex;justify-content:space-between;font-size:9px;padding:2.5px 0;}
+.stu-dr span:first-child{font-size:7.5px;letter-spacing:1.5px;font-weight:600;opacity:.45;}
+.stu-note{position:absolute;bottom:34px;left:16px;right:16px;font-size:6.5px;opacity:.2;text-align:center;z-index:1;}
+.stu-bot{position:absolute;bottom:10px;left:16px;right:16px;z-index:1;}
+.stu-bar-a{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 10px 10px;}
+.stu-bk{height:100%;position:relative;border-radius:10px;overflow:hidden;background:#fff;color:#222;}
+.stu-bk-title{font-size:16px;font-weight:700;text-align:center;padding:20px 0 2px;letter-spacing:3px;}
+.stu-bk-sub{font-size:7px;letter-spacing:2px;text-align:center;color:#aaa;margin-bottom:12px;}
+.stu-bk-body{padding:0 18px;}
+.stu-bk-row{display:flex;gap:8px;font-size:10px;padding:4px 0;border-bottom:1px solid #f0f0f0;}
+.stu-bk-rl{font-size:8px;letter-spacing:1.5px;font-weight:700;width:56px;flex-shrink:0;}
+.stu-bk-notice{font-size:7px;font-weight:700;letter-spacing:2px;margin:10px 0 4px;opacity:.35;}
+.stu-bk-rules{font-size:7px;color:#888;line-height:2.2;margin-bottom:10px;padding-left:7px;border-left:2px solid;}
+.stu-bk-bar2{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 10px 10px;}
+.stu-bk-stamp{position:absolute;bottom:12px;right:16px;font-size:8px;font-weight:700;letter-spacing:2px;opacity:.1;}
+
+/* ── UNIVERSITY ── */
+.uni{background:linear-gradient(155deg,#1c1838,#121028,#1c1838);color:#e8e0d0;height:100%;position:relative;overflow:hidden;border-radius:10px;}
+.uni-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(200,168,75,.07),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(200,168,75,.06),transparent 50%);}
+.uni-top{position:relative;padding:12px 16px;border-bottom:1px solid rgba(200,168,75,.14);display:flex;align-items:center;gap:8px;}
+.uni-seal{width:34px;height:34px;flex-shrink:0;border:1px solid rgba(200,168,75,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.uni-nm{font-family:'Noto Serif KR',serif;font-size:11px;font-weight:700;color:#d4b050;}
+.uni-en{font-size:6.5px;letter-spacing:2px;color:rgba(200,168,75,.35);margin-top:1px;}
+.uni-badge{margin-left:auto;border:1px solid rgba(200,168,75,.22);color:rgba(200,168,75,.65);font-size:7px;letter-spacing:2px;padding:2px 6px;}
+.uni-body{position:relative;padding:10px 16px;display:flex;flex-direction:column;align-items:center;}
+.uni-pbox{width:78px;height:98px;border:1px solid rgba(200,168,75,.3);background:rgba(255,255,255,.03);margin-bottom:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.uni-pbox img{width:100%;height:100%;object-fit:cover;}
+.uni-name{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:3px;margin-bottom:2px;color:#f0eade;}
+.uni-dept{font-size:10px;color:#d4b050;letter-spacing:1px;margin-bottom:8px;}
+.uni-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.uni-cell{text-align:center;padding:4px;background:rgba(200,168,75,.04);border:1px solid rgba(200,168,75,.08);}
+.uni-cl{font-size:6.5px;letter-spacing:1.5px;color:rgba(200,168,75,.4);}
+.uni-cv{font-size:9.5px;font-weight:600;margin-top:1px;color:#eee8d8;}
+.uni-id-row{width:100%;margin-top:7px;padding-top:7px;border-top:1px solid rgba(200,168,75,.08);text-align:center;}
+.uni-idl{font-size:6.5px;letter-spacing:2px;color:rgba(200,168,75,.35);margin-bottom:2px;}
+.uni-id{font-family:'Space Mono';font-size:9.5px;color:rgba(255,255,255,.6);letter-spacing:3px;}
+.uni-gbar{position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#d4b050,#f0d870,#d4b050,transparent);border-radius:0 0 10px 10px;}
+.uni-bk{background:linear-gradient(155deg,#12102a,#161230);color:#e8e0d0;height:100%;position:relative;overflow:hidden;border-radius:10px;}
+.uni-bk-top{padding:11px 16px;border-bottom:1px solid rgba(200,168,75,.14);}
+.uni-bk-t{font-family:'Noto Serif KR',serif;font-size:10px;font-weight:700;letter-spacing:2px;color:#d4b050;}
+.uni-bk-body{padding:8px 16px;}
+.uni-al{font-size:7px;letter-spacing:2px;color:rgba(200,168,75,.4);margin-bottom:5px;}
+.uni-alist{display:flex;flex-direction:column;}
+.uni-arow{display:flex;justify-content:space-between;font-size:9px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.6);}
+.uni-arow span:last-child{color:#d4b050;font-weight:600;}
+.uni-bk-notice{font-size:6.5px;font-weight:700;letter-spacing:2px;color:rgba(200,168,75,.5);margin:8px 0 3px;}
+.uni-bk-rules{font-size:7px;color:rgba(255,255,255,.35);line-height:2;margin-bottom:8px;padding-left:7px;border-left:2px solid rgba(200,168,75,.35);}
+.uni-qr-row{display:flex;gap:7px;align-items:center;}
+.uni-qr{width:48px;height:48px;background:#fff;padding:2px;flex-shrink:0;border-radius:2px;display:flex;align-items:center;justify-content:center;}
+.uni-bc{flex:1;background:#fff;padding:3px 3px 1px;border-radius:2px;}
+.uni-bk-ft{position:absolute;bottom:7px;left:0;right:0;text-align:center;font-size:6.5px;letter-spacing:1.5px;color:rgba(200,168,75,.12);}
+
+/* ── LOVERS CARD ── */
+.luv{height:100%;position:relative;overflow:hidden;border-radius:10px;}
+.luv-border{position:absolute;inset:8px;border:5px solid;border-radius:8px;pointer-events:none;z-index:3;}
+.luv-border-inner{position:absolute;inset:15px;border:1.5px dashed;border-radius:5px;pointer-events:none;z-index:3;}
+.luv-bg-deco{position:absolute;pointer-events:none;opacity:.1;border-radius:50%;}
+.luv-dots{position:absolute;inset:8px;background-image:radial-gradient(circle,var(--lc) .8px,transparent .8px);background-size:10px 10px;opacity:.08;pointer-events:none;}
+.luv-inner{height:100%;padding:22px 22px 16px;position:relative;z-index:1;}
+.luv-top{text-align:center;margin-bottom:6px;}
+.luv-club{font-family:'Outfit';font-size:14px;font-weight:800;letter-spacing:2px;}
+.luv-label{font-size:7px;letter-spacing:3px;margin-top:1px;opacity:.3;}
+.luv-heart-top{text-align:center;margin-bottom:2px;}
+.luv-pw{width:94px;height:118px;margin:4px auto 4px;position:relative;}
+.luv-photo{width:100%;height:100%;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid;}
+.luv-photo img{width:100%;height:100%;object-fit:cover;}
+.luv-lvl{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);padding:2px 14px;border-radius:10px;font-family:'Outfit';font-size:8px;font-weight:700;letter-spacing:2px;color:#fff;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.luv-nm{font-family:'Outfit';font-size:17px;font-weight:800;text-align:center;letter-spacing:1px;margin-top:10px;margin-bottom:1px;}
+.luv-nick{text-align:center;font-size:8.5px;letter-spacing:2px;opacity:.35;margin-bottom:8px;}
+.luv-info{display:flex;flex-direction:column;gap:0;}
+.luv-row{display:flex;justify-content:space-between;font-size:10px;padding:4px 0;border-bottom:1px solid;}
+.luv-rl{font-size:7.5px;letter-spacing:1.5px;font-weight:600;opacity:.4;}
+.luv-rv{font-weight:700;}
+.luv-motto{margin-top:7px;text-align:center;font-size:8.5px;font-style:italic;opacity:.3;letter-spacing:1px;}
+.luv-bid{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-family:'Space Mono';font-size:7px;opacity:.2;letter-spacing:2px;z-index:4;}
+.luv-hearts-row{position:absolute;bottom:9px;left:0;right:0;text-align:center;z-index:4;}
+.luv-hs{display:inline-block;margin:0 2px;opacity:.2;}
+
+.luv-bk{height:100%;position:relative;overflow:hidden;border-radius:10px;}
+.luv-bk-border{position:absolute;inset:8px;border:5px solid;border-radius:8px;pointer-events:none;z-index:3;}
+.luv-bk-inner{height:100%;padding:22px 20px;position:relative;z-index:1;}
+.luv-bk-title{font-family:'Outfit';font-size:12px;font-weight:800;text-align:center;letter-spacing:2px;margin-bottom:4px;}
+.luv-bk-sub{text-align:center;font-size:7px;letter-spacing:2px;opacity:.3;margin-bottom:12px;}
+.luv-bk-notice{font-size:7px;font-weight:700;letter-spacing:2px;opacity:.35;margin-bottom:4px;}
+.luv-bk-rules{font-size:7.5px;line-height:2.2;opacity:.35;margin-bottom:12px;padding-left:8px;border-left:2px solid;}
+.luv-bk-qr{width:52px;height:52px;background:#fff;padding:2px;margin:0 auto 8px;border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.luv-bk-bar{background:#fff;padding:3px 3px 1px;border-radius:3px;}
+.luv-bk-hearts{position:absolute;bottom:9px;left:0;right:0;text-align:center;z-index:4;}
+
+@media(max-width:760px){.workspace{grid-template-columns:1fr;}.fp{max-height:none;border-right:none;border-bottom:1px solid var(--b1);}}
+</style>
+</head>
+<body>
+<header><span class="logo">ID Card Editor</span></header>
+<div class="tabs">
+<button class="tab active" data-type="company">EMPLOYEE ID</button>
+<button class="tab" data-type="sentinel">SENTINEL / GUIDE</button>
+<button class="tab" data-type="student">STUDENT ID</button>
+<button class="tab" data-type="university">UNIVERSITY ID</button>
+<button class="tab" data-type="lovers">LOVERS CARD</button>
+</div>
+<div class="workspace">
+<div class="fp">
+<div id="f-company"><span class="sec">PHOTO</span><div class="pz" id="pz-co"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-co" accept="image/*"></div><div class="pc hidden" id="pc-co"><span>ZOOM</span><input type="range" id="zm-co" min="1" max="3" step=".05" value="1"></div><span class="sec">COMPANY</span><div class="f"><label>NAME</label><input id="c-corp" placeholder="Company"></div><span class="sec">EMPLOYEE</span><div class="f"><label>NAME</label><input id="c-name" placeholder="Name"></div><div class="f"><label>ENGLISH</label><input id="c-en" placeholder="English Name"></div><div class="f"><label>DEPT</label><input id="c-dept" placeholder="Department"></div><div class="f"><label>POSITION</label><input id="c-pos" placeholder="Position"></div><div class="f"><label>NO. <button class="gn" onclick="gid('c-id','EMP')">GEN</button></label><input id="c-id" placeholder="Employee ID"></div><div class="f"><label>JOINED</label><input id="c-join" placeholder="2024.03.01"></div><div class="f"><label>VALID UNTIL</label><input id="c-valid" placeholder="2026.03.01"></div><div class="f"><label>ACCESS LEVEL</label><select id="c-access"><option value="">Select</option><option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4 (Restricted)</option></select></div><span class="sec">COLOR</span><div class="sw-row" id="sw-co"><div class="sw" style="background:#404048" data-c="#404048"></div><div class="sw on" style="background:#2050a0" data-c="#2050a0"></div><div class="sw" style="background:#8a2020" data-c="#8a2020"></div><div class="sw" style="background:#1a6040" data-c="#1a6040"></div><div class="sw" style="background:#5a30a0" data-c="#5a30a0"></div></div></div>
+<div id="f-sentinel" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-se"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-se" accept="image/*"></div><div class="pc hidden" id="pc-se"><span>ZOOM</span><input type="range" id="zm-se" min="1" max="3" step=".05" value="1"></div><span class="sec">IDENTITY</span><div class="f"><label>CODENAME</label><input id="s-code" placeholder="Codename"></div><div class="f"><label>ABILITY</label><input id="s-ability" placeholder="Ability"></div><div class="f"><label>TYPE</label><select id="s-type"><option value="">Select</option><option>Sentinel</option><option>Guide</option></select></div><div class="f"><label>CLASS</label><select id="s-class"><option value="">Select</option><option>SS-Class</option><option>S-Class</option><option>A-Class</option><option>B-Class</option><option>C-Class</option></select></div><div class="f"><label>AFFILIATION</label><input id="s-aff" placeholder="Division"></div><div class="f"><label>NO. <button class="gn" onclick="gid('s-id','SGB')">GEN</button></label><input id="s-id" placeholder="SGB-0000"></div><span class="sec">COLOR</span><div class="sw-row" id="sw-se"><div class="sw on" style="background:#1a8888" data-c="#1a8888"></div><div class="sw" style="background:#c8a020" data-c="#c8a020"></div><div class="sw" style="background:#30a858" data-c="#30a858"></div><div class="sw" style="background:#c83838" data-c="#c83838"></div><div class="sw" style="background:#6840b8" data-c="#6840b8"></div><div class="sw" style="background:#3878c8" data-c="#3878c8"></div></div></div>
+<div id="f-student" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-st"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-st" accept="image/*"></div><div class="pc hidden" id="pc-st"><span>ZOOM</span><input type="range" id="zm-st" min="1" max="3" step=".05" value="1"></div><span class="sec">SCHOOL</span><div class="f"><label>SCHOOL</label><input id="st-school" placeholder="School"></div><div class="f"><label>TYPE</label><select id="st-level"><option value="">Select</option><option>Elementary</option><option>Middle School</option><option>High School</option></select></div><span class="sec">STUDENT</span><div class="f"><label>NAME</label><input id="st-name" placeholder="Name"></div><div class="f"><label>GRADE</label><input id="st-grade" placeholder="Grade / Class"></div><div class="f"><label>ENROLLMENT</label><input id="st-enroll" placeholder="2024.03.02"></div><div class="f"><label>GRADUATION</label><input id="st-grad" placeholder="2027.02.28"></div><div class="f"><label>NO. <button class="gn" onclick="gid('st-id','STU')">GEN</button></label><input id="st-id" placeholder="Student ID"></div><span class="sec">COLOR</span><div class="sw-row" id="sw-st"><div class="sw on" style="background:#5090c0" data-c="#5090c0"></div><div class="sw" style="background:#e08090" data-c="#e08090"></div><div class="sw" style="background:#50a070" data-c="#50a070"></div><div class="sw" style="background:#c0a050" data-c="#c0a050"></div></div></div>
+<div id="f-university" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-un"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-un" accept="image/*"></div><div class="pc hidden" id="pc-un"><span>ZOOM</span><input type="range" id="zm-un" min="1" max="3" step=".05" value="1"></div><span class="sec">UNIVERSITY</span><div class="f"><label>UNIVERSITY</label><input id="u-univ" placeholder="University"></div><div class="f"><label>MAJOR</label><input id="u-dept" placeholder="Major"></div><span class="sec">STUDENT</span><div class="f"><label>NAME</label><input id="u-name" placeholder="Name"></div><div class="f"><label>YEAR</label><select id="u-year"><option value="">Select</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div><div class="f"><label>NO. <button class="gn" onclick="gid('u-id','U')">GEN</button></label><input id="u-id" placeholder="ID"></div><div class="f"><label>ADMISSION</label><input id="u-admit" placeholder="Year"></div><span class="sec">ACCESS</span><div class="f"><label>LIBRARY</label><select id="u-lib"><option value="">Select</option><option>Allowed</option><option>Restricted</option></select></div><div class="f"><label>DORMITORY</label><select id="u-dorm"><option value="">Select</option><option>Allowed</option><option>N/A</option></select></div></div>
+<div id="f-lovers" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-lv"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-lv" accept="image/*"></div><div class="pc hidden" id="pc-lv"><span>ZOOM</span><input type="range" id="zm-lv" min="1" max="3" step=".05" value="1"></div><span class="sec">CLUB</span><div class="f"><label>CLUB NAME</label><input id="lv-club" placeholder="Club Name"></div><div class="f"><label>NAME</label><input id="lv-name" placeholder="Name"></div><div class="f"><label>NICKNAME</label><input id="lv-nick" placeholder="Nickname"></div><div class="f"><label>BIAS</label><input id="lv-bias" placeholder="Favorite"></div><div class="f"><label>BIRTH</label><input id="lv-birth" placeholder="0000.00.00"></div><div class="f"><label>CLASS</label><input id="lv-class" placeholder="Class"></div><div class="f"><label>NUMBER</label><input id="lv-number" placeholder="Number"></div><div class="f"><label>POSITION</label><input id="lv-pos" placeholder="Position"></div><div class="f"><label>MEMBERSHIP</label><input id="lv-mem" placeholder="School / Group"></div><div class="f"><label>NO. <button class="gn" onclick="gid('lv-id','FC')">GEN</button></label><input id="lv-id" placeholder="Member ID"></div><span class="sec">COLOR</span><div class="sw-row" id="sw-lv"><div class="sw on" style="background:#e88aaa" data-c="#e88aaa"></div><div class="sw" style="background:#a090d8" data-c="#a090d8"></div><div class="sw" style="background:#70c8a0" data-c="#70c8a0"></div><div class="sw" style="background:#e8a870" data-c="#e8a870"></div><div class="sw" style="background:#70a8e0" data-c="#70a8e0"></div></div></div>
+</div>
+<div class="pp">
+<div class="fl" id="flab">FRONT</div>
+<div class="lan"><div class="lr"></div><div class="ls" id="ls" style="background:#2050a0;"></div><div class="lc"></div>
+<div class="sc"><div class="wr" id="wr"><div class="face" id="cf"></div><div class="face back" id="cb"></div></div></div>
+</div>
+<div class="ct"><button class="cb" onclick="flipCard()">FLIP</button><button class="cb p" onclick="saveFace()">SAVE</button><button class="cb" onclick="saveBoth()">SAVE BOTH</button></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let cur='company',flipped=false;
+const ph={company:null,sentinel:null,student:null,university:null,lovers:null};
+const pC={company:{z:1,x:0,y:0},sentinel:{z:1,x:0,y:0},student:{z:1,x:0,y:0},university:{z:1,x:0,y:0},lovers:{z:1,x:0,y:0}};
+let ac={company:'#2050a0',sentinel:'#1a8888',student:'#5090c0',university:'#c8a84b',lovers:'#e88aaa'};
+function V(id){const e=document.getElementById(id);return e?e.value:'';}
+function D(h,f){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}
+function L(h,f){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return `rgb(${Math.min(255,Math.round(r+(255-r)*f))},${Math.min(255,Math.round(g+(255-g)*f))},${Math.min(255,Math.round(b+(255-b)*f))})`;}
+function A(h,a){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+function O(v,fb){return v||fb||'';}
+
+function barcode(val){const seed=[...val].reduce((a,c)=>a+c.charCodeAt(0),0);let s='',x=0;for(let i=0;i<60;i++){const w=((seed*(i+1)*7)%3)+1;if(i%2===0)s+=`<rect x="${x}" y="0" width="${w*.55}" height="14" fill="#000"/>`;x+=w*.55+.35;}return `<svg class="bcs" viewBox="0 0 ${x} 20" height="18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${s}<text x="${x/2}" y="19" text-anchor="middle" font-family="Space Mono,monospace" font-size="2.8" fill="#888">${val}</text></svg>`;}
+
+const np=`<div class="np"><div class="np-h"></div><div class="np-b"></div></div>`;
+function sealSVG(c,r){return `<svg width="${r}" height="${r}" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="${c}" stroke-width=".7"/><circle cx="12" cy="12" r="6" stroke="${c}" stroke-width=".5"/><circle cx="12" cy="12" r="2" fill="${c}"/></svg>`;}
+function heartSVG(c,s){return `<svg class="luv-hs" width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;}
+
+const phDim={company:1,sentinel:1,student:1,university:1,lovers:1};
+function pI(type,round){const p=ph[type],c=pC[type];if(!p)return np;const r=phDim[type];const css=r>0.8?'height:100%;width:auto;':'width:100%;height:auto;';return `<div style="width:100%;height:100%;overflow:hidden;position:relative;${round?'border-radius:6px;':''}"><img src="${p}" style="position:absolute;${css}top:50%;left:50%;transform:translate(-50%,-50%) scale(${c.z}) translate(${c.x}px,${c.y}px);" draggable="false"></div>`;}
+
+function empF(){const c=ac.company;
+return `<div class="emp" style="background:linear-gradient(160deg,#303340,#3a3d48);">
+<div class="emp-dec" style="width:160px;height:160px;background:${A(c,.2)};top:70px;right:-30px;transform:rotate(15deg);border-radius:5px;"></div>
+<div class="emp-dec" style="width:120px;height:120px;background:${A(c,.1)};top:100px;right:5px;transform:rotate(35deg);border-radius:5px;"></div>
+<div class="emp-dec" style="width:50px;height:50px;background:${A(c,.1)};bottom:70px;left:35px;transform:rotate(-20deg);border-radius:3px;"></div>
+<div class="emp-corner" style="top:10px;right:10px;border-top:1.5px solid ${A(c,.25)};border-right:1.5px solid ${A(c,.25)};"></div>
+<div class="emp-corner" style="bottom:10px;left:10px;border-bottom:1.5px solid ${A(c,.25)};border-left:1.5px solid ${A(c,.25)};"></div>
+<div class="emp-top"><div class="emp-corp-row"><div class="emp-logo" style="border-color:${A(c,.6)};color:${L(c,.6)};">${(V('c-corp')||'C').charAt(0)}</div><div class="emp-corp" style="color:${L(c,.65)};">${O(V('c-corp'),'Company')}</div></div></div>
+<div style="display:flex;gap:12px;padding:0 18px;">
+<div class="emp-pbox" style="border:1.5px solid ${A(c,.3)};margin:0;flex-shrink:0;">${pI('company')}</div>
+<div style="flex:1;padding-top:2px;">
+<div style="font-size:7px;letter-spacing:2px;color:${L(c,.5)};margin-bottom:2px;">EMPLOYEE</div>
+<div style="width:18px;height:1.5px;background:${c};margin-bottom:5px;"></div>
+<div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:1px;">${O(V('c-name'))}</div>
+<div style="font-size:8px;color:rgba(255,255,255,.45);letter-spacing:1px;margin-bottom:8px;">${O(V('c-en'))}</div>
+<div class="emp-fr"><div class="emp-fl" style="color:${L(c,.5)};">DEPT</div><div class="emp-fv" style="color:#eee;">${O(V('c-dept'))}</div></div>
+<div class="emp-fr"><div class="emp-fl" style="color:${L(c,.5)};">POSITION</div><div class="emp-fv" style="color:#eee;">${O(V('c-pos'))}</div></div>
+</div>
+</div>
+<div style="padding:6px 18px 0;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px;">
+<div style="background:${A(c,.08)};padding:4px 7px;border-radius:3px;"><div style="font-size:6px;letter-spacing:1.5px;color:${L(c,.4)};margin-bottom:1px;">JOINED</div><div style="font-size:9px;color:#ddd;font-weight:600;">${O(V('c-join'))}</div></div>
+<div style="background:${A(c,.08)};padding:4px 7px;border-radius:3px;"><div style="font-size:6px;letter-spacing:1.5px;color:${L(c,.4)};margin-bottom:1px;">VALID UNTIL</div><div style="font-size:9px;color:#ddd;font-weight:600;">${O(V('c-valid'))}</div></div>
+</div>
+${V('c-access')?`<div style="margin-top:5px;display:inline-block;border:1px solid ${A(c,.3)};padding:1.5px 8px;font-size:7px;letter-spacing:1.5px;color:${L(c,.45)};border-radius:2px;">${V('c-access')}</div>`:''}
+</div>
+<div class="emp-bot"><div class="emp-id" style="color:rgba(255,255,255,.55);">${O(V('c-id'),'EMP-0000')}</div><div style="width:14px;height:14px;border:1px solid ${A(c,.2)};border-radius:50%;display:flex;align-items:center;justify-content:center;">${sealSVG(A(c,.3),8)}</div></div></div>`;}
+
+function empB(){const c=ac.company;
+return `<div class="emp-bk"><div class="emp-bk-inner"><div class="emp-bk-corp">${O(V('c-corp'),'Company')}</div><div class="emp-bk-sep" style="background:${c};"></div><div class="emp-bk-notice">NOTICE</div><div class="emp-bk-rules" style="border-color:${c};">This card certifies the holder as an official employee.<br>Must be worn visibly at all times within premises.<br>Cannot be lent, transferred, or duplicated.<br>Report loss to HR immediately for reissue.<br>Misuse is subject to disciplinary action.</div>${V('c-access')?`<div style="margin-bottom:10px;"><div style="font-size:7px;letter-spacing:2px;color:#999;margin-bottom:3px;">ACCESS LEVEL</div><div style="font-size:10px;font-weight:700;color:#555;">${V('c-access')}</div></div>`:''}<div class="emp-bk-bar">${barcode(V('c-id')||'EMP-0000')}</div><div class="emp-bk-foot"><div class="emp-bk-id">${O(V('c-id'),'EMP-0000')}</div><div class="emp-bk-qr" id="qr-co"></div></div></div></div>`;}
+
+function sgbF(){const c=ac.sentinel,cls=V('s-class'),clsL=cls?cls.split('-')[0]:'',tp=V('s-type');
+const bars=Array.from({length:45},(_,i)=>{const h=2+Math.random()*9;return `<div class="sgb-bar-s" style="height:${h}px;background:${A(c,.25+Math.random()*.4)};"></div>`;}).join('');
+return `<div class="sgb" style="background:linear-gradient(170deg,${D(c,.15)},#060810,${D(c,.1)});--ac2:${A(c,.08)};">
+<div class="sgb-grid"></div>
+<div class="sgb-glow" style="width:100px;height:100px;background:${A(c,.12)};top:-15px;left:-15px;"></div>
+<div class="sgb-glow" style="width:70px;height:70px;background:${A(c,.08)};bottom:40px;right:-15px;"></div>
+${clsL?`<div class="sgb-class-badge" style="background:${c};">${clsL}</div>`:''}
+<div class="sgb-hdr"><div class="sgb-org"><div class="sgb-seal" style="border-color:${A(c,.5)};">${sealSVG(A(c,.5),16)}</div><div><div class="sgb-nm" style="color:${L(c,.4)};">S G B</div><div class="sgb-sub">SENTINEL GUIDANCE BUREAU</div></div></div>${tp?`<div class="sgb-type" style="border-color:${A(c,.4)};color:${L(c,.3)};">${tp.toUpperCase()}</div>`:''}</div>
+<div class="sgb-pbox" style="border-color:${A(c,.3)};">${pI('sentinel')}</div>
+<div class="sgb-code">${O(V('s-code'))}</div>
+<div class="sgb-ability"><span class="sgb-pill" style="border-color:${A(c,.35)};color:${L(c,.3)};">${O(V('s-ability'),'ABILITY')}</span></div>
+<div class="sgb-fields">
+<div class="sgb-fr"><div class="sgb-fl" style="color:${L(c,.25)};">CLASS</div><div class="sgb-fv">${O(cls)}</div></div>
+<div class="sgb-fr"><div class="sgb-fl" style="color:${L(c,.25)};">AFFILIATION</div><div class="sgb-fv">${O(V('s-aff'))}</div></div>
+</div>
+<div class="sgb-bot"><div class="sgb-idno" style="color:${L(c,.2)};">NO. ${O(V('s-id'),'SGB-0000')}</div><div class="sgb-res">${bars}</div><div>${barcode(V('s-id')||'SGB-0000')}</div></div></div>`;}
+
+function sgbB(){const c=ac.sentinel;
+return `<div class="sgb-bk" style="background:linear-gradient(170deg,${D(c,.1)},#040710);--ac2:${A(c,.06)};">
+<div class="sgb-bk-grid"></div>
+<div class="sgb-bk-hdr"><div class="sgb-bk-title" style="color:${L(c,.3)};">SENTINEL GUIDANCE BUREAU</div><div class="sgb-bk-sub">IDENTIFICATION DIVISION</div></div>
+<div class="sgb-bk-body"><div class="sgb-bk-warn"><div class="sgb-bk-wl" style="color:${L(c,.25)};">NOTICE</div><div class="sgb-bk-wt">This card is the property of the Sentinel Guidance Bureau. Unauthorized possession, duplication, or use is strictly prohibited under the Sentinel Management Act. Lost or stolen cards must be reported to the assigned division within 24 hours. Failure to comply may result in ability suppression protocols being engaged.</div></div><div class="sgb-bk-bar">${barcode(V('s-id')||'SGB-0000')}</div><div class="sgb-bk-qr-row"><div class="sgb-bk-qr" id="qr-se"></div><div class="sgb-bk-codes"><div class="sgb-cr"><span>REG.</span><span style="color:${L(c,.2)};">${O(V('s-id'),'—')}</span></div><div class="sgb-cr"><span>TYPE</span><span style="color:${L(c,.2)};">${O(V('s-type'),'—')}</span></div><div class="sgb-cr"><span>ISSUED</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div><div class="sgb-cr"><span>AUTH</span><span style="color:${L(c,.2)};">SGB-HQ</span></div></div></div></div>
+<div class="sgb-bk-ft">SENTINEL GUIDANCE BUREAU</div></div>`;}
+
+function stuF(){const c=ac.student;
+return `<div class="stu" style="background:${L(c,.88)};">
+<div class="stu-deco" style="width:180px;height:180px;background:${c};top:-50px;right:-50px;"></div>
+<div class="stu-deco" style="width:90px;height:90px;background:${c};bottom:40px;left:-25px;"></div>
+<div class="stu-hdr" style="background:linear-gradient(130deg,${D(c,.6)},${c});"><div class="stu-seal">${sealSVG('rgba(255,255,255,.4)',14)}</div><div><div class="stu-school">${O(V('st-school'))}</div><div class="stu-type">STUDENT ID${V('st-level')?'  /  '+V('st-level'):''}</div></div></div>
+<div class="stu-pbox" style="border-color:${A(c,.3)};background:${L(c,.92)};">${pI('student')}</div>
+<div class="stu-nm" style="color:${D(c,.4)};">${O(V('st-name'))}</div>
+<div class="stu-fields">
+<div class="stu-dr" style="color:${D(c,.45)};border-bottom:1px solid ${A(c,.1)};"><span>ENROLLMENT</span><span>${O(V('st-enroll'))}</span></div>
+<div class="stu-dr" style="color:${D(c,.45)};border-bottom:1px solid ${A(c,.1)};"><span>GRADUATION</span><span>${O(V('st-grad'))}</span></div>
+<div class="stu-dr" style="color:${D(c,.45)};"><span>GRADE</span><span>${O(V('st-grade'))}</span></div>
+</div>
+<div class="stu-note" style="color:${D(c,.35)};">This card certifies the holder as a registered student.</div>
+<div class="stu-bot">${barcode(V('st-id')||'STU-0000')}</div>
+<div class="stu-bar-a" style="background:linear-gradient(90deg,${D(c,.6)},${c},${D(c,.6)});"></div></div>`;}
+
+function stuB(){const c=ac.student;
+return `<div class="stu-bk"><div class="stu-bk-title" style="color:${D(c,.45)};">Student ID<div class="stu-bk-sub">STUDENT IDENTITY CARD</div></div><div class="stu-bk-body">
+<div class="stu-bk-row"><div class="stu-bk-rl" style="color:${c};">NAME</div><div>${O(V('st-name'))}</div></div>
+<div class="stu-bk-row"><div class="stu-bk-rl" style="color:${c};">GRADE</div><div>${O(V('st-grade'))}</div></div>
+<div class="stu-bk-row"><div class="stu-bk-rl" style="color:${c};">NO.</div><div>${O(V('st-id'))}</div></div>
+<div class="stu-bk-notice" style="color:${c};">NOTICE</div>
+<div class="stu-bk-rules" style="border-color:${c};">This card is for personal use only.<br>Must be carried at all times on campus.<br>Cannot be lent or transferred to others.<br>Report loss immediately for reissue.<br>Replacement fees may apply for damage.</div>
+${V('st-id')?`<div>${barcode(V('st-id'))}</div>`:''}</div>
+<div class="stu-bk-stamp" style="color:${c};">${V('st-school')}</div>
+<div class="stu-bk-bar2" style="background:linear-gradient(90deg,${D(c,.6)},${c},${D(c,.6)});"></div></div>`;}
+
+function uniF(){return `<div class="uni"><div class="uni-bg"></div><div class="uni-top"><div class="uni-seal">${sealSVG('rgba(200,168,75,.45)',20)}</div><div><div class="uni-nm">${O(V('u-univ'))}</div><div class="uni-en">STUDENT IDENTIFICATION</div></div><div class="uni-badge">STUDENT</div></div><div class="uni-body"><div class="uni-pbox">${pI('university')}</div><div class="uni-name">${O(V('u-name'))}</div><div class="uni-dept">${O(V('u-dept'))}</div><div class="uni-grid"><div class="uni-cell"><div class="uni-cl">YEAR</div><div class="uni-cv">${O(V('u-year'))}</div></div><div class="uni-cell"><div class="uni-cl">ADMITTED</div><div class="uni-cv">${O(V('u-admit'))}</div></div></div><div class="uni-id-row"><div class="uni-idl">STUDENT NO.</div><div class="uni-id">${O(V('u-id'))}</div></div></div><div class="uni-gbar"></div></div>`;}
+
+function uniB(){return `<div class="uni-bk"><div class="uni-bk-top"><div class="uni-bk-t">${O(V('u-univ'))}</div></div><div class="uni-bk-body"><div class="uni-al">ACCESS</div><div class="uni-alist"><div class="uni-arow"><span>Library</span><span>${O(V('u-lib'))}</span></div><div class="uni-arow"><span>Lab</span><span>Allowed</span></div><div class="uni-arow"><span>Dormitory</span><span>${O(V('u-dorm'))}</span></div></div><div class="uni-bk-notice">NOTICE</div><div class="uni-bk-rules">This card is for personal use only.<br>Must be carried at all times on campus.<br>Cannot be lent or transferred.<br>Report loss to student affairs immediately.</div><div class="uni-qr-row"><div class="uni-qr" id="qr-un"></div><div class="uni-bc">${barcode(V('u-id')||'0000')}</div></div></div><div class="uni-gbar"></div><div class="uni-bk-ft">STUDENT IDENTIFICATION CARD</div></div>`;}
+
+function luvF(){const c=ac.lovers;
+const hearts=Array.from({length:6},()=>heartSVG(A(c,.18),9)).join('');
+return `<div class="luv" style="background:${L(c,.92)};color:${D(c,.25)};--lc:${c};">
+<div class="luv-border" style="border-color:${L(c,.55)};"></div>
+<div class="luv-border-inner" style="border-color:${A(c,.2)};"></div>
+<div class="luv-dots"></div>
+<div class="luv-bg-deco" style="width:100px;height:100px;background:${c};top:-25px;right:-25px;"></div>
+<div class="luv-bg-deco" style="width:60px;height:60px;background:${c};bottom:50px;left:-15px;"></div>
+<div class="luv-inner">
+<div class="luv-heart-top">${heartSVG(D(c,.5),14)}</div>
+<div class="luv-top"><div class="luv-club" style="color:${D(c,.2)};">${O(V('lv-club'),"Lover's Club")}</div><div class="luv-label">LOVERS CARD</div></div>
+<div class="luv-pw"><div class="luv-photo" style="border-color:${L(c,.4)};background:${A(c,.06)};">${ph.lovers?pI('lovers'):`<div class="np"><div class="np-h" style="border-color:${A(c,.2)}"></div><div class="np-b" style="border-color:${A(c,.15)}"></div></div>`}</div><div class="luv-lvl" style="background:${c};">LOVERS</div></div>
+<div class="luv-nm" style="color:${D(c,.18)};">${O(V('lv-name'))}</div>
+<div class="luv-nick" style="color:${c};">@${V('lv-nick')||'nickname'}</div>
+<div class="luv-info">
+<div class="luv-row" style="border-color:${A(c,.12)};"><span class="luv-rl">DATE OF BIRTH</span><span class="luv-rv" style="color:${D(c,.2)};">${O(V('lv-birth'))}</span></div>
+<div class="luv-row" style="border-color:${A(c,.12)};"><span class="luv-rl">CLASS</span><span class="luv-rv" style="color:${D(c,.2)};">${O(V('lv-class'))}</span></div>
+<div class="luv-row" style="border-color:${A(c,.12)};"><span class="luv-rl">NUMBER</span><span class="luv-rv" style="color:${D(c,.2)};">${O(V('lv-number'))}</span></div>
+<div class="luv-row" style="border-color:${A(c,.12)};"><span class="luv-rl">NAME</span><span class="luv-rv" style="color:${D(c,.2)};">${O(V('lv-bias'))}</span></div>
+<div class="luv-row" style="border-color:${A(c,.12)};"><span class="luv-rl">POSITION</span><span class="luv-rv" style="color:${D(c,.2)};">${O(V('lv-pos'))}</span></div>
+<div class="luv-row" style="border-color:${A(c,.12)};"><span class="luv-rl">MEMBERSHIP</span><span class="luv-rv" style="color:${D(c,.2)};">${O(V('lv-mem'))}</span></div>
+</div>
+</div>
+<div class="luv-bid" style="color:${c};">${O(V('lv-id'),'FC-0000')}</div>
+<div class="luv-hearts-row">${hearts}</div></div>`;}
+
+function luvB(){const c=ac.lovers;
+const hearts=Array.from({length:6},()=>heartSVG(A(c,.15),9)).join('');
+return `<div class="luv-bk" style="background:${L(c,.93)};color:${D(c,.25)};">
+<div class="luv-bk-border" style="border-color:${L(c,.55)};"></div>
+<div class="luv-bk-inner"><div class="luv-bk-title" style="color:${D(c,.18)};">${O(V('lv-club'),"Lover's Club")}</div><div class="luv-bk-sub">MEMBERSHIP CARD</div>
+<div class="luv-bk-notice" style="color:${c};">NOTICE</div>
+<div class="luv-bk-rules" style="border-color:${c};">Welcome to the family!<br>This card certifies your official membership.<br>Carry it with pride and share the love.<br>This card cannot be transferred or duplicated.<br>Lost cards can be reissued through the club.</div>
+<div class="luv-bk-qr" id="qr-lv"></div>
+<div class="luv-bk-bar">${barcode(V('lv-id')||'FC-0000')}</div></div>
+<div class="luv-bk-hearts">${hearts}</div></div>`;}
+
+const TM={company:{f:empF,b:empB},sentinel:{f:sgbF,b:sgbB},student:{f:stuF,b:stuB},university:{f:uniF,b:uniB},lovers:{f:luvF,b:luvB}};
+function render(){const t=TM[cur];document.getElementById('cf').innerHTML=t.f();document.getElementById('cb').innerHTML=t.b();setTimeout(genQR,80);}
+function genQR(){const m={company:{el:'qr-co',d:V('c-id')||'EMP'},sentinel:{el:'qr-se',d:V('s-id')||'SGB'},university:{el:'qr-un',d:V('u-id')||'U'},lovers:{el:'qr-lv',d:V('lv-id')||'FC'}};const q=m[cur];if(!q)return;const el=document.getElementById(q.el);if(!el)return;el.innerHTML='';try{new QRCode(el,{text:q.d,width:44,height:44,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});const img=el.querySelector('img');if(img){img.style.display='block';img.style.margin='auto';}}catch(e){}}
+function initP(iid,type,zid,pcid){const inp=document.getElementById(iid);if(!inp)return;inp.addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{ph[type]=ev.target.result;pC[type]={z:1,x:0,y:0};const img=new Image();img.onload=()=>{phDim[type]=img.naturalWidth/img.naturalHeight;render();};img.src=ev.target.result;const z=document.getElementById(zid);z.innerHTML=`<img src="${ev.target.result}"><input type="file" id="${iid}" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;">`;document.getElementById(pcid).classList.remove('hidden');document.getElementById(pcid).querySelector('input[type=range]').value=1;initP(iid,type,zid,pcid);render();};r.readAsDataURL(f);});}
+['co','se','st','un','lv'].forEach(id=>{const m={co:'company',se:'sentinel',st:'student',un:'university',lv:'lovers'};const el=document.getElementById('zm-'+id);if(el)el.addEventListener('input',e=>{pC[m[id]].z=parseFloat(e.target.value);render();});});
+document.addEventListener('mousedown',e=>{const el=e.target.closest('.emp-pbox img,.sgb-pbox img,.stu-pbox img,.uni-pbox img,.luv-photo img');if(!el)return;e.preventDefault();const sx=e.clientX,sy=e.clientY,cr=pC[cur],ox=cr.x,oy=cr.y;const mv=ev=>{cr.x=ox+(ev.clientX-sx)/cr.z;cr.y=oy+(ev.clientY-sy)/cr.z;render();};const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);});
+function flipCard(){flipped=!flipped;document.getElementById('wr').classList.toggle('fl2',flipped);document.getElementById('flab').textContent=flipped?'BACK':'FRONT';}
+async function cap(el){return html2canvas(el,{scale:6,useCORS:true,allowTaint:true,backgroundColor:null,logging:false,imageTimeout:0});}
+async function saveFace(){try{const c=await cap(document.getElementById(flipped?'cb':'cf'));dl(c,`${cur}-${flipped?'back':'front'}-${Date.now()}.png`);toast('Saved');}catch(e){toast('Failed');}}
+async function saveBoth(){toast('Processing...');const cb=document.getElementById('cb');const ot=cb.style.transform;cb.style.transform='none';cb.style.visibility='visible';cb.style.backfaceVisibility='visible';try{const f=await cap(document.getElementById('cf'));const b=await cap(cb);cb.style.transform=ot;cb.style.visibility='';cb.style.backfaceVisibility='';dl(f,`${cur}-front-${Date.now()}.png`);await new Promise(r=>setTimeout(r,400));dl(b,`${cur}-back-${Date.now()}.png`);toast('Both saved');}catch(e){cb.style.transform=ot;cb.style.visibility='';cb.style.backfaceVisibility='';toast('Failed');}}
+function dl(c,n){const a=document.createElement('a');a.download=n;a.href=c.toDataURL('image/png');a.click();}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function gid(id,pfx){const n=String(Math.floor(Math.random()*9000)+1000);document.getElementById(id).value=pfx+'-'+n;render();}
+document.querySelectorAll('.tab').forEach(b=>{b.addEventListener('click',()=>{cur=b.dataset.type;flipped=false;document.getElementById('wr').classList.remove('fl2');document.getElementById('flab').textContent='FRONT';document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');['company','sentinel','student','university','lovers'].forEach(t=>{document.getElementById(`f-${t}`).classList.add('hidden');});document.getElementById(`f-${cur}`).classList.remove('hidden');document.getElementById('ls').style.background=ac[cur];render();});});
+const swMap={'sw-co':'company','sw-se':'sentinel','sw-st':'student','sw-lv':'lovers'};
+Object.entries(swMap).forEach(([id,type])=>{const el=document.getElementById(id);if(!el)return;el.addEventListener('click',e=>{const s=e.target.closest('.sw');if(!s)return;el.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));s.classList.add('on');ac[type]=s.dataset.c;document.getElementById('ls').style.background=s.dataset.c;render();});});
+document.querySelectorAll('input,select').forEach(el=>{el.addEventListener('input',()=>render());el.addEventListener('change',()=>render());});
+initP('pi-co','company','pz-co','pc-co');initP('pi-se','sentinel','pz-se','pc-se');initP('pi-st','student','pz-st','pc-st');initP('pi-un','university','pz-un','pc-un');initP('pi-lv','lovers','pz-lv','pc-lv');
+render();
+</script>
+</body>
+</html>
