@@ -396,8 +396,8 @@ function empB(){
 /* ── SGB ── */
 function sgbF(){
   const c = ac.sentinel, isL = th.sentinel === 'light', cls = V('s-class'), clsL = cls ? cls.split('-')[0] : '', tp = V('s-type');
-  const bg = isL ? `#fdfdfd` : `linear-gradient(170deg,${D(c,.15)},#060810,${D(c,.1)})`;
-  const ac2 = isL ? A(c,.15) : A(c,.08);
+  const bg = isL ? `#fff` : `linear-gradient(170deg,${D(c,.15)},#060810,${D(c,.1)})`;
+  const ac2 = isL ? 'transparent' : A(c,.08);
   const bars = Array.from({length:45}, (_,i)=>{
     return `<div class="sgb-bar-s" style="height:${2+Math.random()*9}px;background:${isL ? A(c,.4+Math.random()*.6) : A(c,.25+Math.random()*.4)};"></div>`;
   }).join('');
@@ -405,9 +405,9 @@ function sgbF(){
   const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.25)';
 
   return `<div class="sgb" style="background:${bg};--ac2:${ac2};">
-    <div class="sgb-grid"></div>
-    <div class="sgb-glow" style="width:100px;height:100px;background:${isL?A(c,.06):A(c,.12)};top:-15px;left:-15px;"></div>
-    <div class="sgb-glow" style="width:70px;height:70px;background:${isL?A(c,.05):A(c,.08)};bottom:40px;right:-15px;"></div>
+    ${isL ? '' : '<div class="sgb-grid"></div>'}
+    <div class="sgb-glow" style="width:100px;height:100px;background:${isL?A(c,.04):A(c,.12)};top:-15px;left:-15px;"></div>
+    <div class="sgb-glow" style="width:70px;height:70px;background:${isL?A(c,.03):A(c,.08)};bottom:40px;right:-15px;"></div>
     
     <div class="sgb-hdr">
       <div class="sgb-org">
@@ -442,14 +442,14 @@ function sgbF(){
 function sgbB(){
   const c = ac.sentinel, isL = th.sentinel === 'light';
   const bg = isL ? `#fff` : `linear-gradient(170deg,${D(c,.1)},#040710)`;
-  const ac2 = isL ? A(c,.1) : A(c,.06);
+  const ac2 = isL ? 'transparent' : A(c,.06);
   const bdr = isL ? A(c,.2) : 'rgba(255,255,255,.05)';
   const tMain = isL ? c : L(c,.3);
   const bcColor = isL ? c : 'rgba(255,255,255,0.4)';
   const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.25)';
 
   return `<div class="sgb-bk" style="background:${bg};--ac2:${ac2};">
-    <div class="sgb-bk-grid"></div>
+    ${isL ? '' : '<div class="sgb-bk-grid"></div>'}
     <div class="sgb-bk-hdr" style="border-bottom:1px solid ${bdr};"><div class="sgb-bk-title elps" style="color:${tMain};">SENTINEL GUIDANCE BUREAU</div><div class="sgb-bk-sub elps" style="color:${isL?A(c,.6):''}">IDENTIFICATION DIVISION</div></div>
     <div class="sgb-bk-body">
       <div class="sgb-bk-warn" style="border:1px solid ${bdr};"><div class="sgb-bk-wl" style="color:${isL?c:L(c,.25)};">NOTICE</div><div class="sgb-bk-wt" style="color:${isL?'#555':'rgba(255,255,255,.65)'};">This card is the property of the Sentinel Guidance Bureau. Unauthorized possession, duplication, or use is strictly prohibited under the Sentinel Management Act. Lost or stolen cards must be reported to the assigned division within 24 hours. Failure to comply may result in ability suppression protocols being engaged.</div></div>
