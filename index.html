@@ -285,8 +285,8 @@ function O(v,fb){return v||fb||'';}
 function barcode(val){const seed=[...val].reduce((a,c)=>a+c.charCodeAt(0),0);let s='',x=0;for(let i=0;i<60;i++){const w=((seed*(i+1)*7)%3)+1;if(i%2===0)s+=`<rect x="${x}" y="0" width="${w*.55}" height="14" fill="#000"/>`;x+=w*.55+.35;}return `<svg class="bcs" viewBox="0 0 ${x} 20" height="18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${s}<text x="${x/2}" y="19" text-anchor="middle" font-family="Space Mono,monospace" font-size="2.8" fill="#888">${val}</text></svg>`;}
 
 const np=`<div class="np"><div class="np-h"></div><div class="np-b"></div></div>`;
-function sealSVG(c,r){return `<svg width="${r}" height="${r}" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="${c}" stroke-width=".7"/><circle cx="12" cy="12" r="6" stroke="${c}" stroke-width=".5"/><circle cx="12" cy="12" r="2" fill="${c}"/></svg>`;}
-function heartSVG(c,s){return `<svg class="luv-hs" width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;}
+function sealSVG(c,r){return `<svg xmlns="http://www.w3.org/2000/svg" width="${r}" height="${r}" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="${c}" stroke-width=".7"/><circle cx="12" cy="12" r="6" stroke="${c}" stroke-width=".5"/><circle cx="12" cy="12" r="2" fill="${c}"/></svg>`;}
+function heartSVG(c,s){return `<svg xmlns="http://www.w3.org/2000/svg" class="luv-hs" width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;}
 
 const phDim={company:1,sentinel:1,student:1,university:1,lovers:1};
 function pI(type,round){const p=ph[type],c=pC[type];if(!p)return np;const r=phDim[type];const css=r>0.8?'height:100%;width:auto;':'width:100%;height:auto;';return `<div style="width:100%;height:100%;overflow:hidden;position:relative;${round?'border-radius:6px;':''}"><img src="${p}" style="position:absolute;${css}top:50%;left:50%;transform:translate(-50%,-50%) scale(${c.z}) translate(${c.x}px,${c.y}px);" draggable="false"></div>`;}
@@ -421,9 +421,61 @@ function initP(iid,type,zid,pcid){const inp=document.getElementById(iid);if(!inp
 ['co','se','st','un','lv'].forEach(id=>{const m={co:'company',se:'sentinel',st:'student',un:'university',lv:'lovers'};const el=document.getElementById('zm-'+id);if(el)el.addEventListener('input',e=>{pC[m[id]].z=parseFloat(e.target.value);render();});});
 document.addEventListener('mousedown',e=>{const el=e.target.closest('.emp-pbox img,.sgb-pbox img,.stu-pbox img,.uni-pbox img,.luv-photo img');if(!el)return;e.preventDefault();const sx=e.clientX,sy=e.clientY,cr=pC[cur],ox=cr.x,oy=cr.y;const mv=ev=>{cr.x=ox+(ev.clientX-sx)/cr.z;cr.y=oy+(ev.clientY-sy)/cr.z;render();};const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);});
 function flipCard(){flipped=!flipped;document.getElementById('wr').classList.toggle('fl2',flipped);document.getElementById('flab').textContent=flipped?'BACK':'FRONT';}
-async function cap(el){return html2canvas(el,{scale:6,useCORS:true,allowTaint:true,backgroundColor:null,logging:false,imageTimeout:0});}
-async function saveFace(){try{const c=await cap(document.getElementById(flipped?'cb':'cf'));dl(c,`${cur}-${flipped?'back':'front'}-${Date.now()}.png`);toast('Saved');}catch(e){toast('Failed');}}
-async function saveBoth(){toast('Processing...');const cb=document.getElementById('cb');const ot=cb.style.transform;cb.style.transform='none';cb.style.visibility='visible';cb.style.backfaceVisibility='visible';try{const f=await cap(document.getElementById('cf'));const b=await cap(cb);cb.style.transform=ot;cb.style.visibility='';cb.style.backfaceVisibility='';dl(f,`${cur}-front-${Date.now()}.png`);await new Promise(r=>setTimeout(r,400));dl(b,`${cur}-back-${Date.now()}.png`);toast('Both saved');}catch(e){cb.style.transform=ot;cb.style.visibility='';cb.style.backfaceVisibility='';toast('Failed');}}
+
+// --- 개선된 캡처 및 저장 기능 ---
+async function cap(el, isBack = false){
+  return html2canvas(el, {
+    scale: 6, // 고해상도 유지 (필요시 4 정도로 낮추면 모바일 안정성 증가)
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null,
+    logging: false,
+    imageTimeout: 0,
+    onclone: (doc) => {
+      // 캡처용 가상 복제본에서만 카드를 정면(정자)으로 되돌리기
+      const wr = doc.getElementById('wr');
+      if (wr) {
+        wr.classList.remove('fl2');
+        wr.style.transform = 'none';
+      }
+      // 뒷면을 캡처할 때, 뒷면 전용 뒤집기 속성 제거
+      if (isBack) {
+        const cb = doc.getElementById('cb');
+        if (cb) {
+          cb.classList.remove('back');
+          cb.style.transform = 'none';
+          cb.style.visibility = 'visible';
+          cb.style.backfaceVisibility = 'visible';
+        }
+      }
+    }
+  });
+}
+async function saveFace(){
+  toast('Processing...');
+  try{
+    const isBack = flipped;
+    const targetId = isBack ? 'cb' : 'cf';
+    const c = await cap(document.getElementById(targetId), isBack);
+    dl(c, `${cur}-${isBack ? 'back' : 'front'}-${Date.now()}.png`);
+    toast('Saved');
+  }catch(e){console.error(e);toast('Failed');}
+}
+async function saveBoth(){
+  toast('Processing...');
+  try{
+    const f = await cap(document.getElementById('cf'), false);
+    const b = await cap(document.getElementById('cb'), true);
+    
+    dl(f, `${cur}-front-${Date.now()}.png`);
+    // 브라우저가 다중 다운로드를 차단하지 않도록 살짝 텀을 줌
+    await new Promise(r => setTimeout(r, 450)); 
+    dl(b, `${cur}-back-${Date.now()}.png`);
+    
+    toast('Both saved');
+  }catch(e){console.error(e);toast('Failed');}
+}
+
 function dl(c,n){const a=document.createElement('a');a.download=n;a.href=c.toDataURL('image/png');a.click();}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 function gid(id,pfx){const n=String(Math.floor(Math.random()*9000)+1000);document.getElementById(id).value=pfx+'-'+n;render();}
