@@ -96,7 +96,6 @@ header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);displa
 .emp-bk-qr{width:42px;height:42px;background:#fff;padding:2px;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
 /* ── SGB ── */
-.sgb-grid, .sgb-bk-grid{position:absolute;inset:0;background-image:linear-gradient(var(--ac2) 1px,transparent 1px),linear-gradient(90deg,var(--ac2) 1px,transparent 1px);background-size:18px 18px;pointer-events:none;}
 .sgb-glow{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;}
 .sgb-hdr{padding:14px 16px 6px;position:relative;display:flex;justify-content:space-between;align-items:flex-start;}
 .sgb-org{display:flex;align-items:center;gap:7px;flex:1;min-width:0;margin-right:8px;}
@@ -349,10 +348,10 @@ function empF(){
   const c = ac.company, isL = th.company === 'light';
   const bg = isL ? '#fff' : `linear-gradient(160deg,#303340,#3a3d48)`;
   const tMain = isL ? '#222' : '#fff';
-  const tSub = isL ? '#666' : 'rgba(255,255,255,.45)';
-  const bdr = isL ? A(c,.25) : A(c,.3);
-  const fBg = isL ? A(c,.05) : A(c,.08);
-  const fTxt = isL ? '#444' : '#ddd';
+  const tSub = isL ? '#666' : 'rgba(255,255,255,.7)';
+  const bdr = isL ? A(c,.25) : A(c,.4);
+  const fBg = isL ? A(c,.05) : 'rgba(255,255,255,.05)';
+  const fTxt = isL ? '#444' : '#fff';
 
   return `<div class="emp" style="background:${bg};">
   <div class="emp-dec" style="width:160px;height:160px;background:${isL?A(c,.08):A(c,.2)};top:70px;right:-30px;transform:rotate(15deg);border-radius:5px;"></div>
@@ -360,79 +359,77 @@ function empF(){
   <div class="emp-dec" style="width:50px;height:50px;background:${isL?A(c,.05):A(c,.1)};bottom:70px;left:35px;transform:rotate(-20deg);border-radius:3px;"></div>
   <div class="emp-corner" style="top:10px;right:10px;border-top:1.5px solid ${isL?A(c,.2):A(c,.25)};border-right:1.5px solid ${isL?A(c,.2):A(c,.25)};"></div>
   <div class="emp-corner" style="bottom:10px;left:10px;border-bottom:1.5px solid ${isL?A(c,.2):A(c,.25)};border-left:1.5px solid ${isL?A(c,.2):A(c,.25)};"></div>
-  <div class="emp-top"><div class="emp-corp-row"><div class="emp-logo" style="border-color:${isL?c:A(c,.6)};color:${isL?c:L(c,.6)};">${(V('c-corp')||'C').charAt(0)}</div><div class="emp-corp elps" style="color:${isL?c:L(c,.65)};">${O(V('c-corp'),'Company')}</div></div></div>
+  <div class="emp-top"><div class="emp-corp-row"><div class="emp-logo" style="border-color:${isL?c:L(c,.4)};color:${isL?c:'#fff'};">${(V('c-corp')||'C').charAt(0)}</div><div class="emp-corp elps" style="color:${isL?c:'#fff'};">${O(V('c-corp'),'Company')}</div></div></div>
   <div style="display:flex;gap:12px;padding:0 18px;">
     <div class="emp-pbox" style="border:1.5px solid ${bdr};margin:0;flex-shrink:0;">${pI('company')}</div>
     <div style="flex:1;min-width:0;padding-top:2px;">
-      <div style="font-size:7px;letter-spacing:2px;color:${isL?c:L(c,.5)};margin-bottom:2px;">EMPLOYEE</div>
+      <div style="font-size:7px;letter-spacing:2px;color:${isL?c:L(c,.6)};margin-bottom:2px;">EMPLOYEE</div>
       <div style="width:18px;height:1.5px;background:${c};margin-bottom:5px;"></div>
       <div class="emp-nm elps" style="font-size:16px;font-weight:700;color:${tMain};letter-spacing:1px;margin-bottom:1px;">${O(V('c-name'))}</div>
       <div class="elps" style="font-size:8px;color:${tSub};letter-spacing:1px;margin-bottom:8px;">${O(V('c-en'))}</div>
-      <div class="emp-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.05)'}"><div class="emp-fl" style="color:${isL?c:L(c,.5)};">DEPT</div><div class="emp-fv elps" style="color:${isL?'#333':'#eee'};">${O(V('c-dept'))}</div></div>
-      <div class="emp-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.05)'}"><div class="emp-fl" style="color:${isL?c:L(c,.5)};">POSITION</div><div class="emp-fv elps" style="color:${isL?'#333':'#eee'};">${O(V('c-pos'))}</div></div>
+      <div class="emp-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="emp-fl" style="color:${isL?c:L(c,.6)};">DEPT</div><div class="emp-fv elps" style="color:${tMain};">${O(V('c-dept'))}</div></div>
+      <div class="emp-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="emp-fl" style="color:${isL?c:L(c,.6)};">POSITION</div><div class="emp-fv elps" style="color:${tMain};">${O(V('c-pos'))}</div></div>
     </div>
   </div>
   <div style="padding:6px 18px 0;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px;">
-      <div style="background:${fBg};padding:4px 7px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.4)};margin-bottom:1px;">JOINED</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-join'))}</div></div>
-      <div style="background:${fBg};padding:4px 7px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.4)};margin-bottom:1px;">VALID UNTIL</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-valid'))}</div></div>
+      <div style="background:${fBg};padding:4px 7px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};margin-bottom:1px;">JOINED</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-join'))}</div></div>
+      <div style="background:${fBg};padding:4px 7px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};margin-bottom:1px;">VALID UNTIL</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-valid'))}</div></div>
     </div>
-    ${V('c-access')?`<div class="elps" style="margin-top:5px;display:inline-block;border:1px solid ${bdr};padding:1.5px 8px;font-size:7px;letter-spacing:1.5px;color:${isL?c:L(c,.45)};border-radius:2px;max-width:100%;">${V('c-access')}</div>`:''}
+    ${V('c-access')?`<div class="elps" style="margin-top:5px;display:inline-block;border:1px solid ${bdr};padding:1.5px 8px;font-size:7px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};border-radius:2px;max-width:100%;">${V('c-access')}</div>`:''}
   </div>
-  <div class="emp-bot"><div class="emp-id" style="color:${isL?'#aaa':'rgba(255,255,255,.55)'};">${O(V('c-id'),'EMP-0000')}</div><div style="width:14px;height:14px;border:1px solid ${bdr};border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${sealSVG(isL?c:A(c,.3),8)}</div></div></div>`;
+  <div class="emp-bot"><div class="emp-id" style="color:${isL?'#aaa':'rgba(255,255,255,.7)'};">${O(V('c-id'),'EMP-0000')}</div><div style="width:14px;height:14px;border:1px solid ${bdr};border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${sealSVG(isL?c:A(c,.4),8)}</div></div></div>`;
 }
 
 function empB(){
   const c = ac.company, isL = th.company === 'light';
   const bg = isL ? '#f7f7f5' : `linear-gradient(160deg,#303340,#3a3d48)`;
-  const tMain = isL ? '#222' : '#eee';
-  const tSub = isL ? '#888' : '#bbb';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.6)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.3)';
+  const tMain = isL ? '#222' : '#fff';
+  const tSub = isL ? '#888' : 'rgba(255,255,255,.6)';
+  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
+  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
 
-  return `<div class="emp-bk" style="background:${bg};"><div class="emp-bk-inner"><div class="emp-bk-corp elps" style="color:${tMain}">${O(V('c-corp'),'Company')}</div><div class="emp-bk-sep" style="background:${c};"></div><div class="emp-bk-notice" style="color:${isL?c:L(c,.4)}">NOTICE</div><div class="emp-bk-rules" style="border-color:${c};color:${isL?'#666':'#aaa'};">This card certifies the holder as an official employee.<br>Must be worn visibly at all times within premises.<br>Cannot be lent, transferred, or duplicated.<br>Report loss to HR immediately for reissue.<br>Misuse is subject to disciplinary action.</div>${V('c-access')?`<div style="margin-bottom:10px;"><div style="font-size:7px;letter-spacing:2px;color:${tSub};margin-bottom:3px;">ACCESS LEVEL</div><div class="elps" style="font-size:10px;font-weight:700;color:${isL?'#555':'#ddd'};">${V('c-access')}</div></div>`:''}<div class="emp-bk-bar">${barcode(V('c-id')||'EMP-0000', bcC, bcT)}</div><div class="emp-bk-foot"><div class="emp-bk-id" style="color:${tSub}">${O(V('c-id'),'EMP-0000')}</div><div class="emp-bk-qr" id="qr-co" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div></div></div></div>`;
+  return `<div class="emp-bk" style="background:${bg};"><div class="emp-bk-inner"><div class="emp-bk-corp elps" style="color:${tMain}">${O(V('c-corp'),'Company')}</div><div class="emp-bk-sep" style="background:${c};"></div><div class="emp-bk-notice" style="color:${isL?c:L(c,.6)}">NOTICE</div><div class="emp-bk-rules" style="border-color:${c};color:${isL?'#666':'rgba(255,255,255,.8)'};">This card certifies the holder as an official employee.<br>Must be worn visibly at all times within premises.<br>Cannot be lent, transferred, or duplicated.<br>Report loss to HR immediately for reissue.<br>Misuse is subject to disciplinary action.</div>${V('c-access')?`<div style="margin-bottom:10px;"><div style="font-size:7px;letter-spacing:2px;color:${tSub};margin-bottom:3px;">ACCESS LEVEL</div><div class="elps" style="font-size:10px;font-weight:700;color:${isL?'#555':'#fff'};">${V('c-access')}</div></div>`:''}<div class="emp-bk-bar">${barcode(V('c-id')||'EMP-0000', bcC, bcT)}</div><div class="emp-bk-foot"><div class="emp-bk-id" style="color:${tSub}">${O(V('c-id'),'EMP-0000')}</div><div class="emp-bk-qr" id="qr-co" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div></div></div></div>`;
 }
 
 /* ── SGB ── */
 function sgbF(){
   const c = ac.sentinel, isL = th.sentinel === 'light', cls = V('s-class'), clsL = cls ? cls.split('-')[0] : '', tp = V('s-type');
   const bg = isL ? `#fff` : `linear-gradient(170deg,${D(c,.15)},#060810,${D(c,.1)})`;
-  const ac2 = isL ? 'transparent' : A(c,.08);
   const bars = Array.from({length:45}, (_,i)=>{
-    return `<div class="sgb-bar-s" style="height:${2+Math.random()*9}px;background:${isL ? A(c,.4+Math.random()*.6) : A(c,.25+Math.random()*.4)};"></div>`;
+    return `<div class="sgb-bar-s" style="height:${2+Math.random()*9}px;background:${isL ? A(c,.4+Math.random()*.6) : A(c,.4+Math.random()*.5)};"></div>`;
   }).join('');
-  const bcColor = isL ? c : 'rgba(255,255,255,0.4)';
-  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.25)';
+  const bcColor = isL ? c : 'rgba(255,255,255,0.8)';
+  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.6)';
 
-  return `<div class="sgb" style="background:${bg};--ac2:${ac2};">
-    ${isL ? '' : '<div class="sgb-grid"></div>'}
-    <div class="sgb-glow" style="width:100px;height:100px;background:${isL?A(c,.04):A(c,.12)};top:-15px;left:-15px;"></div>
-    <div class="sgb-glow" style="width:70px;height:70px;background:${isL?A(c,.03):A(c,.08)};bottom:40px;right:-15px;"></div>
+  return `<div class="sgb" style="background:${bg};">
+    <div class="sgb-glow" style="width:100px;height:100px;background:${isL?A(c,.04):A(c,.15)};top:-15px;left:-15px;"></div>
+    <div class="sgb-glow" style="width:70px;height:70px;background:${isL?A(c,.03):A(c,.1)};bottom:40px;right:-15px;"></div>
     
     <div class="sgb-hdr">
       <div class="sgb-org">
-        <div class="sgb-seal" style="border-color:${isL?A(c,.4):A(c,.5)};">${sealSVG(isL?A(c,.7):A(c,.5),16)}</div>
+        <div class="sgb-seal" style="border-color:${isL?A(c,.4):A(c,.5)};">${sealSVG(isL?A(c,.7):L(c,.5),16)}</div>
         <div style="flex:1;min-width:0;">
-          <div class="sgb-nm elps" style="color:${isL?c:L(c,.4)};">S G B</div>
-          <div class="sgb-sub elps" style="color:${isL?A(c,.6):''}">SENTINEL GUIDANCE BUREAU</div>
+          <div class="sgb-nm elps" style="color:${isL?c:'#fff'};">S G B</div>
+          <div class="sgb-sub elps" style="color:${isL?A(c,.6):'rgba(255,255,255,.7)'}">SENTINEL GUIDANCE BUREAU</div>
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
-        ${tp ? `<div class="sgb-type" style="border-color:${isL?A(c,.4):A(c,.4)};color:${isL?c:L(c,.3)};">${tp.toUpperCase()}</div>` : ''}
-        ${clsL ? `<div class="sgb-class-badge" style="background:${c};">${clsL}</div>` : ''}
+        ${tp ? `<div class="sgb-type" style="border-color:${isL?A(c,.4):A(c,.5)};color:${isL?c:'#fff'};">${tp.toUpperCase()}</div>` : ''}
+        ${clsL ? `<div class="sgb-class-badge" style="background:${c};color:#fff;">${clsL}</div>` : ''}
       </div>
     </div>
     
-    <div class="sgb-pbox" style="border-color:${isL?A(c,.4):A(c,.3)};background:${isL?'#fff':'rgba(0,0,0,.3)'};">${pI('sentinel')}</div>
-    <div class="sgb-code elps" style="color:${isL?'#222':'#e8ecf0'};padding:0 16px;">${O(V('s-code'))}</div>
-    <div class="sgb-ability" style="padding:0 16px;"><span class="sgb-pill elps" style="border-color:${isL?A(c,.4):A(c,.35)};color:${isL?c:L(c,.3)};">${O(V('s-ability'),'ABILITY')}</span></div>
+    <div class="sgb-pbox" style="border-color:${isL?A(c,.4):A(c,.4)};background:${isL?'#fff':'rgba(0,0,0,.3)'};">${pI('sentinel')}</div>
+    <div class="sgb-code elps" style="color:${isL?'#222':'#fff'};padding:0 16px;">${O(V('s-code'))}</div>
+    <div class="sgb-ability" style="padding:0 16px;"><span class="sgb-pill elps" style="border-color:${isL?A(c,.4):A(c,.4)};color:${isL?c:'#fff'};">${O(V('s-ability'),'ABILITY')}</span></div>
     
     <div class="sgb-fields">
-      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.04)'}"><div class="sgb-fl" style="color:${isL?c:L(c,.25)};">CLASS</div><div class="sgb-fv elps" style="color:${isL?'#333':''}">${O(cls)}</div></div>
-      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.04)'}"><div class="sgb-fl" style="color:${isL?c:L(c,.25)};">AFFILIATION</div><div class="sgb-fv elps" style="color:${isL?'#333':''}">${O(V('s-aff'))}</div></div>
+      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="sgb-fl" style="color:${isL?c:L(c,.6)};">CLASS</div><div class="sgb-fv elps" style="color:${isL?'#333':'#fff'}">${O(cls)}</div></div>
+      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="sgb-fl" style="color:${isL?c:L(c,.6)};">AFFILIATION</div><div class="sgb-fv elps" style="color:${isL?'#333':'#fff'}">${O(V('s-aff'))}</div></div>
     </div>
     <div class="sgb-bot">
-      <div class="sgb-idno elps" style="color:${isL?A(c,.8):L(c,.2)};">NO. ${O(V('s-id'),'SGB-0000')}</div>
+      <div class="sgb-idno elps" style="color:${isL?A(c,.8):'rgba(255,255,255,.6)'};">NO. ${O(V('s-id'),'SGB-0000')}</div>
       <div class="sgb-res">${bars}</div>
       <div>${barcode(V('s-id')||'SGB-0000', bcColor, bcText)}</div>
     </div>
@@ -442,29 +439,27 @@ function sgbF(){
 function sgbB(){
   const c = ac.sentinel, isL = th.sentinel === 'light';
   const bg = isL ? `#fff` : `linear-gradient(170deg,${D(c,.1)},#040710)`;
-  const ac2 = isL ? 'transparent' : A(c,.06);
-  const bdr = isL ? A(c,.2) : 'rgba(255,255,255,.05)';
-  const tMain = isL ? c : L(c,.3);
-  const bcColor = isL ? c : 'rgba(255,255,255,0.4)';
-  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.25)';
+  const bdr = isL ? A(c,.2) : 'rgba(255,255,255,.1)';
+  const tMain = isL ? c : '#fff';
+  const bcColor = isL ? c : 'rgba(255,255,255,0.8)';
+  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.6)';
 
-  return `<div class="sgb-bk" style="background:${bg};--ac2:${ac2};">
-    ${isL ? '' : '<div class="sgb-bk-grid"></div>'}
-    <div class="sgb-bk-hdr" style="border-bottom:1px solid ${bdr};"><div class="sgb-bk-title elps" style="color:${tMain};">SENTINEL GUIDANCE BUREAU</div><div class="sgb-bk-sub elps" style="color:${isL?A(c,.6):''}">IDENTIFICATION DIVISION</div></div>
+  return `<div class="sgb-bk" style="background:${bg};">
+    <div class="sgb-bk-hdr" style="border-bottom:1px solid ${bdr};"><div class="sgb-bk-title elps" style="color:${tMain};">SENTINEL GUIDANCE BUREAU</div><div class="sgb-bk-sub elps" style="color:${isL?A(c,.6):'rgba(255,255,255,.7)'}">IDENTIFICATION DIVISION</div></div>
     <div class="sgb-bk-body">
-      <div class="sgb-bk-warn" style="border:1px solid ${bdr};"><div class="sgb-bk-wl" style="color:${isL?c:L(c,.25)};">NOTICE</div><div class="sgb-bk-wt" style="color:${isL?'#555':'rgba(255,255,255,.65)'};">This card is the property of the Sentinel Guidance Bureau. Unauthorized possession, duplication, or use is strictly prohibited under the Sentinel Management Act. Lost or stolen cards must be reported to the assigned division within 24 hours. Failure to comply may result in ability suppression protocols being engaged.</div></div>
+      <div class="sgb-bk-warn" style="border:1px solid ${bdr};"><div class="sgb-bk-wl" style="color:${isL?c:L(c,.6)};">NOTICE</div><div class="sgb-bk-wt" style="color:${isL?'#555':'rgba(255,255,255,.8)'};">This card is the property of the Sentinel Guidance Bureau. Unauthorized possession, duplication, or use is strictly prohibited under the Sentinel Management Act. Lost or stolen cards must be reported to the assigned division within 24 hours. Failure to comply may result in ability suppression protocols being engaged.</div></div>
       <div class="sgb-bk-bar">${barcode(V('s-id')||'SGB-0000', bcColor, bcText)}</div>
       <div class="sgb-bk-qr-row">
         <div class="sgb-bk-qr" id="qr-se" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div>
         <div class="sgb-bk-codes">
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>REG.</span><span class="elps" style="color:${isL?c:L(c,.2)};">${O(V('s-id'),'—')}</span></div>
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>TYPE</span><span class="elps" style="color:${isL?c:L(c,.2)};">${O(V('s-type'),'—')}</span></div>
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>ISSUED</span><span class="elps">${new Date().toLocaleDateString('ko-KR')}</span></div>
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>AUTH</span><span class="elps" style="color:${isL?c:L(c,.2)};">SGB-HQ</span></div>
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>REG.</span><span class="elps" style="color:${isL?c:'#fff'};">${O(V('s-id'),'—')}</span></div>
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>TYPE</span><span class="elps" style="color:${isL?c:'#fff'};">${O(V('s-type'),'—')}</span></div>
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>ISSUED</span><span class="elps" style="color:${isL?c:'#fff'}">${new Date().toLocaleDateString('ko-KR')}</span></div>
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>AUTH</span><span class="elps" style="color:${isL?c:'#fff'};">SGB-HQ</span></div>
         </div>
       </div>
     </div>
-    <div class="sgb-bk-ft" style="color:${isL?A(c,.4):''}">SENTINEL GUIDANCE BUREAU</div>
+    <div class="sgb-bk-ft" style="color:${isL?A(c,.4):'rgba(255,255,255,.4)'}">SENTINEL GUIDANCE BUREAU</div>
   </div>`;
 }
 
@@ -473,30 +468,30 @@ function stuF(){
   const c = ac.student, isL = th.student === 'light';
   const bg = isL ? L(c,.88) : `linear-gradient(140deg, #1e2229, #14161a)`;
   const tMain = isL ? D(c,.4) : '#fff';
-  const tSub = isL ? D(c,.45) : 'rgba(255,255,255,.6)';
+  const tSub = isL ? D(c,.45) : 'rgba(255,255,255,.7)';
   const bdr = isL ? A(c,.15) : 'rgba(255,255,255,.1)';
   const pBg = isL ? L(c,.92) : 'rgba(255,255,255,.05)';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.6)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.3)';
+  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
+  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
 
   return `<div class="stu" style="background:${bg};">
   <div class="stu-deco" style="width:180px;height:180px;background:${c};top:-50px;right:-50px;opacity:${isL?'.07':'.15'}"></div>
   <div class="stu-deco" style="width:90px;height:90px;background:${c};bottom:40px;left:-25px;opacity:${isL?'.07':'.15'}"></div>
   <div class="stu-hdr" style="background:linear-gradient(130deg,${D(c,.6)},${c});">
-    <div class="stu-seal" style="border-color:rgba(255,255,255,.3)">${sealSVG('rgba(255,255,255,.4)',14)}</div>
+    <div class="stu-seal" style="border-color:rgba(255,255,255,.3)">${sealSVG('rgba(255,255,255,.5)',14)}</div>
     <div style="flex:1;min-width:0;">
-      <div class="stu-school elps">${O(V('st-school'))}</div>
-      <div class="stu-type elps" style="color:rgba(255,255,255,.6)">STUDENT ID${V('st-level')?'  /  '+V('st-level'):''}</div>
+      <div class="stu-school elps" style="color:#fff;">${O(V('st-school'))}</div>
+      <div class="stu-type elps" style="color:rgba(255,255,255,.8)">STUDENT ID${V('st-level')?'  /  '+V('st-level'):''}</div>
     </div>
   </div>
   <div class="stu-pbox" style="border-color:${isL?A(c,.3):A(c,.5)};background:${pBg};">${pI('student')}</div>
   <div class="stu-nm elps" style="color:${tMain};">${O(V('st-name'))}</div>
   <div class="stu-fields">
-    <div class="stu-dr" style="color:${tSub};border-bottom:1px solid ${bdr};"><span>ENROLLMENT</span><span class="elps">${O(V('st-enroll'))}</span></div>
-    <div class="stu-dr" style="color:${tSub};border-bottom:1px solid ${bdr};"><span>GRADUATION</span><span class="elps">${O(V('st-grad'))}</span></div>
-    <div class="stu-dr" style="color:${tSub};"><span>GRADE</span><span class="elps">${O(V('st-grade'))}</span></div>
+    <div class="stu-dr" style="color:${tSub};border-bottom:1px solid ${bdr};"><span style="color:${isL?D(c,.45):L(c,.6)}">ENROLLMENT</span><span class="elps" style="color:${isL?'#333':'#fff'}">${O(V('st-enroll'))}</span></div>
+    <div class="stu-dr" style="color:${tSub};border-bottom:1px solid ${bdr};"><span style="color:${isL?D(c,.45):L(c,.6)}">GRADUATION</span><span class="elps" style="color:${isL?'#333':'#fff'}">${O(V('st-grad'))}</span></div>
+    <div class="stu-dr" style="color:${tSub};"><span style="color:${isL?D(c,.45):L(c,.6)}">GRADE</span><span class="elps" style="color:${isL?'#333':'#fff'}">${O(V('st-grade'))}</span></div>
   </div>
-  <div class="stu-note elps" style="color:${tSub};opacity:.4">This card certifies the holder as a registered student.</div>
+  <div class="stu-note elps" style="color:${tSub};opacity:.6">This card certifies the holder as a registered student.</div>
   <div class="stu-bot">${barcode(V('st-id')||'STU-0000', bcC, bcT)}</div>
   <div class="stu-bar-a" style="background:linear-gradient(90deg,${D(c,.6)},${c},${D(c,.6)});"></div></div>`;
 }
@@ -504,21 +499,21 @@ function stuF(){
 function stuB(){
   const c = ac.student, isL = th.student === 'light';
   const bg = isL ? '#fff' : '#14161a';
-  const tMain = isL ? D(c,.45) : '#eee';
-  const tSub = isL ? '#aaa' : 'rgba(255,255,255,.4)';
-  const tTxt = isL ? '#222' : '#ddd';
+  const tMain = isL ? D(c,.45) : '#fff';
+  const tSub = isL ? '#aaa' : 'rgba(255,255,255,.6)';
+  const tTxt = isL ? '#222' : '#fff';
   const bdr = isL ? '#f0f0f0' : 'rgba(255,255,255,.1)';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.6)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.3)';
+  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
+  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
 
-  return `<div class="stu-bk" style="background:${bg}"><div class="stu-bk-title" style="color:${isL?D(c,.45):c};">Student ID<div class="stu-bk-sub elps" style="color:${tSub}">STUDENT IDENTITY CARD</div></div><div class="stu-bk-body">
-  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${c};">NAME</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-name'))}</div></div>
-  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${c};">GRADE</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-grade'))}</div></div>
-  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${c};">NO.</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-id'))}</div></div>
-  <div class="stu-bk-notice" style="color:${c};">NOTICE</div>
-  <div class="stu-bk-rules" style="border-color:${c};color:${isL?'#888':'#aaa'}">This card is for personal use only.<br>Must be carried at all times on campus.<br>Cannot be lent or transferred to others.<br>Report loss immediately for reissue.<br>Replacement fees may apply for damage.</div>
+  return `<div class="stu-bk" style="background:${bg}"><div class="stu-bk-title" style="color:${tMain};">Student ID<div class="stu-bk-sub elps" style="color:${tSub}">STUDENT IDENTITY CARD</div></div><div class="stu-bk-body">
+  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${isL?c:L(c,.6)};">NAME</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-name'))}</div></div>
+  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${isL?c:L(c,.6)};">GRADE</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-grade'))}</div></div>
+  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${isL?c:L(c,.6)};">NO.</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-id'))}</div></div>
+  <div class="stu-bk-notice" style="color:${isL?c:L(c,.6)};">NOTICE</div>
+  <div class="stu-bk-rules" style="border-color:${c};color:${isL?'#888':'rgba(255,255,255,.8)'}">This card is for personal use only.<br>Must be carried at all times on campus.<br>Cannot be lent or transferred to others.<br>Report loss immediately for reissue.<br>Replacement fees may apply for damage.</div>
   ${V('st-id')?`<div>${barcode(V('st-id'), bcC, bcT)}</div>`:''}</div>
-  <div class="stu-bk-stamp elps" style="color:${c};opacity:.15">${V('st-school')}</div>
+  <div class="stu-bk-stamp elps" style="color:${c};opacity:.3">${V('st-school')}</div>
   <div class="stu-bk-bar2" style="background:linear-gradient(90deg,${D(c,.6)},${c},${D(c,.6)});"></div></div>`;
 }
 
@@ -526,8 +521,8 @@ function stuB(){
 function uniF(){
   const c = ac.university, isL = th.university === 'light';
   const bg = isL ? `linear-gradient(155deg,#fdfcfb,#fff,#fcfaf5)` : `linear-gradient(155deg,${D(c,.2)},#101218,${D(c,.15)})`;
-  const tMain = isL ? '#222' : '#f0eade';
-  const tSub = isL ? '#666' : 'rgba(255,255,255,.6)';
+  const tMain = isL ? '#222' : '#fff';
+  const tSub = isL ? '#666' : 'rgba(255,255,255,.8)';
   const bdr = isL ? A(c,.3) : A(c,.4);
   const cellBg = isL ? A(c,.06) : A(c,.05);
   const pBg = isL ? '#fff' : 'rgba(255,255,255,.03)';
@@ -535,23 +530,23 @@ function uniF(){
   return `<div class="uni" style="background:${bg};--acbg:${A(c,.08)};">
   <div class="uni-bg"></div>
   <div class="uni-top" style="border-bottom-color:${A(c,.15)}">
-    <div class="uni-seal" style="border-color:${bdr}">${sealSVG(A(c,.6),20)}</div>
+    <div class="uni-seal" style="border-color:${bdr}">${sealSVG(isL?A(c,.6):L(c,.6),20)}</div>
     <div style="flex:1;min-width:0;">
-      <div class="uni-nm elps" style="color:${c}">${O(V('u-univ'))}</div>
-      <div class="uni-en elps" style="color:${isL?A(c,.6):A(c,.5)}">STUDENT IDENTIFICATION</div>
+      <div class="uni-nm elps" style="color:${isL?c:'#fff'}">${O(V('u-univ'))}</div>
+      <div class="uni-en elps" style="color:${isL?A(c,.6):'rgba(255,255,255,.7)'}">STUDENT IDENTIFICATION</div>
     </div>
-    <div class="uni-badge" style="border-color:${A(c,.3)};color:${isL?c:A(c,.8)};">STUDENT</div>
+    <div class="uni-badge" style="border-color:${isL?A(c,.3):A(c,.6)};color:${isL?c:'#fff'};">STUDENT</div>
   </div>
   <div class="uni-body">
     <div class="uni-pbox" style="border-color:${bdr};background:${pBg}">${pI('university')}</div>
     <div class="uni-name elps" style="color:${tMain};width:100%;text-align:center;">${O(V('u-name'))}</div>
-    <div class="uni-dept elps" style="color:${c};width:100%;text-align:center;">${O(V('u-dept'))}</div>
+    <div class="uni-dept elps" style="color:${isL?c:L(c,.6)};width:100%;text-align:center;">${O(V('u-dept'))}</div>
     <div class="uni-grid">
-      <div class="uni-cell" style="background:${cellBg};border-color:${A(c,.1)}"><div class="uni-cl" style="color:${isL?c:A(c,.6)}">YEAR</div><div class="uni-cv elps" style="color:${tMain}">${O(V('u-year'))}</div></div>
-      <div class="uni-cell" style="background:${cellBg};border-color:${A(c,.1)}"><div class="uni-cl" style="color:${isL?c:A(c,.6)}">ADMITTED</div><div class="uni-cv elps" style="color:${tMain}">${O(V('u-admit'))}</div></div>
+      <div class="uni-cell" style="background:${cellBg};border-color:${A(c,.1)}"><div class="uni-cl" style="color:${isL?c:L(c,.6)}">YEAR</div><div class="uni-cv elps" style="color:${tMain}">${O(V('u-year'))}</div></div>
+      <div class="uni-cell" style="background:${cellBg};border-color:${A(c,.1)}"><div class="uni-cl" style="color:${isL?c:L(c,.6)}">ADMITTED</div><div class="uni-cv elps" style="color:${tMain}">${O(V('u-admit'))}</div></div>
     </div>
     <div class="uni-id-row" style="border-top-color:${A(c,.1)}">
-      <div class="uni-idl" style="color:${isL?c:A(c,.5)}">STUDENT NO.</div><div class="uni-id elps" style="color:${tSub}">${O(V('u-id'))}</div>
+      <div class="uni-idl" style="color:${isL?c:L(c,.6)}">STUDENT NO.</div><div class="uni-id elps" style="color:${tSub}">${O(V('u-id'))}</div>
     </div>
   </div>
   <div class="uni-gbar" style="background:linear-gradient(90deg,transparent,${c},${L(c,.3)},${c},transparent);"></div></div>`;
@@ -560,30 +555,30 @@ function uniF(){
 function uniB(){
   const c = ac.university, isL = th.university === 'light';
   const bg = isL ? '#fff' : `linear-gradient(155deg,${D(c,.15)},#12141a)`;
-  const tMain = isL ? '#333' : '#e8e0d0';
-  const tSub = isL ? '#777' : 'rgba(255,255,255,.35)';
-  const bdr = isL ? 'rgba(0,0,0,.06)' : 'rgba(255,255,255,.05)';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.6)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.3)';
+  const tMain = isL ? '#333' : '#fff';
+  const tSub = isL ? '#777' : 'rgba(255,255,255,.8)';
+  const bdr = isL ? 'rgba(0,0,0,.06)' : 'rgba(255,255,255,.1)';
+  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
+  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
 
   return `<div class="uni-bk" style="background:${bg}">
-  <div class="uni-bk-top" style="border-bottom-color:${A(c,.15)}"><div class="uni-bk-t elps" style="color:${c}">${O(V('u-univ'))}</div></div>
+  <div class="uni-bk-top" style="border-bottom-color:${A(c,.15)}"><div class="uni-bk-t elps" style="color:${isL?c:'#fff'}">${O(V('u-univ'))}</div></div>
   <div class="uni-bk-body">
-    <div class="uni-al" style="color:${isL?c:A(c,.6)}">ACCESS</div>
+    <div class="uni-al" style="color:${isL?c:L(c,.6)}">ACCESS</div>
     <div class="uni-alist">
-      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.6)'}"><span>Library</span><span class="elps" style="color:${c}">${O(V('u-lib'))}</span></div>
-      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.6)'}"><span>Lab</span><span class="elps" style="color:${c}">Allowed</span></div>
-      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.6)'}"><span>Dormitory</span><span class="elps" style="color:${c}">${O(V('u-dorm'))}</span></div>
+      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.7)'}"><span>Library</span><span class="elps" style="color:${isL?c:'#fff'}">${O(V('u-lib'))}</span></div>
+      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.7)'}"><span>Lab</span><span class="elps" style="color:${isL?c:'#fff'}">Allowed</span></div>
+      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.7)'}"><span>Dormitory</span><span class="elps" style="color:${isL?c:'#fff'}">${O(V('u-dorm'))}</span></div>
     </div>
-    <div class="uni-bk-notice" style="color:${isL?c:A(c,.6)}">NOTICE</div>
+    <div class="uni-bk-notice" style="color:${isL?c:L(c,.6)}">NOTICE</div>
     <div class="uni-bk-rules" style="color:${tSub};border-left-color:${A(c,.4)}">This card is for personal use only.<br>Must be carried at all times on campus.<br>Cannot be lent or transferred.<br>Report loss to student affairs immediately.</div>
     <div class="uni-qr-row">
       <div class="uni-qr" id="qr-un" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div>
-      <div class="uni-bc" style="background:${isL?'none':'#fff'}">${barcode(V('u-id')||'0000', isL?'#000':'#000', isL?'#888':'#888')}</div>
+      <div class="uni-bc" style="background:${isL?'none':'#fff'}">${barcode(V('u-id')||'0000', bcC, bcT)}</div>
     </div>
   </div>
   <div class="uni-gbar" style="background:linear-gradient(90deg,transparent,${c},${L(c,.3)},${c},transparent);"></div>
-  <div class="uni-bk-ft" style="color:${isL?A(c,.3):A(c,.2)}">STUDENT IDENTIFICATION CARD</div></div>`;
+  <div class="uni-bk-ft" style="color:${isL?A(c,.3):'rgba(255,255,255,.4)'}">STUDENT IDENTIFICATION CARD</div></div>`;
 }
 
 /* ── LOVERS ── */
@@ -591,14 +586,14 @@ function luvF(){
   const c = ac.lovers, isL = th.lovers === 'light';
   const bg = isL ? L(c,.92) : D(c,.85);
   const tMain = isL ? D(c,.25) : '#fff';
-  const tSub = isL ? c : L(c,.4);
+  const tSub = isL ? c : L(c,.6);
   const bdr = isL ? A(c,.15) : A(c,.25);
   const pBg = isL ? A(c,.06) : A(c,.1);
-  const hearts = Array.from({length:6},()=>heartSVG(isL?A(c,.18):A(c,.3),9)).join('');
+  const hearts = Array.from({length:6},()=>heartSVG(isL?A(c,.18):A(c,.4),9)).join('');
 
   return `<div class="luv" style="background:${bg};--lc:${c};">
-  <div class="luv-border" style="border-color:${isL?L(c,.55):A(c,.3)};"></div>
-  <div class="luv-border-inner" style="border-color:${isL?A(c,.2):A(c,.4)};"></div>
+  <div class="luv-border" style="border-color:${isL?L(c,.55):A(c,.4)};"></div>
+  <div class="luv-border-inner" style="border-color:${isL?A(c,.2):A(c,.5)};"></div>
   <div class="luv-dots"></div>
   <div class="luv-bg-deco" style="width:100px;height:100px;background:${c};top:-25px;right:-25px;opacity:${isL?'.1':'.15'}"></div>
   <div class="luv-bg-deco" style="width:60px;height:60px;background:${c};bottom:50px;left:-15px;opacity:${isL?'.1':'.15'}"></div>
@@ -607,7 +602,7 @@ function luvF(){
     <div class="luv-top"><div class="luv-club elps" style="color:${isL?D(c,.2):'#fff'};">${O(V('lv-club'),"Lover's Club")}</div><div class="luv-label elps" style="color:${tSub}">LOVERS CARD</div></div>
     <div class="luv-pw">
       <div class="luv-photo" style="border-color:${isL?L(c,.4):c};background:${pBg};">${ph.lovers?pI('lovers'):`<div class="np"><div class="np-h" style="border-color:${A(c,.2)}"></div><div class="np-b" style="border-color:${A(c,.15)}"></div></div>`}</div>
-      <div class="luv-lvl" style="background:${c};">LOVERS</div>
+      <div class="luv-lvl" style="background:${c};color:#fff;">LOVERS</div>
     </div>
     <div class="luv-nm elps" style="color:${tMain};">${O(V('lv-name'))}</div>
     <div class="luv-nick elps" style="color:${tSub};">@${V('lv-nick')||'nickname'}</div>
@@ -620,7 +615,7 @@ function luvF(){
       <div class="luv-row" style="border-bottom-color:${bdr};"><span class="luv-rl" style="color:${tSub}">MEMBERSHIP</span><span class="luv-rv elps" style="color:${tMain}">${O(V('lv-mem'))}</span></div>
     </div>
   </div>
-  <div class="luv-bid elps" style="color:${c};">${O(V('lv-id'),'FC-0000')}</div>
+  <div class="luv-bid elps" style="color:${tSub};">${O(V('lv-id'),'FC-0000')}</div>
   <div class="luv-hearts-row">${hearts}</div></div>`;
 }
 
@@ -628,18 +623,18 @@ function luvB(){
   const c = ac.lovers, isL = th.lovers === 'light';
   const bg = isL ? L(c,.93) : D(c,.85);
   const tMain = isL ? D(c,.25) : '#fff';
-  const tSub = isL ? c : L(c,.4);
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.7)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.4)';
-  const hearts = Array.from({length:6},()=>heartSVG(isL?A(c,.15):A(c,.25),9)).join('');
+  const tSub = isL ? c : L(c,.6);
+  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
+  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
+  const hearts = Array.from({length:6},()=>heartSVG(isL?A(c,.15):A(c,.35),9)).join('');
 
   return `<div class="luv-bk" style="background:${bg};">
-  <div class="luv-bk-border" style="border-color:${isL?L(c,.55):A(c,.3)};"></div>
+  <div class="luv-bk-border" style="border-color:${isL?L(c,.55):A(c,.4)};"></div>
   <div class="luv-bk-inner">
     <div class="luv-bk-title elps" style="color:${isL?D(c,.18):'#fff'};">${O(V('lv-club'),"Lover's Club")}</div>
     <div class="luv-bk-sub elps" style="color:${tSub}">MEMBERSHIP CARD</div>
-    <div class="luv-bk-notice" style="color:${c};">NOTICE</div>
-    <div class="luv-bk-rules" style="border-color:${c};color:${isL?'#777':'#ccc'}">Welcome to the family!<br>This card certifies your official membership.<br>Carry it with pride and share the love.<br>This card cannot be transferred or duplicated.<br>Lost cards can be reissued through the club.</div>
+    <div class="luv-bk-notice" style="color:${tSub};">NOTICE</div>
+    <div class="luv-bk-rules" style="border-color:${c};color:${isL?'#777':'rgba(255,255,255,.8)'}">Welcome to the family!<br>This card certifies your official membership.<br>Carry it with pride and share the love.<br>This card cannot be transferred or duplicated.<br>Lost cards can be reissued through the club.</div>
     <div class="luv-bk-qr" id="qr-lv" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div>
     <div class="luv-bk-bar" style="background:${isL?'#fff':'none'};padding:${isL?'3px':'0'}">${barcode(V('lv-id')||'FC-0000', bcC, bcT)}</div>
   </div>
