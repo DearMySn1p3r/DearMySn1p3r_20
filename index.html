@@ -257,7 +257,29 @@ header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);displa
 <div class="workspace">
 <div class="fp">
 <div id="f-company"><span class="sec">PHOTO</span><div class="pz" id="pz-co"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-co" accept="image/*"></div><div class="pc hidden" id="pc-co"><span>ZOOM</span><input type="range" id="zm-co" min="1" max="3" step=".05" value="1"></div><span class="sec">COMPANY</span><div class="f"><label>NAME</label><input id="c-corp" placeholder="Company"></div><span class="sec">EMPLOYEE</span><div class="f"><label>NAME</label><input id="c-name" placeholder="Name"></div><div class="f"><label>ENGLISH</label><input id="c-en" placeholder="English Name"></div><div class="f"><label>DEPT</label><input id="c-dept" placeholder="Department"></div><div class="f"><label>POSITION</label><input id="c-pos" placeholder="Position"></div><div class="f"><label>NO. <button class="gn" onclick="gid('c-id','EMP')">GEN</button></label><input id="c-id" placeholder="Employee ID"></div><div class="f"><label>JOINED</label><input id="c-join" placeholder="2024.03.01"></div><div class="f"><label>VALID UNTIL</label><input id="c-valid" placeholder="2026.03.01"></div><div class="f"><label>ACCESS LEVEL</label><select id="c-access"><option value="">Select</option><option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4 (Restricted)</option></select></div><span class="sec">COLOR</span><div class="sw-row" id="sw-co"><div class="sw" style="background:#404048" data-c="#404048"></div><div class="sw on" style="background:#2050a0" data-c="#2050a0"></div><div class="sw" style="background:#8a2020" data-c="#8a2020"></div><div class="sw" style="background:#1a6040" data-c="#1a6040"></div><div class="sw" style="background:#5a30a0" data-c="#5a30a0"></div></div></div>
-<div id="f-sentinel" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-se"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-se" accept="image/*"></div><div class="pc hidden" id="pc-se"><span>ZOOM</span><input type="range" id="zm-se" min="1" max="3" step=".05" value="1"></div><span class="sec">IDENTITY</span><div class="f"><label>CODENAME</label><input id="s-code" placeholder="Codename"></div><div class="f"><label>ABILITY</label><input id="s-ability" placeholder="Ability"></div><div class="f"><label>TYPE</label><select id="s-type"><option value="">Select</option><option>Sentinel</option><option>Guide</option></select></div><div class="f"><label>CLASS</label><select id="s-class"><option value="">Select</option><option>SS-Class</option><option>S-Class</option><option>A-Class</option><option>B-Class</option><option>C-Class</option></select></div><div class="f"><label>AFFILIATION</label><input id="s-aff" placeholder="Division"></div><div class="f"><label>NO. <button class="gn" onclick="gid('s-id','SGB')">GEN</button></label><input id="s-id" placeholder="SGB-0000"></div><span class="sec">COLOR</span><div class="sw-row" id="sw-se"><div class="sw on" style="background:#1a8888" data-c="#1a8888"></div><div class="sw" style="background:#c8a020" data-c="#c8a020"></div><div class="sw" style="background:#30a858" data-c="#30a858"></div><div class="sw" style="background:#c83838" data-c="#c83838"></div><div class="sw" style="background:#6840b8" data-c="#6840b8"></div><div class="sw" style="background:#3878c8" data-c="#3878c8"></div></div></div>
+
+<div id="f-sentinel" class="hidden">
+<span class="sec">PHOTO</span><div class="pz" id="pz-se"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-se" accept="image/*"></div><div class="pc hidden" id="pc-se"><span>ZOOM</span><input type="range" id="zm-se" min="1" max="3" step=".05" value="1"></div><span class="sec">IDENTITY</span><div class="f"><label>CODENAME</label><input id="s-code" placeholder="Codename"></div><div class="f"><label>ABILITY</label><input id="s-ability" placeholder="Ability"></div><div class="f"><label>TYPE</label><select id="s-type"><option value="">Select</option><option>Sentinel</option><option>Guide</option></select></div><div class="f"><label>CLASS</label><select id="s-class"><option value="">Select</option><option>SS-Class</option><option>S-Class</option><option>A-Class</option><option>B-Class</option><option>C-Class</option></select></div><div class="f"><label>AFFILIATION</label><input id="s-aff" placeholder="Division"></div><div class="f"><label>NO. <button class="gn" onclick="gid('s-id','SGB')">GEN</button></label><input id="s-id" placeholder="SGB-0000"></div>
+<span class="sec">COLOR (DARK THEME)</span>
+<div class="sw-row" id="sw-se-dark">
+<div class="sw on" style="background:#1a8888" data-c="#1a8888" data-tm="dark"></div>
+<div class="sw" style="background:#c8a020" data-c="#c8a020" data-tm="dark"></div>
+<div class="sw" style="background:#30a858" data-c="#30a858" data-tm="dark"></div>
+<div class="sw" style="background:#c83838" data-c="#c83838" data-tm="dark"></div>
+<div class="sw" style="background:#6840b8" data-c="#6840b8" data-tm="dark"></div>
+<div class="sw" style="background:#3878c8" data-c="#3878c8" data-tm="dark"></div>
+</div>
+<span class="sec">COLOR (LIGHT THEME)</span>
+<div class="sw-row" id="sw-se-light">
+<div class="sw" style="background:#fff; border:2.5px solid #1a8888" data-c="#1a8888" data-tm="light"></div>
+<div class="sw" style="background:#fff; border:2.5px solid #c8a020" data-c="#c8a020" data-tm="light"></div>
+<div class="sw" style="background:#fff; border:2.5px solid #30a858" data-c="#30a858" data-tm="light"></div>
+<div class="sw" style="background:#fff; border:2.5px solid #c83838" data-c="#c83838" data-tm="light"></div>
+<div class="sw" style="background:#fff; border:2.5px solid #6840b8" data-c="#6840b8" data-tm="light"></div>
+<div class="sw" style="background:#fff; border:2.5px solid #3878c8" data-c="#3878c8" data-tm="light"></div>
+</div>
+</div>
+
 <div id="f-student" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-st"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-st" accept="image/*"></div><div class="pc hidden" id="pc-st"><span>ZOOM</span><input type="range" id="zm-st" min="1" max="3" step=".05" value="1"></div><span class="sec">SCHOOL</span><div class="f"><label>SCHOOL</label><input id="st-school" placeholder="School"></div><div class="f"><label>TYPE</label><select id="st-level"><option value="">Select</option><option>Elementary</option><option>Middle School</option><option>High School</option></select></div><span class="sec">STUDENT</span><div class="f"><label>NAME</label><input id="st-name" placeholder="Name"></div><div class="f"><label>GRADE</label><input id="st-grade" placeholder="Grade / Class"></div><div class="f"><label>ENROLLMENT</label><input id="st-enroll" placeholder="2024.03.02"></div><div class="f"><label>GRADUATION</label><input id="st-grad" placeholder="2027.02.28"></div><div class="f"><label>NO. <button class="gn" onclick="gid('st-id','STU')">GEN</button></label><input id="st-id" placeholder="Student ID"></div><span class="sec">COLOR</span><div class="sw-row" id="sw-st"><div class="sw on" style="background:#5090c0" data-c="#5090c0"></div><div class="sw" style="background:#e08090" data-c="#e08090"></div><div class="sw" style="background:#50a070" data-c="#50a070"></div><div class="sw" style="background:#c0a050" data-c="#c0a050"></div></div></div>
 <div id="f-university" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-un"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-un" accept="image/*"></div><div class="pc hidden" id="pc-un"><span>ZOOM</span><input type="range" id="zm-un" min="1" max="3" step=".05" value="1"></div><span class="sec">UNIVERSITY</span><div class="f"><label>UNIVERSITY</label><input id="u-univ" placeholder="University"></div><div class="f"><label>MAJOR</label><input id="u-dept" placeholder="Major"></div><span class="sec">STUDENT</span><div class="f"><label>NAME</label><input id="u-name" placeholder="Name"></div><div class="f"><label>YEAR</label><select id="u-year"><option value="">Select</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div><div class="f"><label>NO. <button class="gn" onclick="gid('u-id','U')">GEN</button></label><input id="u-id" placeholder="ID"></div><div class="f"><label>ADMISSION</label><input id="u-admit" placeholder="Year"></div><span class="sec">ACCESS</span><div class="f"><label>LIBRARY</label><select id="u-lib"><option value="">Select</option><option>Allowed</option><option>Restricted</option></select></div><div class="f"><label>DORMITORY</label><select id="u-dorm"><option value="">Select</option><option>Allowed</option><option>N/A</option></select></div></div>
 <div id="f-lovers" class="hidden"><span class="sec">PHOTO</span><div class="pz" id="pz-lv"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-lv" accept="image/*"></div><div class="pc hidden" id="pc-lv"><span>ZOOM</span><input type="range" id="zm-lv" min="1" max="3" step=".05" value="1"></div><span class="sec">CLUB</span><div class="f"><label>CLUB NAME</label><input id="lv-club" placeholder="Club Name"></div><div class="f"><label>NAME</label><input id="lv-name" placeholder="Name"></div><div class="f"><label>NICKNAME</label><input id="lv-nick" placeholder="Nickname"></div><div class="f"><label>BIAS</label><input id="lv-bias" placeholder="Favorite"></div><div class="f"><label>BIRTH</label><input id="lv-birth" placeholder="0000.00.00"></div><div class="f"><label>CLASS</label><input id="lv-class" placeholder="Class"></div><div class="f"><label>NUMBER</label><input id="lv-number" placeholder="Number"></div><div class="f"><label>POSITION</label><input id="lv-pos" placeholder="Position"></div><div class="f"><label>MEMBERSHIP</label><input id="lv-mem" placeholder="School / Group"></div><div class="f"><label>NO. <button class="gn" onclick="gid('lv-id','FC')">GEN</button></label><input id="lv-id" placeholder="Member ID"></div><span class="sec">COLOR</span><div class="sw-row" id="sw-lv"><div class="sw on" style="background:#e88aaa" data-c="#e88aaa"></div><div class="sw" style="background:#a090d8" data-c="#a090d8"></div><div class="sw" style="background:#70c8a0" data-c="#70c8a0"></div><div class="sw" style="background:#e8a870" data-c="#e8a870"></div><div class="sw" style="background:#70a8e0" data-c="#70a8e0"></div></div></div>
@@ -272,7 +294,7 @@ header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);displa
 </div>
 <div class="toast" id="toast"></div>
 <script>
-let cur='company',flipped=false;
+let cur='company',flipped=false, sgTM='dark'; // 센티넬 테마 식별 변수 추가
 const ph={company:null,sentinel:null,student:null,university:null,lovers:null};
 const pC={company:{z:1,x:0,y:0},sentinel:{z:1,x:0,y:0},student:{z:1,x:0,y:0},university:{z:1,x:0,y:0},lovers:{z:1,x:0,y:0}};
 let ac={company:'#2050a0',sentinel:'#1a8888',student:'#5090c0',university:'#c8a84b',lovers:'#e88aaa'};
@@ -282,7 +304,17 @@ function L(h,f){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=
 function A(h,a){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
 function O(v,fb){return v||fb||'';}
 
-function barcode(val){const seed=[...val].reduce((a,c)=>a+c.charCodeAt(0),0);let s='',x=0;for(let i=0;i<60;i++){const w=((seed*(i+1)*7)%3)+1;if(i%2===0)s+=`<rect x="${x}" y="0" width="${w*.55}" height="14" fill="#000"/>`;x+=w*.55+.35;}return `<svg class="bcs" viewBox="0 0 ${x} 20" height="18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${s}<text x="${x/2}" y="19" text-anchor="middle" font-family="Space Mono,monospace" font-size="2.8" fill="#888">${val}</text></svg>`;}
+// 바코드 함수 수정 (테마에 맞춰 색상 변경 가능하게)
+function barcode(val, c="#000", tc="#888"){
+  const seed=[...val].reduce((a,char)=>a+char.charCodeAt(0),0);
+  let s='',x=0;
+  for(let i=0;i<60;i++){
+    const w=((seed*(i+1)*7)%3)+1;
+    if(i%2===0)s+=`<rect x="${x}" y="0" width="${w*.55}" height="14" fill="${c}"/>`;
+    x+=w*.55+.35;
+  }
+  return `<svg class="bcs" viewBox="0 0 ${x} 20" height="18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${s}<text x="${x/2}" y="19" text-anchor="middle" font-family="Space Mono,monospace" font-size="2.8" fill="${tc}">${val}</text></svg>`;
+}
 
 const np=`<div class="np"><div class="np-h"></div><div class="np-b"></div></div>`;
 function sealSVG(c,r){return `<svg xmlns="http://www.w3.org/2000/svg" width="${r}" height="${r}" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="${c}" stroke-width=".7"/><circle cx="12" cy="12" r="6" stroke="${c}" stroke-width=".5"/><circle cx="12" cy="12" r="2" fill="${c}"/></svg>`;}
@@ -322,29 +354,87 @@ ${V('c-access')?`<div style="margin-top:5px;display:inline-block;border:1px soli
 function empB(){const c=ac.company;
 return `<div class="emp-bk"><div class="emp-bk-inner"><div class="emp-bk-corp">${O(V('c-corp'),'Company')}</div><div class="emp-bk-sep" style="background:${c};"></div><div class="emp-bk-notice">NOTICE</div><div class="emp-bk-rules" style="border-color:${c};">This card certifies the holder as an official employee.<br>Must be worn visibly at all times within premises.<br>Cannot be lent, transferred, or duplicated.<br>Report loss to HR immediately for reissue.<br>Misuse is subject to disciplinary action.</div>${V('c-access')?`<div style="margin-bottom:10px;"><div style="font-size:7px;letter-spacing:2px;color:#999;margin-bottom:3px;">ACCESS LEVEL</div><div style="font-size:10px;font-weight:700;color:#555;">${V('c-access')}</div></div>`:''}<div class="emp-bk-bar">${barcode(V('c-id')||'EMP-0000')}</div><div class="emp-bk-foot"><div class="emp-bk-id">${O(V('c-id'),'EMP-0000')}</div><div class="emp-bk-qr" id="qr-co"></div></div></div></div>`;}
 
-function sgbF(){const c=ac.sentinel,cls=V('s-class'),clsL=cls?cls.split('-')[0]:'',tp=V('s-type');
-const bars=Array.from({length:45},(_,i)=>{const h=2+Math.random()*9;return `<div class="sgb-bar-s" style="height:${h}px;background:${A(c,.25+Math.random()*.4)};"></div>`;}).join('');
-return `<div class="sgb" style="background:linear-gradient(170deg,${D(c,.15)},#060810,${D(c,.1)});--ac2:${A(c,.08)};">
-<div class="sgb-grid"></div>
-<div class="sgb-glow" style="width:100px;height:100px;background:${A(c,.12)};top:-15px;left:-15px;"></div>
-<div class="sgb-glow" style="width:70px;height:70px;background:${A(c,.08)};bottom:40px;right:-15px;"></div>
-${clsL?`<div class="sgb-class-badge" style="background:${c};">${clsL}</div>`:''}
-<div class="sgb-hdr"><div class="sgb-org"><div class="sgb-seal" style="border-color:${A(c,.5)};">${sealSVG(A(c,.5),16)}</div><div><div class="sgb-nm" style="color:${L(c,.4)};">S G B</div><div class="sgb-sub">SENTINEL GUIDANCE BUREAU</div></div></div>${tp?`<div class="sgb-type" style="border-color:${A(c,.4)};color:${L(c,.3)};">${tp.toUpperCase()}</div>`:''}</div>
-<div class="sgb-pbox" style="border-color:${A(c,.3)};">${pI('sentinel')}</div>
-<div class="sgb-code">${O(V('s-code'))}</div>
-<div class="sgb-ability"><span class="sgb-pill" style="border-color:${A(c,.35)};color:${L(c,.3)};">${O(V('s-ability'),'ABILITY')}</span></div>
-<div class="sgb-fields">
-<div class="sgb-fr"><div class="sgb-fl" style="color:${L(c,.25)};">CLASS</div><div class="sgb-fv">${O(cls)}</div></div>
-<div class="sgb-fr"><div class="sgb-fl" style="color:${L(c,.25)};">AFFILIATION</div><div class="sgb-fv">${O(V('s-aff'))}</div></div>
-</div>
-<div class="sgb-bot"><div class="sgb-idno" style="color:${L(c,.2)};">NO. ${O(V('s-id'),'SGB-0000')}</div><div class="sgb-res">${bars}</div><div>${barcode(V('s-id')||'SGB-0000')}</div></div></div>`;}
+/* ── SGB ── (수정됨: 라이트 테마 분기 추가) */
+function sgbF(){
+  const c = ac.sentinel, cls = V('s-class'), clsL = cls ? cls.split('-')[0] : '', tp = V('s-type');
+  const isL = sgTM === 'light'; // 테마 식별
+  const bg = isL ? `#fdfdfd` : `linear-gradient(170deg,${D(c,.15)},#060810,${D(c,.1)})`;
+  const ac2 = isL ? A(c,.15) : A(c,.08);
+  const bars = Array.from({length:45}, (_,i)=>{
+    const h = 2 + Math.random()*9;
+    return `<div class="sgb-bar-s" style="height:${h}px;background:${isL ? A(c,.4+Math.random()*.6) : A(c,.25+Math.random()*.4)};"></div>`;
+  }).join('');
+  const bcColor = isL ? c : 'rgba(255,255,255,0.4)';
+  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.25)';
 
-function sgbB(){const c=ac.sentinel;
-return `<div class="sgb-bk" style="background:linear-gradient(170deg,${D(c,.1)},#040710);--ac2:${A(c,.06)};">
-<div class="sgb-bk-grid"></div>
-<div class="sgb-bk-hdr"><div class="sgb-bk-title" style="color:${L(c,.3)};">SENTINEL GUIDANCE BUREAU</div><div class="sgb-bk-sub">IDENTIFICATION DIVISION</div></div>
-<div class="sgb-bk-body"><div class="sgb-bk-warn"><div class="sgb-bk-wl" style="color:${L(c,.25)};">NOTICE</div><div class="sgb-bk-wt">This card is the property of the Sentinel Guidance Bureau. Unauthorized possession, duplication, or use is strictly prohibited under the Sentinel Management Act. Lost or stolen cards must be reported to the assigned division within 24 hours. Failure to comply may result in ability suppression protocols being engaged.</div></div><div class="sgb-bk-bar">${barcode(V('s-id')||'SGB-0000')}</div><div class="sgb-bk-qr-row"><div class="sgb-bk-qr" id="qr-se"></div><div class="sgb-bk-codes"><div class="sgb-cr"><span>REG.</span><span style="color:${L(c,.2)};">${O(V('s-id'),'—')}</span></div><div class="sgb-cr"><span>TYPE</span><span style="color:${L(c,.2)};">${O(V('s-type'),'—')}</span></div><div class="sgb-cr"><span>ISSUED</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div><div class="sgb-cr"><span>AUTH</span><span style="color:${L(c,.2)};">SGB-HQ</span></div></div></div></div>
-<div class="sgb-bk-ft">SENTINEL GUIDANCE BUREAU</div></div>`;}
+  return `<div class="sgb" style="background:${bg};--ac2:${ac2};">
+    <div class="sgb-grid"></div>
+    <div class="sgb-glow" style="width:100px;height:100px;background:${isL?A(c,.06):A(c,.12)};top:-15px;left:-15px;"></div>
+    <div class="sgb-glow" style="width:70px;height:70px;background:${isL?A(c,.05):A(c,.08)};bottom:40px;right:-15px;"></div>
+    ${clsL ? `<div class="sgb-class-badge" style="background:${c};">${clsL}</div>` : ''}
+    <div class="sgb-hdr">
+      <div class="sgb-org">
+        <div class="sgb-seal" style="border-color:${isL?A(c,.4):A(c,.5)};">${sealSVG(isL?A(c,.7):A(c,.5),16)}</div>
+        <div><div class="sgb-nm" style="color:${isL?c:L(c,.4)};">S G B</div><div class="sgb-sub" style="color:${isL?A(c,.6):''}">SENTINEL GUIDANCE BUREAU</div></div>
+      </div>
+      ${tp ? `<div class="sgb-type" style="border-color:${isL?A(c,.4):A(c,.4)};color:${isL?c:L(c,.3)};">${tp.toUpperCase()}</div>` : ''}
+    </div>
+    <div class="sgb-pbox" style="border-color:${isL?A(c,.4):A(c,.3)};background:${isL?'#fff':'rgba(0,0,0,.3)'};">${pI('sentinel')}</div>
+    <div class="sgb-code" style="color:${isL?'#222':'#e8ecf0'};">${O(V('s-code'))}</div>
+    <div class="sgb-ability"><span class="sgb-pill" style="border-color:${isL?A(c,.4):A(c,.35)};color:${isL?c:L(c,.3)};">${O(V('s-ability'),'ABILITY')}</span></div>
+    <div class="sgb-fields">
+      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.04)'}">
+        <div class="sgb-fl" style="color:${isL?c:L(c,.25)};">CLASS</div>
+        <div class="sgb-fv" style="color:${isL?'#333':''}">${O(cls)}</div>
+      </div>
+      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.04)'}">
+        <div class="sgb-fl" style="color:${isL?c:L(c,.25)};">AFFILIATION</div>
+        <div class="sgb-fv" style="color:${isL?'#333':''}">${O(V('s-aff'))}</div>
+      </div>
+    </div>
+    <div class="sgb-bot">
+      <div class="sgb-idno" style="color:${isL?A(c,.8):L(c,.2)};">NO. ${O(V('s-id'),'SGB-0000')}</div>
+      <div class="sgb-res">${bars}</div>
+      <div>${barcode(V('s-id')||'SGB-0000', bcColor, bcText)}</div>
+    </div>
+  </div>`;
+}
+
+function sgbB(){
+  const c = ac.sentinel;
+  const isL = sgTM === 'light';
+  const bg = isL ? `#fff` : `linear-gradient(170deg,${D(c,.1)},#040710)`;
+  const ac2 = isL ? A(c,.1) : A(c,.06);
+  const bdr = isL ? A(c,.2) : 'rgba(255,255,255,.05)';
+  const tMain = isL ? c : L(c,.3);
+  const bcColor = isL ? c : 'rgba(255,255,255,0.4)';
+  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.25)';
+
+  return `<div class="sgb-bk" style="background:${bg};--ac2:${ac2};">
+    <div class="sgb-bk-grid"></div>
+    <div class="sgb-bk-hdr" style="border-bottom:1px solid ${bdr};">
+      <div class="sgb-bk-title" style="color:${tMain};">SENTINEL GUIDANCE BUREAU</div>
+      <div class="sgb-bk-sub" style="color:${isL?A(c,.6):''}">IDENTIFICATION DIVISION</div>
+    </div>
+    <div class="sgb-bk-body">
+      <div class="sgb-bk-warn" style="border:1px solid ${bdr};">
+        <div class="sgb-bk-wl" style="color:${isL?c:L(c,.25)};">NOTICE</div>
+        <div class="sgb-bk-wt" style="color:${isL?'#555':'rgba(255,255,255,.65)'};">This card is the property of the Sentinel Guidance Bureau. Unauthorized possession, duplication, or use is strictly prohibited under the Sentinel Management Act. Lost or stolen cards must be reported to the assigned division within 24 hours. Failure to comply may result in ability suppression protocols being engaged.</div>
+      </div>
+      <div class="sgb-bk-bar">${barcode(V('s-id')||'SGB-0000', bcColor, bcText)}</div>
+      <div class="sgb-bk-qr-row">
+        <div class="sgb-bk-qr" id="qr-se" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div>
+        <div class="sgb-bk-codes">
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>REG.</span><span style="color:${isL?c:L(c,.2)};">${O(V('s-id'),'—')}</span></div>
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>TYPE</span><span style="color:${isL?c:L(c,.2)};">${O(V('s-type'),'—')}</span></div>
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>ISSUED</span><span>${new Date().toLocaleDateString('ko-KR')}</span></div>
+          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':''}"><span>AUTH</span><span style="color:${isL?c:L(c,.2)};">SGB-HQ</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sgb-bk-ft" style="color:${isL?A(c,.4):''}">SENTINEL GUIDANCE BUREAU</div>
+  </div>`;
+}
 
 function stuF(){const c=ac.student;
 return `<div class="stu" style="background:${L(c,.88)};">
@@ -422,23 +512,21 @@ function initP(iid,type,zid,pcid){const inp=document.getElementById(iid);if(!inp
 document.addEventListener('mousedown',e=>{const el=e.target.closest('.emp-pbox img,.sgb-pbox img,.stu-pbox img,.uni-pbox img,.luv-photo img');if(!el)return;e.preventDefault();const sx=e.clientX,sy=e.clientY,cr=pC[cur],ox=cr.x,oy=cr.y;const mv=ev=>{cr.x=ox+(ev.clientX-sx)/cr.z;cr.y=oy+(ev.clientY-sy)/cr.z;render();};const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);});
 function flipCard(){flipped=!flipped;document.getElementById('wr').classList.toggle('fl2',flipped);document.getElementById('flab').textContent=flipped?'BACK':'FRONT';}
 
-// --- 개선된 캡처 및 저장 기능 ---
+// ── html2canvas 저장 최적화 (이전 오류 해결 포함) ── //
 async function cap(el, isBack = false){
   return html2canvas(el, {
-    scale: 6, // 고해상도 유지 (필요시 4 정도로 낮추면 모바일 안정성 증가)
+    scale: 6,
     useCORS: true,
     allowTaint: true,
     backgroundColor: null,
     logging: false,
     imageTimeout: 0,
     onclone: (doc) => {
-      // 캡처용 가상 복제본에서만 카드를 정면(정자)으로 되돌리기
       const wr = doc.getElementById('wr');
       if (wr) {
         wr.classList.remove('fl2');
         wr.style.transform = 'none';
       }
-      // 뒷면을 캡처할 때, 뒷면 전용 뒤집기 속성 제거
       if (isBack) {
         const cb = doc.getElementById('cb');
         if (cb) {
@@ -468,7 +556,6 @@ async function saveBoth(){
     const b = await cap(document.getElementById('cb'), true);
     
     dl(f, `${cur}-front-${Date.now()}.png`);
-    // 브라우저가 다중 다운로드를 차단하지 않도록 살짝 텀을 줌
     await new Promise(r => setTimeout(r, 450)); 
     dl(b, `${cur}-back-${Date.now()}.png`);
     
@@ -480,8 +567,29 @@ function dl(c,n){const a=document.createElement('a');a.download=n;a.href=c.toDat
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 function gid(id,pfx){const n=String(Math.floor(Math.random()*9000)+1000);document.getElementById(id).value=pfx+'-'+n;render();}
 document.querySelectorAll('.tab').forEach(b=>{b.addEventListener('click',()=>{cur=b.dataset.type;flipped=false;document.getElementById('wr').classList.remove('fl2');document.getElementById('flab').textContent='FRONT';document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');['company','sentinel','student','university','lovers'].forEach(t=>{document.getElementById(`f-${t}`).classList.add('hidden');});document.getElementById(`f-${cur}`).classList.remove('hidden');document.getElementById('ls').style.background=ac[cur];render();});});
-const swMap={'sw-co':'company','sw-se':'sentinel','sw-st':'student','sw-lv':'lovers'};
-Object.entries(swMap).forEach(([id,type])=>{const el=document.getElementById(id);if(!el)return;el.addEventListener('click',e=>{const s=e.target.closest('.sw');if(!s)return;el.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));s.classList.add('on');ac[type]=s.dataset.c;document.getElementById('ls').style.background=s.dataset.c;render();});});
+
+// 스와치 테마 선택 이벤트 (센티넬 다크/라이트 연동)
+const swMap={'sw-co':'company','sw-se-dark':'sentinel','sw-se-light':'sentinel','sw-st':'student','sw-lv':'lovers'};
+Object.entries(swMap).forEach(([id,type])=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('click',e=>{
+    const s=e.target.closest('.sw');
+    if(!s)return;
+    
+    if (type === 'sentinel') {
+      document.getElementById('sw-se-dark').querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));
+      document.getElementById('sw-se-light').querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));
+      sgTM = s.dataset.tm || 'dark'; // 라이트 모드 판별
+    } else {
+      el.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));
+    }
+    s.classList.add('on');
+    ac[type]=s.dataset.c;
+    document.getElementById('ls').style.background=s.dataset.c;
+    render();
+  });
+});
 document.querySelectorAll('input,select').forEach(el=>{el.addEventListener('input',()=>render());el.addEventListener('change',()=>render());});
 initP('pi-co','company','pz-co','pc-co');initP('pi-se','sentinel','pz-se','pc-se');initP('pi-st','student','pz-st','pc-st');initP('pi-un','university','pz-un','pc-un');initP('pi-lv','lovers','pz-lv','pc-lv');
 render();
