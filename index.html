@@ -75,7 +75,7 @@ header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);displa
 .emp-corner{position:absolute;width:36px;height:36px;pointer-events:none;}
 .emp-top{padding:16px 18px 6px;position:relative;z-index:1;}
 .emp-corp-row{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
-.emp-logo{width:26px;height:26px;flex-shrink:0;border:1.5px solid;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:11px;font-weight:800;}
+.emp-logo{width:26px;height:26px;flex-shrink:0;border:1.5px solid;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:11px;font-weight:800;line-height:1;padding-bottom:1.5px;}
 .emp-corp{font-size:10px;font-weight:700;letter-spacing:2px;}
 .emp-pbox{width:90px;height:112px;margin:0 18px 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
 .emp-pbox img{width:100%;height:100%;object-fit:cover;}
@@ -103,13 +103,13 @@ header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);displa
 .sgb-seal::after{content:'';position:absolute;inset:4px;border:1px solid;border-radius:50%;opacity:.4;}
 .sgb-nm{font-family:'Outfit';font-size:11px;font-weight:800;letter-spacing:4px;}
 .sgb-sub{font-size:6px;letter-spacing:2px;margin-top:1px;}
-.sgb-type{font-size:7.5px;font-weight:700;letter-spacing:2px;padding:3px 6px;border:1px solid;border-radius:3px;white-space:nowrap;}
-.sgb-class-badge{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.sgb-type{display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:7.5px;font-weight:700;letter-spacing:2px;padding:2px 6px 3.5px;border:1px solid;border-radius:3px;white-space:nowrap;}
+.sgb-class-badge{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;padding-bottom:1.5px;font-family:'Outfit';font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
 .sgb-pbox{width:88px;height:110px;margin:4px auto 6px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1.5px solid;position:relative;}
 .sgb-pbox img{width:100%;height:100%;object-fit:cover;}
 .sgb-code{font-family:'Outfit';font-size:20px;font-weight:900;text-align:center;letter-spacing:1px;margin-bottom:2px;}
 .sgb-ability{text-align:center;margin-bottom:6px;}
-.sgb-pill{display:inline-block;border:1px solid;padding:1.5px 10px;font-size:7px;letter-spacing:2px;font-weight:700;border-radius:3px;max-width:100%;}
+.sgb-pill{display:inline-flex;align-items:center;justify-content:center;line-height:1;border:1px solid;padding:1.5px 10px 3px;font-size:7px;letter-spacing:2px;font-weight:700;border-radius:3px;max-width:100%;}
 .sgb-fields{padding:0 16px;}
 .sgb-fr{display:flex;align-items:baseline;gap:7px;padding:2.5px 0;border-bottom:1px solid;}
 .sgb-fl{font-size:7px;letter-spacing:1.5px;font-weight:700;width:72px;flex-shrink:0;}
@@ -166,7 +166,7 @@ header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);displa
 .uni-seal{width:34px;height:34px;flex-shrink:0;border:1px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .uni-nm{font-family:'Noto Serif KR',serif;font-size:11px;font-weight:700;}
 .uni-en{font-size:6.5px;letter-spacing:2px;margin-top:1px;}
-.uni-badge{margin-left:auto;border:1px solid;font-size:7px;letter-spacing:2px;padding:2px 6px;flex-shrink:0;}
+.uni-badge{display:inline-flex;align-items:center;justify-content:center;line-height:1;margin-left:auto;border:1px solid;font-size:7px;letter-spacing:2px;padding:1.5px 6px 2.5px;flex-shrink:0;}
 .uni-body{position:relative;padding:10px 16px;display:flex;flex-direction:column;align-items:center;}
 .uni-pbox{width:78px;height:98px;border:1px solid;margin-bottom:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .uni-pbox img{width:100%;height:100%;object-fit:cover;}
@@ -209,7 +209,7 @@ header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);displa
 .luv-pw{width:94px;height:118px;margin:4px auto 4px;position:relative;}
 .luv-photo{width:100%;height:100%;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid;}
 .luv-photo img{width:100%;height:100%;object-fit:cover;}
-.luv-lvl{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);padding:2px 14px;border-radius:10px;font-family:'Outfit';font-size:8px;font-weight:700;letter-spacing:2px;color:#fff;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.luv-lvl{display:inline-flex;align-items:center;justify-content:center;line-height:1;position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);padding:2px 14px 3.5px;border-radius:10px;font-family:'Outfit';font-size:8px;font-weight:700;letter-spacing:2px;color:#fff;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.12);}
 .luv-nm{font-family:'Outfit';font-size:17px;font-weight:800;text-align:center;letter-spacing:1px;margin-top:10px;margin-bottom:1px;padding:0 10px;}
 .luv-nick{text-align:center;font-size:8.5px;letter-spacing:2px;margin-bottom:8px;padding:0 10px;}
 .luv-info{display:flex;flex-direction:column;gap:0;}
@@ -376,7 +376,7 @@ function empF(){
       <div style="background:${fBg};padding:4px 7px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};margin-bottom:1px;">JOINED</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-join'))}</div></div>
       <div style="background:${fBg};padding:4px 7px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};margin-bottom:1px;">VALID UNTIL</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-valid'))}</div></div>
     </div>
-    ${V('c-access')?`<div class="elps" style="margin-top:5px;display:inline-block;border:1px solid ${bdr};padding:1.5px 8px;font-size:7px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};border-radius:2px;max-width:100%;">${V('c-access')}</div>`:''}
+    ${V('c-access')?`<div class="elps" style="margin-top:5px;display:inline-flex;align-items:center;justify-content:center;line-height:1;border:1px solid ${bdr};padding:1.5px 8px 3px;font-size:7px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};border-radius:2px;max-width:100%;">${V('c-access')}</div>`:''}
   </div>
   <div class="emp-bot"><div class="emp-id" style="color:${isL?'#aaa':'rgba(255,255,255,.7)'};">${O(V('c-id'),'EMP-0000')}</div><div style="width:14px;height:14px;border:1px solid ${bdr};border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${sealSVG(isL?c:A(c,.4),8)}</div></div></div>`;
 }
