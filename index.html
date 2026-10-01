@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -32,10 +33,17 @@ input,select{font:inherit;color:inherit}
 .btn{height:32px;padding:0 13px;border-radius:9px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:background .15s,transform .1s}
 .btn:active{transform:scale(.98)}
 .btn.primary{background:var(--tx);color:#fff}
+.topr{display:flex;align-items:center;gap:6px}
+.btn.ghost{color:var(--mu);background:transparent}
+.btn.ghost:hover{background:var(--fill);color:var(--tx)}
+.btn.ghost.arm{background:#fdecec;color:#d23b3b}
 .btn.primary:hover{background:#000}
 .menu-wrap{position:relative}
-.menu{position:absolute;right:0;top:calc(100% + 8px);width:224px;background:#fff;border:1px solid var(--ln);border-radius:13px;padding:5px;box-shadow:0 16px 40px -12px rgba(0,0,0,.2);opacity:0;transform:translateY(-4px) scale(.98);transform-origin:top right;pointer-events:none;transition:.16s}
+.menu{position:absolute;right:0;top:calc(100% + 8px);width:240px;background:#fff;border:1px solid var(--ln);border-radius:13px;padding:5px;box-shadow:0 16px 40px -12px rgba(0,0,0,.2);opacity:0;transform:translateY(-4px) scale(.98);transform-origin:top right;pointer-events:none;transition:.16s}
 .menu.open{opacity:1;transform:none;pointer-events:auto}
+.mseg{display:flex;gap:2px;padding:2px;margin:2px 2px 0;background:var(--fill);border-radius:9px}
+.mseg button{flex:1;height:28px;border-radius:7px;font-size:11.5px;font-weight:600;color:var(--mu);transition:.15s}
+.mseg button.on{background:#fff;color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.03)}
 .menu .mh{padding:8px 10px 6px;font-size:10.5px;color:var(--mu2);font-weight:500}
 .menu button{width:100%;text-align:left;padding:8px 10px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:550}
 .menu button:hover{background:var(--fill)}
@@ -190,14 +198,18 @@ body.dragging,body.dragging #ff [data-ph]{cursor:grabbing}
     <div class="brand-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="3"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16.5h7"/></svg></div>
     ID Studio
   </div>
+  <div class="topr">
+  <button class="btn ghost" id="resetBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>초기화</span></button>
   <div class="menu-wrap">
     <button class="btn primary" id="saveBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/></svg>저장</button>
     <div class="menu" id="saveMenu">
-      <div class="mh">인쇄용 PNG · 58×90mm · 600dpi</div>
+      <div class="mseg" id="modeSeg"><button data-m="card">카드 이미지</button><button data-m="print">인쇄용</button></div>
+      <div class="mh" id="modeHint"></div>
       <button data-save="cur">지금 보이는 면<span>1장</span></button>
       <button data-save="both">앞면 · 뒷면<span>2장</span></button>
       <button data-save="sheet">앞뒤 한 장으로<span>1장</span></button>
     </div>
+  </div>
   </div>
 </header>
 
@@ -838,13 +850,40 @@ addEventListener('resize',fit);
 
 /* ───────── export (58×90mm work size, 600dpi) ───────── */
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+if(S.exportMode!=='print')S.exportMode='card';
+function renderMode(){$$('#modeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.m===S.exportMode));$('#modeHint').textContent=S.exportMode==='card'?'둥근 모서리 · 투명 배경 · 54×86mm · 600dpi':'재단 여백 2mm 포함 · 58×90mm · 600dpi';}
+const FONT_SRC=[['Pretendard Variable','https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/woff2/PretendardVariable.woff2','45 920'],
+  ['Yellowtail','https://cdn.jsdelivr.net/npm/@fontsource/yellowtail@5.3.0/files/yellowtail-latin-400-normal.woff2','400']];
+let FONT_CSS=null;
+async function fontCSS(){
+  if(FONT_CSS!==null)return FONT_CSS;
+  const parts=await Promise.all(FONT_SRC.map(async([f,u,w])=>{try{const r=await fetch(u);if(!r.ok)throw 0;const bl=await r.blob();
+    const d=await new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(fr.result);fr.onerror=no;fr.readAsDataURL(bl);});
+    return`@font-face{font-family:'${f}';src:url(${d}) format('woff2');font-weight:${w};font-style:normal;font-display:block}`;}catch(e){return'';}}));
+  return FONT_CSS=parts.join('');
+}
 async function shot(side){
   const xp=$('#xp');xp.innerHTML=build(S.tpl,side);fillQR(xp);
   try{await document.fonts.ready}catch(e){}
-  await sleep(200);
+  await sleep(150);
   await Promise.all([...xp.querySelectorAll('img')].map(i=>i.complete&&i.naturalWidth?0:new Promise(r=>{i.onload=i.onerror=r;})));
-  const cv=await html2canvas(xp.firstElementChild,{scale:DPI/25.4/PX,backgroundColor:'#ffffff',useCORS:true,logging:false,scrollX:-window.scrollX,scrollY:-window.scrollY});
-  xp.innerHTML='';return cv;
+  const node=xp.firstElementChild,ratio=DPI/25.4/PX;let cv=null;
+  if(window.htmlToImage){
+    try{const css=await fontCSS(),opt={pixelRatio:ratio,cacheBust:false,width:node.offsetWidth,height:node.offsetHeight,style:{margin:'0'}};if(css)opt.fontEmbedCSS=css;
+      await htmlToImage.toCanvas(node,opt);   /* warm-up pass: lets the browser decode embedded fonts & images */
+      cv=await htmlToImage.toCanvas(node,opt);}catch(e){console.warn('html-to-image failed, falling back',e);cv=null;}
+  }
+  if(!cv)cv=await html2canvas(node,{scale:ratio,backgroundColor:null,useCORS:true,logging:false,scrollX:-window.scrollX,scrollY:-window.scrollY});
+  xp.innerHTML='';
+  return finish(cv);
+}
+/* card mode: trim the 2mm bleed and round the corners like a real ID card; print mode: full 58×90mm work size */
+function finish(src){
+  if(S.exportMode==='print'){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(src,0,0);return c;}
+  const k=src.width/(T[S.tpl].o==='l'?495:319),b=Math.round(BLEED*k),w=src.width-2*b,h=src.height-2*b,r=14*k;
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+  x.beginPath();x.moveTo(r,0);x.arcTo(w,0,w,h,r);x.arcTo(w,h,0,h,r);x.arcTo(0,h,0,0,r);x.arcTo(0,0,w,0,r);x.closePath();x.clip();
+  x.drawImage(src,-b,-b);return c;
 }
 function crc32(b){let crc=-1;for(let n=0;n<b.length;n++){let c=(crc^b[n])&255;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;crc=(crc>>>8)^c;}return(crc^-1)>>>0;}
 async function withDpi(blob){
@@ -859,19 +898,29 @@ async function doSave(kind){
   $('#saveMenu').classList.remove('open');toast('이미지를 만드는 중…',true);
   const n=S.tpl,ts=Date.now();
   try{
-    if(kind==='cur'){dl(await shot(S.side),`${n}-${S.side==='b'?'back':'front'}-58x90mm.png`);}
-    else if(kind==='both'){const f=await shot('f'),b=await shot('b');dl(f,`${n}-front-58x90mm.png`);await sleep(500);dl(b,`${n}-back-58x90mm.png`);}
-    else{const f=await shot('f'),b=await shot('b'),g=Math.round(DPI/25.4*6);const cv=document.createElement('canvas');cv.width=f.width+b.width+g;cv.height=Math.max(f.height,b.height);const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.drawImage(f,0,0);x.drawImage(b,f.width+g,0);dl(cv,`${n}-sheet-${ts}.png`);}
+    const sz=S.exportMode==='print'?'print-58x90mm':'card';
+    if(kind==='cur'){dl(await shot(S.side),`${n}-${S.side==='b'?'back':'front'}-${sz}.png`);}
+    else if(kind==='both'){const f=await shot('f'),b=await shot('b');dl(f,`${n}-front-${sz}.png`);await sleep(500);dl(b,`${n}-back-${sz}.png`);}
+    else{const f=await shot('f'),b=await shot('b'),g=Math.round(DPI/25.4*6);const cv=document.createElement('canvas');cv.width=f.width+b.width+g;cv.height=Math.max(f.height,b.height);const x=cv.getContext('2d');if(S.exportMode==='print'){x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);}x.drawImage(f,0,0);x.drawImage(b,f.width+g,0);dl(cv,`${n}-sheet-${ts}.png`);}
     toast('저장했어요');
   }catch(e){console.error(e);toast('저장에 실패했어요');}
 }
 $('#saveBtn').onclick=e=>{e.stopPropagation();$('#saveMenu').classList.toggle('open');};
-$('#saveMenu').addEventListener('click',e=>{const b=e.target.closest('[data-save]');if(b)doSave(b.dataset.save);});
+$('#saveMenu').addEventListener('click',e=>{const m=e.target.closest('#modeSeg button');if(m){e.stopPropagation();S.exportMode=m.dataset.m;renderMode();persist();return;}const b=e.target.closest('[data-save]');if(b)doSave(b.dataset.save);});
 document.addEventListener('click',e=>{if(!e.target.closest('.menu-wrap'))$('#saveMenu').classList.remove('open');});
+let rT;
+$('#resetBtn').onclick=()=>{const b=$('#resetBtn');
+  if(!b.classList.contains('arm')){b.classList.add('arm');b.querySelector('span').textContent='한 번 더 누르면 초기화';clearTimeout(rT);rT=setTimeout(()=>{b.classList.remove('arm');b.querySelector('span').textContent='초기화';},3000);return;}
+  clearTimeout(rT);b.classList.remove('arm');b.querySelector('span').textContent='초기화';
+  const tpl=S.tpl,tab=S.tab;S={tpl,v:{},style:{},photo:{src:null,ratio:.75,x:0,y:0,z:1},strap:true,side:'f',tab,exportMode:'card'};
+  TPL.forEach(t=>{S.style[t.id]={...t.def};});
+  try{localStorage.removeItem(KEY)}catch(e){}
+  renderList();renderFields();renderPhotoCtl();renderStyle();renderMode();setSide('f');renderCard();toast('전체 초기화했어요');
+};
 let toT;function toast(m,stay){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toT);if(!stay)toT=setTimeout(()=>t.classList.remove('show'),2000);}
 
 /* ───────── init ───────── */
-renderList();renderFields();renderPhotoCtl();renderStyle();setSide(S.side);setTab(S.tab);renderCard();
+renderList();renderFields();renderPhotoCtl();renderStyle();setSide(S.side);setTab(S.tab);renderMode();renderCard();
 if(document.fonts)document.fonts.ready.then(()=>renderCard());
 </script>
 </body>
