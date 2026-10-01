@@ -3,797 +3,827 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ID Card Editor</title>
-  <link rel="icon" type="image/png" href="MOMO.png">
-  <link rel="apple-touch-icon" href="MOMO.png">
+<title>ID Studio</title>
+<link rel="icon" type="image/png" href="MOMO.png">
+<link rel="apple-touch-icon" href="MOMO.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=Outfit:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg:#f4f5f7;--s1:#fff;--b1:rgba(0,0,0,.06);--b2:rgba(0,0,0,.12);--t1:#1a1e2a;--t2:#8890a0;--t3:#bcc2cc;--cw:310px;--ch:480px;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:13px;}
-header{height:48px;background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.03);}
-.logo{font-family:'Outfit';font-size:17px;font-weight:800;letter-spacing:2px;color:var(--t1);}
-.tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--b1);padding:0 28px;overflow-x:auto;}
-.tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--t2);font-family:'Noto Sans KR';font-size:11px;font-weight:600;padding:11px 13px;cursor:pointer;white-space:nowrap;transition:all .15s;margin-bottom:-1px;}
-.tab:hover{color:var(--t1);}
-.tab.active{color:var(--t1);border-bottom-color:var(--t1);}
-.workspace{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 86px);}
-.fp{background:var(--s1);border-right:1px solid var(--b1);padding:0 16px 28px;overflow-y:auto;max-height:calc(100vh - 86px);}
-.sec{font-size:7.5px;font-weight:700;letter-spacing:3px;color:var(--t2);display:block;margin:18px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--b1);}
-.sec:first-child{margin-top:14px;}
-.f{margin-bottom:9px;}
-.f label{display:flex;align-items:center;justify-content:space-between;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t2);margin-bottom:3px;}
-.f input,.f select{width:100%;background:var(--bg);border:1px solid var(--b1);color:var(--t1);font-family:'Noto Sans KR';font-size:12px;padding:6px 9px;outline:none;border-radius:5px;transition:border-color .2s;}
-.f input::placeholder{color:var(--t3);}
-.f input:focus,.f select:focus{border-color:var(--b2);}
-.f select{cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238890a0' stroke-width='1.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
-.f select option{background:#fff;}
-.pz{width:100%;height:90px;border:1.5px dashed var(--b2);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;background:var(--bg);}
-.pz:hover{border-color:var(--t2);}
-.pz img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.pz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;}
-.pz-t{font-size:9px;letter-spacing:2px;color:var(--t2);}
-.pc{display:flex;gap:5px;margin-top:4px;align-items:center;}
-.pc input[type=range]{flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--b1);border-radius:2px;outline:none;}
-.pc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--t1);border-radius:50%;cursor:pointer;}
-.pc span{font-size:7.5px;color:var(--t2);letter-spacing:1px;width:36px;}
-.sw-row{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;}
-.sw{width:18px;height:18px;border-radius:50%;cursor:pointer;outline:2px solid transparent;outline-offset:2px;transition:outline-color .15s;}
-.sw.on{outline-color:var(--t1);}
-.gn{background:none;border:none;font-family:'Noto Sans KR';font-size:7.5px;letter-spacing:1px;color:var(--t2);cursor:pointer;text-decoration:underline;}
-.gn:hover{color:var(--t1);}
-.pp{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 16px;gap:14px;}
-.fl{font-size:8px;letter-spacing:3px;color:var(--t2);}
-.lan{display:flex;flex-direction:column;align-items:center;}
-.lr{width:7px;height:7px;border-radius:50%;border:1.5px solid #aaa;}
-.ls{width:2px;height:32px;transition:background .3s;}
-.lc{width:11px;height:5px;background:#aaa;border-radius:1px;margin-bottom:-1px;}
-.sc{perspective:1400px;}
-.wr{width:var(--cw);height:var(--ch);position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);}
-.wr.fl2{transform:rotateY(180deg);}
-.face{position:absolute;width:100%;height:100%;backface-visibility:hidden;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.1);border-radius:10px;}
-.back{transform:rotateY(180deg);}
-.ct{display:flex;gap:5px;justify-content:center;}
-.cb{background:var(--s1);border:1px solid var(--b1);color:var(--t1);font-family:'Noto Sans KR';font-size:10px;padding:6px 14px;cursor:pointer;transition:all .2s;border-radius:5px;font-weight:500;}
-.cb:hover{border-color:var(--b2);}
-.cb.p{background:var(--t1);color:#fff;border-color:var(--t1);}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--t1);color:#fff;padding:7px 18px;font-size:10px;letter-spacing:1.5px;opacity:0;transition:all .3s;z-index:999;pointer-events:none;border-radius:6px;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.hidden{display:none!important;}
-.np{display:flex;flex-direction:column;align-items:center;gap:2px;}
-.np-h{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.06);}
-.np-b{width:24px;height:8px;border-radius:12px 12px 0 0;border:1px solid rgba(0,0,0,.04);}
-.bcs{display:block;width:100%;}
+*{box-sizing:border-box}
+:root{
+  --bg:#f3f3f1;--pn:#fff;--ln:#ececea;--tx:#1a1a1d;--mu:#76767e;--mu2:#a6a6ad;--fill:#f5f5f4;--fill2:#eeeeec;
+  --sans:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --disp:var(--sans);--serif:var(--sans);--kserif:var(--sans);--tech:var(--sans);--mono:var(--sans);
+  --pr:14px;
+}
+html,body{margin:0;height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--tx);font-size:12.5px;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+input,select{font:inherit;color:inherit}
+[hidden]{display:none!important}
 
-/* CSS RESET & SHARED & TEXT ELLIPSIS */
-.emp, .emp-bk, .sgb, .sgb-bk, .stu, .stu-bk, .uni, .uni-bk, .luv, .luv-bk { height:100%; position:relative; border-radius:10px; overflow:hidden; }
-.elps { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+/* ── top bar ── */
+.top{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--pn);border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;letter-spacing:-.025em}
+.brand-mark{width:24px;height:24px;border-radius:7px;background:var(--tx);display:grid;place-items:center}
+.btn{height:32px;padding:0 13px;border-radius:9px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:background .15s,transform .1s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--tx);color:#fff}
+.btn.primary:hover{background:#000}
+.menu-wrap{position:relative}
+.menu{position:absolute;right:0;top:calc(100% + 8px);width:224px;background:#fff;border:1px solid var(--ln);border-radius:13px;padding:5px;box-shadow:0 16px 40px -12px rgba(0,0,0,.2);opacity:0;transform:translateY(-4px) scale(.98);transform-origin:top right;pointer-events:none;transition:.16s}
+.menu.open{opacity:1;transform:none;pointer-events:auto}
+.menu .mh{padding:8px 10px 6px;font-size:10.5px;color:var(--mu2);font-weight:500}
+.menu button{width:100%;text-align:left;padding:8px 10px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:550}
+.menu button:hover{background:var(--fill)}
+.menu button span{font-size:11px;color:var(--mu2);font-weight:400}
 
-/* ── SHARED PHOTO BOX (3.5 : 4.5 증명사진 비율 통일) ── */
-.id-pbox { width: 98px; height: 126px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; flex-shrink: 0; margin: 0 auto 10px; }
-.id-pbox img { width: 100%; height: 100%; object-fit: cover; }
+/* ── layout ── */
+.app{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 52px)}
+.panel{background:var(--pn);border-right:1px solid var(--ln);display:flex;flex-direction:column;min-height:0}
+.psec{padding:16px 16px 14px}
+.sh{font-size:11px;font-weight:600;color:var(--mu2);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tb{height:36px;border-radius:10px;background:var(--fill);padding:0 11px;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:550;color:#45454c;transition:background .15s,box-shadow .15s;text-align:left}
+.tb:hover{background:var(--fill2);color:var(--tx)}
+.tb i{width:12px;height:12px;border-radius:4px;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.tb.on{background:#fff;color:var(--tx);font-weight:650;box-shadow:0 0 0 1.5px var(--tx),0 2px 6px -2px rgba(0,0,0,.15)}
+.tabs{display:flex;gap:18px;padding:0 16px;border-bottom:1px solid var(--ln)}
+.tabs button{height:38px;font-size:12.5px;font-weight:600;color:var(--mu2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s}
+.tabs button:hover{color:var(--tx)}
+.tabs button.on{color:var(--tx);border-bottom-color:var(--tx)}
+.pbody{flex:1;overflow-y:auto;padding:16px 16px 40px}
+.grp{margin-bottom:22px}
+.link{font-size:11px;font-weight:500;color:var(--mu2);transition:color .15s}
+.link:hover{color:var(--tx)}
 
-/* ── EMPLOYEE ── */
-.emp-dec{position:absolute;pointer-events:none;}
-.emp-corner{position:absolute;width:36px;height:36px;pointer-events:none;}
-.emp-top{padding:38px 30px 6px;position:relative;z-index:1;}
-.emp-corp-row{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
-.emp-logo{width:26px;height:26px;flex-shrink:0;border:1.5px solid;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:11px;font-weight:800;line-height:1;padding-bottom:1.5px;}
-.emp-corp{font-size:10px;font-weight:700;letter-spacing:2px;}
-.emp-fr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid;}
-.emp-fl{font-size:7.5px;letter-spacing:1.5px;font-weight:600;flex-shrink:0;}
-.emp-fv{font-size:9.5px;font-weight:700;flex:1;text-align:right;padding-left:10px;}
-.emp-bot{position:absolute;bottom:36px;left:30px;right:30px;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;}
-.emp-id{font-family:'Space Mono';font-size:7.5px;letter-spacing:1.5px;}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px 8px}
+.fd{display:flex;flex-direction:column;gap:5px;grid-column:span 2;min-width:0}
+.fd.h{grid-column:span 1}
+.fd label{font-size:11px;font-weight:500;color:var(--mu);display:flex;justify-content:space-between;align-items:center}
+.inp{width:100%;height:34px;border:1px solid transparent;border-radius:9px;padding:0 11px;background:var(--fill);font-size:12.5px;outline:none;transition:background .15s,border-color .15s,box-shadow .15s}
+.inp:hover{background:var(--fill2)}
+.inp::placeholder{color:#c2c2c6}
+.inp:focus{background:#fff;border-color:#d4d4d8;box-shadow:0 0 0 3px rgba(26,26,29,.06)}
+.inp.flash{background:#fff;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a6a6ad' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:28px}
+.gen{font-size:10.5px;font-weight:500;color:var(--mu2);display:inline-flex;align-items:center;gap:3px}
+.gen:hover{color:var(--tx)}
+.hint{font-size:11px;color:var(--mu2);margin-top:12px;display:flex;align-items:center;gap:6px}
 
-.emp-bk-inner{padding:40px 30px;}
-.emp-bk-corp{font-size:14px;font-weight:700;letter-spacing:1px;margin-bottom:4px;}
-.emp-bk-sep{width:20px;height:2px;margin:8px 0 12px;}
-.emp-bk-notice{font-size:8px;font-weight:700;letter-spacing:2px;margin-bottom:6px;}
-.emp-bk-rules{font-size:7.5px;line-height:2.2;margin-bottom:14px;padding-left:9px;border-left:2px solid;}
-.emp-bk-bar{margin-bottom:10px;}
-.emp-bk-foot{display:flex;justify-content:space-between;align-items:flex-end;}
-.emp-bk-id{font-family:'Space Mono';font-size:7px;letter-spacing:1px;}
-.emp-bk-qr{width:42px;height:42px;background:#fff;padding:2px;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.drop{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;background:var(--fill);cursor:pointer;transition:background .15s,box-shadow .15s}
+.drop:hover{background:var(--fill2)}
+.drop.over{background:#fff;box-shadow:0 0 0 1.5px var(--tx)}
+.drop-th{width:40px;height:50px;border-radius:8px;background:#fff;overflow:hidden;flex-shrink:0;display:grid;place-items:center;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.drop-th img{width:100%;height:100%;object-fit:cover}
+.drop b{font-size:12.5px;font-weight:600;display:block}
+.drop span{font-size:11px;color:var(--mu)}
+.prow{display:flex;align-items:center;gap:10px;margin-top:12px;padding:0 2px}
+.prow .k{font-size:11px;color:var(--mu);width:26px}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;background:var(--fill2);outline:none;margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 1px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.15);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 1px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.15);cursor:pointer}
+.pacts{display:flex;gap:14px;margin-top:10px;padding:0 2px}
 
-/* ── SGB ── */
-.sgb-glow{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;}
-.sgb-hdr{padding:38px 30px 6px;position:relative;display:flex;justify-content:space-between;align-items:flex-start;}
-.sgb-org{display:flex;align-items:center;gap:7px;flex:1;min-width:0;margin-right:8px;}
-.sgb-seal{width:30px;height:30px;border:1.5px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;}
-.sgb-seal::after{content:'';position:absolute;inset:4px;border:1px solid;border-radius:50%;opacity:.4;}
-.sgb-nm{font-family:'Outfit';font-size:11px;font-weight:800;letter-spacing:4px;}
-.sgb-sub{font-size:6px;letter-spacing:2px;margin-top:1px;}
-.sgb-type{display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:7.5px;font-weight:700;letter-spacing:2px;padding:2px 6px 3.5px;border:1px solid;border-radius:3px;white-space:nowrap;}
-.sgb-class-badge{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;padding-bottom:1.5px;font-family:'Outfit';font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
-.sgb-code{font-family:'Outfit';font-size:20px;font-weight:900;text-align:center;letter-spacing:1px;margin-bottom:2px;}
-.sgb-ability{text-align:center;margin-bottom:8px;}
-.sgb-pill{display:inline-flex;align-items:center;justify-content:center;line-height:1;border:1px solid;padding:1.5px 10px 3px;font-size:7px;letter-spacing:2px;font-weight:700;border-radius:3px;max-width:100%;}
-.sgb-fields{padding:0 30px;}
-.sgb-fr{display:flex;align-items:baseline;gap:7px;padding:2.5px 0;border-bottom:1px solid;}
-.sgb-fl{font-size:7px;letter-spacing:1.5px;font-weight:700;width:72px;flex-shrink:0;}
-.sgb-fv{font-size:10px;font-weight:600;flex:1;}
-.sgb-bot{position:absolute;bottom:36px;left:30px;right:30px;}
-.sgb-idno{font-family:'Space Mono';font-size:7px;letter-spacing:1.5px;margin-bottom:2px;}
-.sgb-res{display:flex;gap:.8px;margin-bottom:2px;}
-.sgb-bar-s{width:1.5px;border-radius:1px;}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.thm{border-radius:12px;padding:8px;background:var(--fill);display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:550;color:#45454c;transition:.15s;text-align:left}
+.thm:hover{background:var(--fill2)}
+.thm .pv{height:46px;border-radius:7px;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.thm .pv::before{content:'';position:absolute;left:9px;top:10px;width:40%;height:5px;border-radius:3px;background:var(--a)}
+.thm .pv::after{content:'';position:absolute;left:9px;top:21px;width:60%;height:4px;border-radius:3px;background:currentColor;opacity:.18;box-shadow:0 9px 0 currentColor}
+.thm.on{background:#fff;color:var(--tx);font-weight:650;box-shadow:0 0 0 1.5px var(--tx)}
+.sws{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.sw{width:100%;aspect-ratio:1;border-radius:50%;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:transform .12s}
+.sw:hover{transform:scale(1.08)}
+.sw.on::after{content:'';position:absolute;inset:-4px;border:1.5px solid var(--tx);border-radius:50%}
+.sw.custom{background:conic-gradient(#f87171,#fbbf24,#34d399,#60a5fa,#a78bfa,#f472b6,#f87171)}
+.sw.custom input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:var(--fill)}
+.srow .k{font-size:12.5px;font-weight:600}
+.srow .d{font-size:11px;color:var(--mu);margin-top:2px}
+.tg{width:34px;height:20px;border-radius:99px;background:#d4d4d8;position:relative;transition:.2s;flex-shrink:0}
+.tg::after{content:'';position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.2s}
+.tg.on{background:var(--tx)}
+.tg.on::after{transform:translateX(14px)}
 
-.sgb-bk-hdr{padding:38px 30px 8px;border-bottom:1px solid;display:flex;flex-direction:column;}
-.sgb-bk-title{font-family:'Outfit';font-size:9px;font-weight:800;letter-spacing:4px;}
-.sgb-bk-sub{font-size:6px;letter-spacing:2px;margin-top:1px;}
-.sgb-bk-body{padding:12px 30px;}
-.sgb-bk-warn{border:1px solid;padding:8px;margin-bottom:10px;border-radius:3px;}
-.sgb-bk-wl{font-size:6.5px;letter-spacing:2px;font-weight:700;margin-bottom:3px;}
-.sgb-bk-wt{font-size:7px;line-height:1.8;}
-.sgb-bk-bar{margin-bottom:8px;}
-.sgb-bk-qr-row{display:flex;gap:8px;align-items:flex-start;}
-.sgb-bk-qr{width:48px;height:48px;background:#fff;padding:2px;flex-shrink:0;border-radius:2px;display:flex;align-items:center;justify-content:center;}
-.sgb-bk-codes{flex:1;min-width:0;}
-.sgb-cr{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid;font-size:6.5px;}
-.sgb-cr span:last-child{font-family:'Space Mono';font-size:6px;flex:1;text-align:right;padding-left:8px;}
-.sgb-bk-ft{position:absolute;bottom:36px;left:0;right:0;text-align:center;font-size:6px;letter-spacing:2px;}
+/* ── stage ── */
+.stage{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 1px 1px,rgba(0,0,0,.07) 1px,transparent 0) 0 0/22px 22px,var(--bg)}
+.rig{display:flex;flex-direction:column;align-items:center;perspective:1800px;transform-origin:center;margin-bottom:36px}
+.strap{position:relative;width:20px;height:96px;background:linear-gradient(90deg,rgba(0,0,0,.2),rgba(0,0,0,0) 22%,rgba(255,255,255,.08) 50%,rgba(0,0,0,0) 78%,rgba(0,0,0,.2)),repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 4px),var(--sc,#333);margin-bottom:14px}
+.strap::before{content:'';position:absolute;left:0;right:0;top:-400px;height:400px;background:inherit}
+.clip{position:absolute;left:50%;bottom:-16px;width:30px;height:24px;margin-left:-15px;border-radius:6px 6px 10px 10px;background:linear-gradient(180deg,#f1f2f4,#b7bbc2);box-shadow:0 2px 4px rgba(0,0,0,.2),inset 0 1px 0 #fff;z-index:3}
+.clip::after{content:'';position:absolute;left:50%;bottom:-9px;width:10px;height:13px;margin-left:-5px;border:2.5px solid #adb1b9;border-top:0;border-radius:0 0 6px 6px}
+.flip{position:relative;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.3,.7,.2,1)}
+.flip.b{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--pr);box-shadow:0 1px 1px rgba(0,0,0,.04),0 3px 8px rgba(0,0,0,.05),0 24px 48px -16px rgba(0,0,0,.28)}
+.face.b{transform:rotateY(180deg)}
+.face>.card{position:absolute;left:-11px;top:-11px}
+#ff [data-ph]{cursor:grab;touch-action:none}
+body.dragging,body.dragging #ff [data-ph]{cursor:grabbing}
+#stage [data-k]{cursor:text;border-radius:3px;outline:1.5px dashed transparent;outline-offset:1px;transition:outline-color .12s,background .12s}
+#stage [data-k]:hover{outline-color:rgba(59,130,246,.7)}
+#stage [data-k].editing{outline:1.5px solid #3b82f6;background:rgba(59,130,246,.1);text-overflow:clip}
+#stage [data-k]:empty::before{content:attr(data-p);opacity:.32}
+#stage [data-k].editing:empty::before{opacity:.22}
+#stage .tog[data-k]{cursor:pointer}
+#xp .emp{display:none!important}
 
-/* ── STUDENT ── */
-.stu-hdr{padding:38px 30px 9px;display:flex;align-items:center;gap:8px;}
-.stu-seal{width:26px;height:26px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.stu-school{font-size:11px;font-weight:700;color:#fff;}
-.stu-type{font-size:6.5px;letter-spacing:2px;margin-top:1px;}
-.stu-deco{position:absolute;border-radius:50%;pointer-events:none;}
-.stu-nm{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;text-align:center;margin-bottom:6px;letter-spacing:2px;position:relative;z-index:1;padding:0 10px;}
-.stu-fields{padding:0 30px;position:relative;z-index:1;}
-.stu-dr{display:flex;justify-content:space-between;align-items:center;font-size:9px;padding:2.5px 0;}
-.stu-dr span:first-child{font-size:7.5px;letter-spacing:1.5px;font-weight:600;flex-shrink:0;}
-.stu-dr span:last-child{flex:1;text-align:right;padding-left:10px;}
-.stu-note{position:absolute;bottom:60px;left:30px;right:30px;font-size:6.5px;text-align:center;z-index:1;}
-.stu-bot{position:absolute;bottom:38px;left:30px;right:30px;z-index:1;}
-.stu-bar-a{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 10px 10px;}
-.stu-bk-title{font-size:16px;font-weight:700;text-align:center;padding:38px 30px 2px;letter-spacing:3px;}
-.stu-bk-sub{font-size:7px;letter-spacing:2px;text-align:center;margin-bottom:12px;padding:0 30px;}
-.stu-bk-body{padding:0 30px;}
-.stu-bk-row{display:flex;gap:8px;font-size:10px;padding:4px 0;border-bottom:1px solid;}
-.stu-bk-rl{font-size:8px;letter-spacing:1.5px;font-weight:700;width:56px;flex-shrink:0;}
-.stu-bk-notice{font-size:7px;font-weight:700;letter-spacing:2px;margin:10px 0 4px;}
-.stu-bk-rules{font-size:7px;line-height:2.2;margin-bottom:10px;padding-left:7px;border-left:2px solid;}
-.stu-bk-bar2{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 10px 10px;}
-.stu-bk-stamp{position:absolute;bottom:40px;right:30px;font-size:8px;font-weight:700;letter-spacing:2px;max-width:140px;}
+.dock{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:3px;background:#fff;border:1px solid var(--ln);border-radius:12px;box-shadow:0 6px 20px -6px rgba(0,0,0,.12)}
+.seg{display:flex;gap:2px;padding:2px;background:var(--fill);border-radius:9px}
+.seg button{height:28px;border-radius:7px;font-size:12px;font-weight:600;color:var(--mu);padding:0 14px;transition:.15s}
+.seg button.on{background:#fff;color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.03)}
+.dock-t{font-size:11px;color:var(--mu2);padding-right:12px;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,12px);background:var(--tx);color:#fff;padding:9px 15px;border-radius:10px;font-size:12px;font-weight:500;opacity:0;transition:.25s;z-index:200;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+#xp{position:absolute;left:0;top:0;z-index:-10;pointer-events:none}
 
-/* ── UNIVERSITY ── */
-.uni-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 80%,var(--acbg),transparent 50%),radial-gradient(ellipse at 80% 20%,var(--acbg),transparent 50%);}
-.uni-top{position:relative;padding:38px 30px 12px;border-bottom:1px solid;display:flex;align-items:center;gap:8px;}
-.uni-seal{width:34px;height:34px;flex-shrink:0;border:1px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.uni-nm{font-family:'Noto Serif KR',serif;font-size:11px;font-weight:700;}
-.uni-en{font-size:6.5px;letter-spacing:2px;margin-top:1px;}
-.uni-badge{display:inline-flex;align-items:center;justify-content:center;line-height:1;margin-left:auto;border:1px solid;font-size:7px;letter-spacing:2px;padding:1.5px 6px 2.5px;flex-shrink:0;}
-.uni-body{position:relative;padding:10px 30px;display:flex;flex-direction:column;align-items:center;}
-.uni-name{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:3px;margin-bottom:2px;max-width:100%;}
-.uni-dept{font-size:10px;letter-spacing:1px;margin-bottom:10px;max-width:100%;}
-.uni-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.uni-cell{text-align:center;padding:4px;border:1px solid;min-width:0;}
-.uni-cl{font-size:6.5px;letter-spacing:1.5px;}
-.uni-cv{font-size:9.5px;font-weight:600;margin-top:1px;}
-.uni-id-row{width:100%;margin-top:7px;padding-top:7px;border-top:1px solid;text-align:center;}
-.uni-idl{font-size:6.5px;letter-spacing:2px;margin-bottom:2px;}
-.uni-id{font-family:'Space Mono';font-size:9.5px;letter-spacing:3px;}
-.uni-gbar{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 10px 10px;}
+@media(max-width:860px){
+  .app{grid-template-columns:1fr;height:auto}
+  .stage{order:-1;min-height:500px}
+  .panel{border-right:0;border-top:1px solid var(--ln)}
+  .pbody{overflow:visible}
+  .dock-t{display:none}
+}
 
-.uni-bk-top{padding:38px 30px 11px;border-bottom:1px solid;}
-.uni-bk-t{font-family:'Noto Serif KR',serif;font-size:10px;font-weight:700;letter-spacing:2px;}
-.uni-bk-body{padding:12px 30px;}
-.uni-al{font-size:7px;letter-spacing:2px;margin-bottom:5px;}
-.uni-alist{display:flex;flex-direction:column;}
-.uni-arow{display:flex;justify-content:space-between;font-size:9px;padding:4px 0;border-bottom:1px solid;}
-.uni-arow span:first-child{flex-shrink:0;}
-.uni-arow span:last-child{flex:1;text-align:right;padding-left:10px;}
-.uni-bk-notice{font-size:6.5px;font-weight:700;letter-spacing:2px;margin:8px 0 3px;}
-.uni-bk-rules{font-size:7px;line-height:2;margin-bottom:8px;padding-left:7px;border-left:2px solid;}
-.uni-qr-row{display:flex;gap:7px;align-items:center;}
-.uni-qr{width:48px;height:48px;background:#fff;padding:2px;flex-shrink:0;border-radius:2px;display:flex;align-items:center;justify-content:center;}
-.uni-bc{flex:1;background:#fff;padding:3px 3px 1px;border-radius:2px;min-width:0;}
-.uni-bk-ft{position:absolute;bottom:36px;left:0;right:0;text-align:center;font-size:6.5px;letter-spacing:1.5px;}
-
-/* ── LOVERS CARD ── */
-.luv-border{position:absolute;inset:26px;border:5px solid;border-radius:8px;pointer-events:none;z-index:3;}
-.luv-border-inner{position:absolute;inset:33px;border:1.5px dashed;border-radius:5px;pointer-events:none;z-index:3;}
-.luv-bg-deco{position:absolute;pointer-events:none;opacity:.1;border-radius:50%;}
-.luv-dots{position:absolute;inset:8px;background-image:radial-gradient(circle,var(--lc) .8px,transparent .8px);background-size:10px 10px;opacity:.08;pointer-events:none;}
-.luv-inner{height:100%;padding:46px 38px 16px;position:relative;z-index:1;}
-.luv-top{text-align:center;margin-bottom:6px;padding:0 10px;}
-.luv-club{font-family:'Outfit';font-size:14px;font-weight:800;letter-spacing:2px;}
-.luv-label{font-size:7px;letter-spacing:3px;margin-top:1px;}
-.luv-heart-top{text-align:center;margin-bottom:2px;}
-.luv-pw{ width: 98px; height: 126px; margin: 4px auto 10px; position: relative; flex-shrink: 0; }
-.luv-photo{width:100%;height:100%;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid;}
-.luv-photo img{width:100%;height:100%;object-fit:cover;}
-.luv-lvl{display:inline-flex;align-items:center;justify-content:center;line-height:1;position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);padding:2px 14px 3.5px;border-radius:10px;font-family:'Outfit';font-size:8px;font-weight:700;letter-spacing:2px;color:#fff;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.12);}
-.luv-nm{font-family:'Outfit';font-size:17px;font-weight:800;text-align:center;letter-spacing:1px;margin-top:4px;margin-bottom:1px;padding:0 10px;}
-.luv-nick{text-align:center;font-size:8.5px;letter-spacing:2px;margin-bottom:8px;padding:0 10px;}
-.luv-info{display:flex;flex-direction:column;gap:0;}
-.luv-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;padding:4px 0;border-bottom:1px solid;}
-.luv-rl{font-size:7.5px;letter-spacing:1.5px;font-weight:600;flex-shrink:0;}
-.luv-rv{font-weight:700;flex:1;text-align:right;padding-left:10px;}
-.luv-motto{margin-top:7px;text-align:center;font-size:8.5px;font-style:italic;opacity:.3;letter-spacing:1px;}
-.luv-bid{position:absolute;bottom:54px;left:0;right:0;text-align:center;font-family:'Space Mono';font-size:7px;letter-spacing:2px;z-index:4;}
-.luv-hearts-row{position:absolute;bottom:38px;left:0;right:0;text-align:center;z-index:4;}
-.luv-hs{display:inline-block;margin:0 2px;}
-
-.luv-bk-border{position:absolute;inset:26px;border:5px solid;border-radius:8px;pointer-events:none;z-index:3;}
-.luv-bk-inner{height:100%;padding:48px 40px 48px;position:relative;z-index:1;}
-.luv-bk-title{font-family:'Outfit';font-size:12px;font-weight:800;text-align:center;letter-spacing:2px;margin-bottom:4px;padding:0 10px;}
-.luv-bk-sub{text-align:center;font-size:7px;letter-spacing:2px;margin-bottom:12px;padding:0 10px;}
-.luv-bk-notice{font-size:7px;font-weight:700;letter-spacing:2px;margin-bottom:4px;}
-.luv-bk-rules{font-size:7.5px;line-height:2.2;margin-bottom:12px;padding-left:8px;border-left:2px solid;}
-.luv-bk-qr{width:52px;height:52px;background:#fff;padding:2px;margin:0 auto 8px;border-radius:4px;display:flex;align-items:center;justify-content:center;}
-.luv-bk-bar{background:#fff;padding:3px 3px 1px;border-radius:3px;}
-.luv-bk-hearts{position:absolute;bottom:38px;left:0;right:0;text-align:center;z-index:4;}
-
-@media(max-width:760px){.workspace{grid-template-columns:1fr;}.fp{max-height:none;border-right:none;border-bottom:1px solid var(--b1);}}
+/* ── card base: 58×90mm work size (5.5px = 1mm) ── */
+.card{position:relative;overflow:hidden;font-family:var(--sans);line-height:1.35;text-rendering:geometricPrecision;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;text-align:left}
+.card *{box-sizing:border-box;margin:0}
+.card.P{width:319px;height:495px}
+.card.Ls{width:495px;height:319px}
+.card .abs{position:absolute}
+.card .deco{pointer-events:none}
+.card .el{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.card .D{font-family:var(--disp);letter-spacing:0}
+.card .Sf{font-family:var(--serif)}
+.card .scr{font-family:'Yellowtail',cursive;font-weight:400;letter-spacing:0;white-space:nowrap}
+.card .Ks{font-family:var(--kserif)}
+.card .Tc{font-family:var(--tech);letter-spacing:0}
+.card .mn{font-family:var(--mono);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.card .lb{font-family:var(--disp);font-size:6px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.card .mk{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;font-size:12px;flex-shrink:0}
+.card .ph{position:relative;overflow:hidden;flex-shrink:0}
+.card .ph img{position:absolute;max-width:none;user-select:none;-webkit-user-drag:none;transform-origin:center}
+.card svg{display:block;overflow:visible}
 </style>
 </head>
 <body>
-<header><span class="logo">ID Card Editor</span></header>
-<div class="tabs">
-<button class="tab active" data-type="company">EMPLOYEE ID</button>
-<button class="tab" data-type="sentinel">SENTINEL / GUIDE</button>
-<button class="tab" data-type="student">STUDENT ID</button>
-<button class="tab" data-type="university">UNIVERSITY ID</button>
-<button class="tab" data-type="lovers">LOVERS CARD</button>
-</div>
-<div class="workspace">
-<div class="fp">
 
-<div id="f-company">
-  <span class="sec">PHOTO</span><div class="pz" id="pz-co"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-co" accept="image/*"></div><div class="pc hidden" id="pc-co"><span>ZOOM</span><input type="range" id="zm-co" min="1" max="3" step=".05" value="1"></div>
-  <span class="sec">COMPANY</span><div class="f"><label>NAME</label><input id="c-corp" placeholder="Company"></div>
-  <span class="sec">EMPLOYEE</span>
-  <div class="f"><label>NAME</label><input id="c-name" placeholder="Name"></div><div class="f"><label>ENGLISH</label><input id="c-en" placeholder="English Name"></div><div class="f"><label>DEPT</label><input id="c-dept" placeholder="Department"></div><div class="f"><label>POSITION</label><input id="c-pos" placeholder="Position"></div><div class="f"><label>NO. <button class="gn" onclick="gid('c-id','EMP')">GEN</button></label><input id="c-id" placeholder="Employee ID"></div><div class="f"><label>JOINED</label><input id="c-join" placeholder="2024.03.01"></div><div class="f"><label>VALID UNTIL</label><input id="c-valid" placeholder="2026.03.01"></div><div class="f"><label>ACCESS LEVEL</label><select id="c-access"><option value="">Select</option><option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4 (Restricted)</option></select></div>
-  <span class="sec">COLOR (DARK THEME)</span>
-  <div class="sw-row"><div class="sw" style="background:#404048" data-c="#404048" data-tm="dark" data-t="company"></div><div class="sw on" style="background:#2050a0" data-c="#2050a0" data-tm="dark" data-t="company"></div><div class="sw" style="background:#8a2020" data-c="#8a2020" data-tm="dark" data-t="company"></div><div class="sw" style="background:#1a6040" data-c="#1a6040" data-tm="dark" data-t="company"></div><div class="sw" style="background:#5a30a0" data-c="#5a30a0" data-tm="dark" data-t="company"></div><div class="sw" style="background:#a05020" data-c="#a05020" data-tm="dark" data-t="company"></div></div>
-  <span class="sec">COLOR (LIGHT THEME)</span>
-  <div class="sw-row"><div class="sw" style="background:#fff;border:2.5px solid #404048" data-c="#404048" data-tm="light" data-t="company"></div><div class="sw" style="background:#fff;border:2.5px solid #2050a0" data-c="#2050a0" data-tm="light" data-t="company"></div><div class="sw" style="background:#fff;border:2.5px solid #8a2020" data-c="#8a2020" data-tm="light" data-t="company"></div><div class="sw" style="background:#fff;border:2.5px solid #1a6040" data-c="#1a6040" data-tm="light" data-t="company"></div><div class="sw" style="background:#fff;border:2.5px solid #5a30a0" data-c="#5a30a0" data-tm="light" data-t="company"></div><div class="sw" style="background:#fff;border:2.5px solid #a05020" data-c="#a05020" data-tm="light" data-t="company"></div></div>
-</div>
+<header class="top">
+  <div class="brand">
+    <div class="brand-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="3"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16.5h7"/></svg></div>
+    ID Studio
+  </div>
+  <div class="menu-wrap">
+    <button class="btn primary" id="saveBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M5 19h14"/></svg>저장</button>
+    <div class="menu" id="saveMenu">
+      <div class="mh">인쇄용 PNG · 58×90mm · 600dpi</div>
+      <button data-save="cur">지금 보이는 면<span>1장</span></button>
+      <button data-save="both">앞면 · 뒷면<span>2장</span></button>
+      <button data-save="sheet">앞뒤 한 장으로<span>1장</span></button>
+    </div>
+  </div>
+</header>
 
-<div id="f-sentinel" class="hidden">
-  <span class="sec">PHOTO</span><div class="pz" id="pz-se"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-se" accept="image/*"></div><div class="pc hidden" id="pc-se"><span>ZOOM</span><input type="range" id="zm-se" min="1" max="3" step=".05" value="1"></div>
-  <span class="sec">IDENTITY</span><div class="f"><label>CODENAME</label><input id="s-code" placeholder="Codename"></div><div class="f"><label>ABILITY</label><input id="s-ability" placeholder="Ability"></div><div class="f"><label>TYPE</label><select id="s-type"><option value="">Select</option><option>Sentinel</option><option>Guide</option></select></div><div class="f"><label>CLASS</label><select id="s-class"><option value="">Select</option><option>SS-Class</option><option>S-Class</option><option>A-Class</option><option>B-Class</option><option>C-Class</option></select></div><div class="f"><label>AFFILIATION</label><input id="s-aff" placeholder="Division"></div><div class="f"><label>NO. <button class="gn" onclick="gid('s-id','SGB')">GEN</button></label><input id="s-id" placeholder="SGB-0000"></div>
-  <span class="sec">COLOR (DARK THEME)</span>
-  <div class="sw-row"><div class="sw on" style="background:#1a8888" data-c="#1a8888" data-tm="dark" data-t="sentinel"></div><div class="sw" style="background:#c8a020" data-c="#c8a020" data-tm="dark" data-t="sentinel"></div><div class="sw" style="background:#30a858" data-c="#30a858" data-tm="dark" data-t="sentinel"></div><div class="sw" style="background:#c83838" data-c="#c83838" data-tm="dark" data-t="sentinel"></div><div class="sw" style="background:#6840b8" data-c="#6840b8" data-tm="dark" data-t="sentinel"></div><div class="sw" style="background:#3878c8" data-c="#3878c8" data-tm="dark" data-t="sentinel"></div></div>
-  <span class="sec">COLOR (LIGHT THEME)</span>
-  <div class="sw-row"><div class="sw" style="background:#fff;border:2.5px solid #1a8888" data-c="#1a8888" data-tm="light" data-t="sentinel"></div><div class="sw" style="background:#fff;border:2.5px solid #c8a020" data-c="#c8a020" data-tm="light" data-t="sentinel"></div><div class="sw" style="background:#fff;border:2.5px solid #30a858" data-c="#30a858" data-tm="light" data-t="sentinel"></div><div class="sw" style="background:#fff;border:2.5px solid #c83838" data-c="#c83838" data-tm="light" data-t="sentinel"></div><div class="sw" style="background:#fff;border:2.5px solid #6840b8" data-c="#6840b8" data-tm="light" data-t="sentinel"></div><div class="sw" style="background:#fff;border:2.5px solid #3878c8" data-c="#3878c8" data-tm="light" data-t="sentinel"></div></div>
-</div>
+<main class="app">
+  <aside class="panel">
+    <div class="psec">
+      <div class="sh">템플릿</div>
+      <div class="tgrid" id="tlist"></div>
+    </div>
+    <div class="tabs" id="ptabs">
+      <button class="on" data-tab="info">내용</button>
+      <button data-tab="style">스타일</button>
+    </div>
+    <div class="pbody">
+      <section data-pane="info">
+        <div class="grp">
+          <div class="sh">사진</div>
+          <label class="drop" id="drop">
+            <div class="drop-th" id="dropTh"></div>
+            <div><b id="dropT">사진 올리기</b><span>클릭하거나 끌어다 놓기</span></div>
+            <input type="file" id="file" accept="image/*" hidden>
+          </label>
+          <div id="pctl" hidden>
+            <div class="prow"><span class="k">확대</span><input type="range" id="zoom" min="1" max="4" step=".01" value="1"></div>
+            <div class="pacts"><button class="link" id="pReset">위치 초기화</button><button class="link" id="pDel">삭제</button></div>
+          </div>
+        </div>
+        <div class="grp">
+          <div class="sh">정보<button class="link" id="clearF">모두 비우기</button></div>
+          <div class="fields" id="fields"></div>
+          <div class="hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>카드 위 글씨를 눌러도 바로 수정돼요</div>
+        </div>
+      </section>
+      <section data-pane="style" hidden>
+        <div class="grp">
+          <div class="sh">테마</div>
+          <div class="themes" id="themeSeg">
+            <button class="thm" data-th="0"><div class="pv" style="background:#fff;color:#000"></div>라이트</button>
+            <button class="thm" data-th="1"><div class="pv" style="background:#17181c;color:#fff"></div>다크</button>
+          </div>
+        </div>
+        <div class="grp">
+          <div class="sh">포인트 컬러</div>
+          <div class="sws" id="sws"></div>
+        </div>
+        <div class="grp">
+          <div class="srow"><div><div class="k">목걸이 스트랩</div><div class="d">미리보기에만 보여요</div></div><button class="tg" id="strapTg" aria-label="스트랩 표시"></button></div>
+        </div>
+      </section>
+    </div>
+  </aside>
 
-<div id="f-student" class="hidden">
-  <span class="sec">PHOTO</span><div class="pz" id="pz-st"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-st" accept="image/*"></div><div class="pc hidden" id="pc-st"><span>ZOOM</span><input type="range" id="zm-st" min="1" max="3" step=".05" value="1"></div>
-  <span class="sec">SCHOOL</span><div class="f"><label>SCHOOL</label><input id="st-school" placeholder="School"></div><div class="f"><label>TYPE</label><select id="st-level"><option value="">Select</option><option>Elementary</option><option>Middle School</option><option>High School</option></select></div>
-  <span class="sec">STUDENT</span><div class="f"><label>NAME</label><input id="st-name" placeholder="Name"></div><div class="f"><label>GRADE</label><input id="st-grade" placeholder="Grade / Class"></div><div class="f"><label>ENROLLMENT</label><input id="st-enroll" placeholder="2024.03.02"></div><div class="f"><label>GRADUATION</label><input id="st-grad" placeholder="2027.02.28"></div><div class="f"><label>NO. <button class="gn" onclick="gid('st-id','STU')">GEN</button></label><input id="st-id" placeholder="Student ID"></div>
-  <span class="sec">COLOR (DARK THEME)</span>
-  <div class="sw-row"><div class="sw" style="background:#5090c0" data-c="#5090c0" data-tm="dark" data-t="student"></div><div class="sw" style="background:#e08090" data-c="#e08090" data-tm="dark" data-t="student"></div><div class="sw" style="background:#50a070" data-c="#50a070" data-tm="dark" data-t="student"></div><div class="sw" style="background:#c0a050" data-c="#c0a050" data-tm="dark" data-t="student"></div><div class="sw" style="background:#8060c0" data-c="#8060c0" data-tm="dark" data-t="student"></div><div class="sw" style="background:#505050" data-c="#505050" data-tm="dark" data-t="student"></div></div>
-  <span class="sec">COLOR (LIGHT THEME)</span>
-  <div class="sw-row"><div class="sw on" style="background:#fff;border:2.5px solid #5090c0" data-c="#5090c0" data-tm="light" data-t="student"></div><div class="sw" style="background:#fff;border:2.5px solid #e08090" data-c="#e08090" data-tm="light" data-t="student"></div><div class="sw" style="background:#fff;border:2.5px solid #50a070" data-c="#50a070" data-tm="light" data-t="student"></div><div class="sw" style="background:#fff;border:2.5px solid #c0a050" data-c="#c0a050" data-tm="light" data-t="student"></div><div class="sw" style="background:#fff;border:2.5px solid #8060c0" data-c="#8060c0" data-tm="light" data-t="student"></div><div class="sw" style="background:#fff;border:2.5px solid #505050" data-c="#505050" data-tm="light" data-t="student"></div></div>
-</div>
+  <section class="stage" id="stage">
+    <div class="rig" id="rig">
+      <div class="strap" id="strap"><i class="clip"></i></div>
+      <div class="flip" id="flip"><div class="face f" id="ff"></div><div class="face b" id="fb"></div></div>
+    </div>
+    <div class="dock">
+      <div class="seg" id="sideSeg"><button class="on" data-side="f">앞면</button><button data-side="b">뒷면</button></div>
+      <span class="dock-t">글씨를 눌러 수정 · 사진은 드래그</span>
+    </div>
+  </section>
+</main>
 
-<div id="f-university" class="hidden">
-  <span class="sec">PHOTO</span><div class="pz" id="pz-un"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-un" accept="image/*"></div><div class="pc hidden" id="pc-un"><span>ZOOM</span><input type="range" id="zm-un" min="1" max="3" step=".05" value="1"></div>
-  <span class="sec">UNIVERSITY</span><div class="f"><label>UNIVERSITY</label><input id="u-univ" placeholder="University"></div><div class="f"><label>MAJOR</label><input id="u-dept" placeholder="Major"></div>
-  <span class="sec">STUDENT</span><div class="f"><label>NAME</label><input id="u-name" placeholder="Name"></div><div class="f"><label>YEAR</label><select id="u-year"><option value="">Select</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div><div class="f"><label>NO. <button class="gn" onclick="gid('u-id','U')">GEN</button></label><input id="u-id" placeholder="ID"></div><div class="f"><label>ADMISSION</label><input id="u-admit" placeholder="Year"></div>
-  <span class="sec">ACCESS</span><div class="f"><label>LIBRARY</label><select id="u-lib"><option value="">Select</option><option>Allowed</option><option>Restricted</option></select></div><div class="f"><label>DORMITORY</label><select id="u-dorm"><option value="">Select</option><option>Allowed</option><option>N/A</option></select></div>
-  <span class="sec">COLOR (DARK THEME)</span>
-  <div class="sw-row"><div class="sw on" style="background:#c8a84b" data-c="#c8a84b" data-tm="dark" data-t="university"></div><div class="sw" style="background:#8c9aab" data-c="#8c9aab" data-tm="dark" data-t="university"></div><div class="sw" style="background:#a84b4b" data-c="#a84b4b" data-tm="dark" data-t="university"></div><div class="sw" style="background:#4b6ca8" data-c="#4b6ca8" data-tm="dark" data-t="university"></div><div class="sw" style="background:#4ba875" data-c="#4ba875" data-tm="dark" data-t="university"></div><div class="sw" style="background:#444455" data-c="#444455" data-tm="dark" data-t="university"></div></div>
-  <span class="sec">COLOR (LIGHT THEME)</span>
-  <div class="sw-row"><div class="sw" style="background:#fff;border:2.5px solid #c8a84b" data-c="#c8a84b" data-tm="light" data-t="university"></div><div class="sw" style="background:#fff;border:2.5px solid #8c9aab" data-c="#8c9aab" data-tm="light" data-t="university"></div><div class="sw" style="background:#fff;border:2.5px solid #a84b4b" data-c="#a84b4b" data-tm="light" data-t="university"></div><div class="sw" style="background:#fff;border:2.5px solid #4b6ca8" data-c="#4b6ca8" data-tm="light" data-t="university"></div><div class="sw" style="background:#fff;border:2.5px solid #4ba875" data-c="#4ba875" data-tm="light" data-t="university"></div><div class="sw" style="background:#fff;border:2.5px solid #444455" data-c="#444455" data-tm="light" data-t="university"></div></div>
-</div>
-
-<div id="f-lovers" class="hidden">
-  <span class="sec">PHOTO</span><div class="pz" id="pz-lv"><span class="pz-t">UPLOAD PHOTO</span><input type="file" id="pi-lv" accept="image/*"></div><div class="pc hidden" id="pc-lv"><span>ZOOM</span><input type="range" id="zm-lv" min="1" max="3" step=".05" value="1"></div>
-  <span class="sec">CLUB</span><div class="f"><label>CLUB NAME</label><input id="lv-club" placeholder="Club Name"></div><div class="f"><label>NAME</label><input id="lv-name" placeholder="Name"></div><div class="f"><label>NICKNAME</label><input id="lv-nick" placeholder="Nickname"></div><div class="f"><label>BIAS</label><input id="lv-bias" placeholder="Favorite"></div><div class="f"><label>BIRTH</label><input id="lv-birth" placeholder="0000.00.00"></div><div class="f"><label>CLASS</label><input id="lv-class" placeholder="Class"></div><div class="f"><label>NUMBER</label><input id="lv-number" placeholder="Number"></div><div class="f"><label>POSITION</label><input id="lv-pos" placeholder="Position"></div><div class="f"><label>MEMBERSHIP</label><input id="lv-mem" placeholder="School / Group"></div><div class="f"><label>NO. <button class="gn" onclick="gid('lv-id','FC')">GEN</button></label><input id="lv-id" placeholder="Member ID"></div>
-  <span class="sec">COLOR (DARK THEME)</span>
-  <div class="sw-row"><div class="sw" style="background:#e88aaa" data-c="#e88aaa" data-tm="dark" data-t="lovers"></div><div class="sw" style="background:#a090d8" data-c="#a090d8" data-tm="dark" data-t="lovers"></div><div class="sw" style="background:#70c8a0" data-c="#70c8a0" data-tm="dark" data-t="lovers"></div><div class="sw" style="background:#e8a870" data-c="#e8a870" data-tm="dark" data-t="lovers"></div><div class="sw" style="background:#70a8e0" data-c="#70a8e0" data-tm="dark" data-t="lovers"></div><div class="sw" style="background:#e85050" data-c="#e85050" data-tm="dark" data-t="lovers"></div></div>
-  <span class="sec">COLOR (LIGHT THEME)</span>
-  <div class="sw-row"><div class="sw on" style="background:#fff;border:2.5px solid #e88aaa" data-c="#e88aaa" data-tm="light" data-t="lovers"></div><div class="sw" style="background:#fff;border:2.5px solid #a090d8" data-c="#a090d8" data-tm="light" data-t="lovers"></div><div class="sw" style="background:#fff;border:2.5px solid #70c8a0" data-c="#70c8a0" data-tm="light" data-t="lovers"></div><div class="sw" style="background:#fff;border:2.5px solid #e8a870" data-c="#e8a870" data-tm="light" data-t="lovers"></div><div class="sw" style="background:#fff;border:2.5px solid #70a8e0" data-c="#70a8e0" data-tm="light" data-t="lovers"></div><div class="sw" style="background:#fff;border:2.5px solid #e85050" data-c="#e85050" data-tm="light" data-t="lovers"></div></div>
-</div>
-
-</div>
-<div class="pp">
-<div class="fl" id="flab">FRONT</div>
-<div class="lan"><div class="lr"></div><div class="ls" id="ls" style="background:#2050a0;"></div><div class="lc"></div>
-<div class="sc"><div class="wr" id="wr"><div class="face" id="cf"></div><div class="face back" id="cb"></div></div></div>
-</div>
-<div class="ct"><button class="cb" onclick="flipCard()">FLIP</button><button class="cb p" onclick="saveFace()">SAVE</button><button class="cb" onclick="saveBoth()">SAVE BOTH</button></div>
-</div>
-</div>
+<div id="xp" aria-hidden="true"></div>
 <div class="toast" id="toast"></div>
 
 <script>
-let cur='company', flipped=false;
-let th={company:'dark', sentinel:'dark', student:'light', university:'dark', lovers:'light'};
-let ac={company:'#2050a0', sentinel:'#1a8888', student:'#5090c0', university:'#c8a84b', lovers:'#e88aaa'};
+/* ───────── print geometry ─────────
+   1mm = 5.5px · work 58×90mm (319×495) · trim 54×86mm (2mm bleed = 11px)
+   safe area: 3mm inside trim → 28px from the work edge */
+const PX=5.5, BLEED=11, SAFE='left:28px;right:28px;top:28px;bottom:28px', DPI=600;
+const YEAR=new Date().getFullYear();
 
-const ph={company:null,sentinel:null,student:null,university:null,lovers:null};
-const pC={company:{z:1,x:0,y:0},sentinel:{z:1,x:0,y:0},student:{z:1,x:0,y:0},university:{z:1,x:0,y:0},lovers:{z:1,x:0,y:0}};
+/* ───────── utils ───────── */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function rgb(h){h=String(h).replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');const n=parseInt(h,16)||0;return[n>>16&255,n>>8&255,n&255];}
+function hex(r,g,b){return'#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('');}
+function mix(a,b,t){const A=rgb(a),B=rgb(b);return hex(A[0]+(B[0]-A[0])*t,A[1]+(B[1]-A[1])*t,A[2]+(B[2]-A[2])*t);}
+function al(h,a){const[r,g,b]=rgb(h);return`rgba(${r},${g},${b},${a})`;}
+const tint=(h,t)=>mix(h,'#ffffff',t), shade=(h,t)=>mix(h,'#000000',t);
+function lum(h){const[r,g,b]=rgb(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*r+.7152*g+.0722*b;}
+const onC=h=>lum(h)>.42?'#16171b':'#ffffff';
+function rng(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return(h>>>0)/4294967296;};}
+const today=()=>{const d=new Date();return`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;};
+const fz=(t,base,cap)=>{const n=String(t||'').length;return n<=cap?base:Math.max(base*.62,Math.round(base*cap/n*10)/10);};
+const mono=s=>esc((String(s||'').trim().charAt(0)||'•').toUpperCase());
 
-function V(id){const e=document.getElementById(id);return e?e.value:'';}
-function D(h,f){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}
-function L(h,f){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return `rgb(${Math.min(255,Math.round(r+(255-r)*f))},${Math.min(255,Math.round(g+(255-g)*f))},${Math.min(255,Math.round(b+(255-b)*f))})`;}
-function A(h,a){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
-function O(v,fb){return v||fb||'';}
-
-function barcode(val, c="#000", tc="#888"){
-  const seed=[...val].reduce((a,char)=>a+char.charCodeAt(0),0);
-  let s='',x=0;
-  for(let i=0;i<60;i++){
-    const w=((seed*(i+1)*7)%3)+1;
-    if(i%2===0)s+=`<rect x="${x}" y="0" width="${w*.55}" height="14" fill="${c}"/>`;
-    x+=w*.55+.35;
-  }
-  return `<svg class="bcs" viewBox="0 0 ${x} 20" height="18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${s}<text x="${x/2}" y="19" text-anchor="middle" font-family="Space Mono,monospace" font-size="2.8" fill="${tc}">${val}</text></svg>`;
+/* ───────── card parts ───────── */
+function bars(val,color,h=24){
+  const r=rng(String(val||'0000'));let x=0,s='';
+  const add=(w,f)=>{if(f)s+=`<rect x="${x}" y="0" width="${w}" height="${h}" fill="${color}"/>`;x+=w;};
+  [1,1,1,1].forEach((w,i)=>add(w,i%2===0));
+  for(let i=0;i<46;i++)add(1+Math.floor(r()*3),i%2===0);
+  [1,1,1,1].forEach((w,i)=>add(w,i%2===1));
+  return`<svg viewBox="0 0 ${x} ${h}" preserveAspectRatio="none" shape-rendering="crispEdges" style="width:100%;height:${h}px;overflow:hidden">${s}</svg>`;
+}
+const qr=(t,s)=>`<div data-qr="${esc(t||'ID')}" data-s="${s}" style="width:${s}px;height:${s}px;overflow:hidden"></div>`;
+function fillQR(root){
+  if(typeof QRCode==='undefined')return;
+  root.querySelectorAll('[data-qr]').forEach(el=>{
+    el.innerHTML='';const s=+el.dataset.s;
+    try{new QRCode(el,{text:el.dataset.qr||'ID',width:s,height:s,colorDark:'#111111',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+      el.querySelectorAll('img,canvas').forEach(n=>{n.style.width=s+'px';n.style.height=s+'px';});}catch(e){}
+  });
+}
+const lb=(t,c,st='')=>`<div class="lb" style="color:${c};${st}">${t}</div>`;
+const rows=(arr,mu,ln,fs=9.5)=>arr.map(([l,v],i)=>`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:${fs<9.5?5:6}px 0;${i<arr.length-1?`border-bottom:1px solid ${ln};`:''}font-size:${fs}px"><span style="color:${mu};flex-shrink:0">${l}</span><span class="el" style="font-weight:600;text-align:right">${v}</span></div>`).join('');
+const seal=(c,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18.5" stroke="${c}" stroke-width="1"/><circle cx="20" cy="20" r="14.5" stroke="${c}" stroke-width=".7" stroke-dasharray="1.2 1.6"/><path d="M20 11.5l2.5 5.3 5.8.7-4.3 4 1.1 5.7-5.1-2.8-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z" fill="${c}"/></svg>`;
+const HP='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+const heart=(c,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}"><path d="${HP}"/></svg>`;
+const SPK='M12 0C12.8 7 17 11.2 24 12 17 12.8 12.8 17 12 24 11.2 17 7 12.8 0 12 7 11.2 11.2 7 12 0z';
+const spkP=(c,s)=>`<g transform="translate(${-s/2} ${-s/2}) scale(${s/24})"><path d="${SPK}" fill="${c}"/></g>`;
+const STP='M12 2.5l2.8 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.4l-6 3.5 1.5-6.8L2.3 9.5l6.9-.7z';
+const hp=(x,y,s,a)=>`<g transform="translate(${x} ${y}) scale(${s/24})"><path d="${HP}" ${a}/></g>`;
+const hd=(x,y,s,col,gap=4.4,w=1.7)=>`<g transform="translate(${x} ${y}) scale(${s/24})"><path d="${HP}" fill="none" stroke="${col}" stroke-width="${w*24/s}" stroke-dasharray="0 ${gap*24/s}" stroke-linecap="round"/></g>`;
+const sd=(x,y,s,col,gap=4.2,w=1.6)=>`<g transform="translate(${x} ${y}) scale(${s/24})"><path d="${STP}" fill="none" stroke="${col}" stroke-width="${w*24/s}" stroke-dasharray="0 ${gap*24/s}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+const ico=(c)=>{const st=`<svg width="7" height="7" viewBox="0 0 24 24"><path d="${STP}" fill="${c}"/></svg>`,tr=`<svg width="6" height="7" viewBox="0 0 6 7"><path d="M0 0L6 3.5 0 7z" fill="${c}"/></svg>`,ht=heart(c,7);return`<span style="display:inline-flex;align-items:center;gap:2px">${st+st+st}<i style="width:4px"></i>${tr+tr+tr}<i style="width:4px"></i>${ht+ht+ht}</span>`;};
+const outl=(col,w=2)=>[[0,w],[w,0],[-w,0],[0,-w],[w*.72,w*.72],[-w*.72,w*.72],[w*.72,-w*.72],[-w*.72,-w*.72]].map(([x,y])=>`${x}px ${y}px 0 ${col}`).join(',');
+function bgHeart(c,dk){const bg=dk?shade(c,.8):mix(tint(c,.8),'#fff6df',.45),h1=dk?shade(c,.64):'#fff',h2=dk?shade(c,.7):'#fff',dc=dk?tint(c,.2):c;
+  const wt=dk?al('#ffffff',.5):'#fff',sp=(x,y,z,col)=>`<g transform="translate(${x} ${y})">${spkP(col,z)}</g>`;
+  return{css:`radial-gradient(${al('#ffffff',dk?.05:.5)} 1.1px,transparent 1.4px) 0 0/16px 16px,linear-gradient(180deg,${dk?shade(c,.74):tint(c,.62)},${dk?shade(c,.77):tint(c,.76)} 45%,${bg})`,
+  svg:`<svg class="abs deco" style="left:0;top:0" width="319" height="495">${hp(-4,52,196,`fill="${h1}" fill-opacity="${dk?1:.92}"`)}${hp(128,74,196,`fill="${h2}" fill-opacity="${dk?1:.6}"`)}${hd(-4,52,196,al(dc,.5),5,1.6)}
+  ${sd(238,26,48,al(dc,.55),4.6,1.6)}
+  ${sp(280,150,15,wt)}${sp(296,174,8,al(dc,.7))}${sp(22,48,10,al(dc,.6))}${sp(206,30,8,wt)}${sp(270,292,10,wt)}${sp(30,196,9,wt)}</svg>`};}
+function luvBack({c,dk,v,raw},B,title){
+  const pn=dk?shade(c,.86):'#fffafd',ink=dk?'#fff':mix(shade(c,.5),'#7a2a45',.35),mu=dk?tint(c,.4):shade(c,.14),ln=al(c,dk?.3:.18),oc=lum(c)>.6?shade(c,.6):'#fff';
+  const rules=['Cheer loud, cheer proud','Be sweet to every member','Share the good vibes only','This card is just for you'];
+  return`<div class="card P" style="background:${B.css};color:${ink}">${B.svg}
+  <div class="abs" style="left:28px;right:28px;top:${B.ty||34}px;text-align:center">${title}</div>
+  <div class="abs deco" style="left:28px;right:28px;top:${104+(B.dy||0)}px;bottom:${B.bb||28}px;border-radius:18px;background:${pn};box-shadow:0 0 0 1px ${al(c,.25)},0 10px 22px -14px ${al(shade(c,.4),.5)}"></div>
+  <div class="abs" style="left:46px;right:46px;top:${122+(B.dy||0)}px"><div style="font-size:6.5px;font-weight:800;letter-spacing:.22em;color:${dk?tint(c,.3):c}">MEMBER RULES</div>
+    <div style="margin-top:6px">${rules.map((r,i)=>`<div style="display:flex;align-items:center;gap:8px;height:19px;${i<3?`border-bottom:1px solid ${ln};`:''}"><span style="width:13px;height:13px;border-radius:50%;background:${c};color:${oc};display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;flex-shrink:0">${i+1}</span><span style="font-size:8.5px;font-weight:600">${r}</span></div>`).join('')}</div></div>
+  <div class="abs" style="left:117.5px;top:${236+(B.dy||0)}px;padding:6px;background:#fff;border-radius:12px;box-shadow:0 0 0 1.5px ${al(c,.4)}">${qr(raw('lno')||'LOVERS',72)}</div>
+  <div class="abs" style="left:46px;right:46px;top:${328+(B.dy||0)}px;text-align:center;font-size:6.5px;font-weight:800;letter-spacing:.26em;color:${mu}">SCAN ME</div>
+  <div class="abs" style="left:76px;right:76px;top:${348+(B.dy||0)}px;padding:6px 8px 5px;background:#fff;border-radius:8px;box-shadow:0 0 0 1px ${ln}">${bars(raw('lno'),dk?shade(c,.6):shade(c,.45),18)}<div class="el" style="margin-top:4px;text-align:center;font-size:7px;font-weight:700;letter-spacing:.14em;color:${mu};min-height:9px">${v('lno')}</div></div>
+  <div class="abs" style="left:46px;right:46px;top:${B.fy||420}px;display:flex;justify-content:center;align-items:center;gap:6px">${ico(al(c,.7))}</div>
+  </div>`;}
+const hexL=(c,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 32 32" fill="none"><path d="M16 2l12 7v14l-12 7-12-7V9z" stroke="${c}" stroke-width="1.4"/><path d="M16 8.5l6.5 3.75v7.5L16 23.5l-6.5-3.75v-7.5z" fill="${c}" fill-opacity=".22" stroke="${c}" stroke-width="1"/><circle cx="16" cy="16" r="2.3" fill="${c}"/></svg>`;
+const warn=(c,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 17.6v.4" stroke-linecap="round"/></svg>`;
+const stripes=(c,w,h)=>{let s='';for(let x=-h;x<w+h;x+=11)s+=`<path d="M${x} ${h}L${x+h} 0" stroke="${c}" stroke-width="4.5"/>`;return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:hidden">${s}</svg>`;};
+function wave(seed,w,h,c){const r=rng(seed);const ph=r()*6;let d='';const n=72;for(let i=0;i<=n;i++){const x=i/n*w,env=Math.sin(Math.PI*i/n);const y=h/2+Math.sin(i*.52+ph)*h*.34*env*(.65+r()*.35)+Math.sin(i*1.9+ph*2)*h*.07*env;d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><path d="M0 ${h/2}H${w}" stroke="${al(c,.3)}" stroke-dasharray="2 3"/><path d="${d}" fill="none" stroke="${c}" stroke-width="1.4" stroke-linejoin="round"/></svg>`;}
+const sil=c=>`<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMax slice" style="position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden"><circle cx="50" cy="50" r="19" fill="${c}"/><path d="M13 120c0-25 16.5-41 37-41s37 16 37 41z" fill="${c}"/></svg>`;
+function photo(w,h,o={}){
+  const p=S.photo;let inner;
+  if(p.src){const br=w/h;let iw,ih;if(p.ratio>br){ih=h;iw=h*p.ratio}else{iw=w;ih=w/p.ratio}
+    inner=`<img src="${p.src}" alt="" draggable="false" style="left:${(w-iw)/2}px;top:${(h-ih)/2}px;width:${iw}px;height:${ih}px;transform:translate(${p.x}px,${p.y}px) scale(${p.z})">`;}
+  else inner=sil(o.ph||'rgba(0,0,0,.14)');
+  const r=typeof o.r==='string'?o.r:(o.r??8)+'px';
+  return`<div class="ph" data-ph style="width:${w}px;height:${h}px;border-radius:${r};background:${o.bg||'#eceef1'}">${inner}</div>`;
 }
 
-const np=`<div class="np"><div class="np-h"></div><div class="np-b"></div></div>`;
-function sealSVG(c,r){return `<svg xmlns="http://www.w3.org/2000/svg" width="${r}" height="${r}" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="${c}" stroke-width=".7"/><circle cx="12" cy="12" r="6" stroke="${c}" stroke-width=".5"/><circle cx="12" cy="12" r="2" fill="${c}"/></svg>`;}
-function heartSVG(c,s){return `<svg xmlns="http://www.w3.org/2000/svg" class="luv-hs" width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;}
+/* ───────── fields ───────── */
+const F=(k,l,o={})=>({k,l,...o});
+const DT={ph:'YYYY.MM.DD'};
+const EMP=[F('org','회사명'),F('name','이름',{h:1}),F('nameEn','영문 이름',{h:1}),F('dept','부서',{h:1}),F('role','직책',{h:1}),F('no','사원번호',{gen:'EMP'}),F('date1','입사일',{h:1,...DT}),F('date2','유효기간',{h:1,...DT}),F('level','출입 권한',{sel:['Level 1','Level 2','Level 3','Level 4 · Restricted','All Areas']})];
+const SGB=[F('code','코드네임',{h:1}),F('name','본명',{h:1}),F('ability','능력'),F('stype','타입',{h:1,sel:['Sentinel','Guide']}),F('cls','등급',{h:1,sel:['SS-Class','S-Class','A-Class','B-Class','C-Class']}),F('aff','소속'),F('sno','등록번호',{gen:'SGB'})];
+const STU=[F('school','학교명'),F('slevel','구분',{sel:['초등학교','중학교','고등학교']}),F('name','이름',{h:1}),F('grade','학년 / 반',{h:1}),F('enroll','입학일',{h:1,...DT}),F('grad','졸업 예정',{h:1,...DT}),F('stno','학번',{gen:'STU'})];
+const UNI=[F('univ','대학교'),F('univEn','영문 학교명'),F('major','학과'),F('name','이름',{h:1}),F('nameEn','영문 이름',{h:1}),F('year','학년',{h:1,sel:['1st Year','2nd Year','3rd Year','4th Year','Graduate']}),F('admit','입학년도',{h:1}),F('uno','학번',{gen:'Y'}),F('lib','도서관',{h:1,sel:['Allowed','Restricted']}),F('dorm','기숙사',{h:1,sel:['Allowed','N/A']})];
+const LUV=[F('club','클럽 대상',{ph:'예: 하온'}),F('name','이름',{h:1}),F('nick','닉네임',{h:1}),F('birth','생일',{h:1,ph:'MM.DD'}),F('bias','최애',{h:1}),F('since','입덕일',{h:1,...DT}),F('llv','러브 레벨',{h:1,sel:['Lv.1 Crush','Lv.2 Fan','Lv.3 Lover','MAX Love']}),F('mem','멤버십',{h:1}),F('lno','회원번호',{h:1,gen:'LOVE'})];
 
-const phDim={company:1,sentinel:1,student:1,university:1,lovers:1};
-function pI(type,round){
-  const p=ph[type],c=pC[type];if(!p)return np;
-  const r=phDim[type];const css=r>0.77?'height:100%;width:auto;':'width:100%;height:auto;';
-  return `<div style="width:100%;height:100%;overflow:hidden;position:relative;${round?'border-radius:6px;':''}"><img src="${p}" style="position:absolute;${css}top:50%;left:50%;transform:translate(-50%,-50%) scale(${c.z}) translate(${c.x}px,${c.y}px);" draggable="false"></div>`;
-}
-
-/* ── EMPLOYEE ── */
-function empF(){
-  const c = ac.company, isL = th.company === 'light';
-  const bg = isL ? '#fff' : `linear-gradient(160deg,#303340,#3a3d48)`;
-  const tMain = isL ? '#222' : '#fff';
-  const tSub = isL ? '#666' : 'rgba(255,255,255,.7)';
-  const bdr = isL ? A(c,.25) : A(c,.4);
-  const fBg = isL ? A(c,.05) : 'rgba(255,255,255,.05)';
-  const fTxt = isL ? '#444' : '#fff';
-
-  return `<div class="emp" style="background:${bg};">
-  <div class="emp-dec" style="width:160px;height:160px;background:${isL?A(c,.08):A(c,.2)};top:70px;right:-30px;transform:rotate(15deg);border-radius:5px;"></div>
-  <div class="emp-dec" style="width:120px;height:120px;background:${isL?A(c,.05):A(c,.1)};top:100px;right:5px;transform:rotate(35deg);border-radius:5px;"></div>
-  <div class="emp-dec" style="width:50px;height:50px;background:${isL?A(c,.05):A(c,.1)};bottom:70px;left:35px;transform:rotate(-20deg);border-radius:3px;"></div>
-  <div class="emp-corner" style="top:10px;right:10px;border-top:1.5px solid ${isL?A(c,.2):A(c,.25)};border-right:1.5px solid ${isL?A(c,.2):A(c,.25)};"></div>
-  <div class="emp-corner" style="bottom:10px;left:10px;border-bottom:1.5px solid ${isL?A(c,.2):A(c,.25)};border-left:1.5px solid ${isL?A(c,.2):A(c,.25)};"></div>
-  
-  <div class="emp-top">
-    <div class="emp-corp-row" style="margin-bottom:0;"><div class="emp-logo" style="border-color:${isL?c:L(c,.4)};color:${isL?c:'#fff'};">${(V('c-corp')||'C').charAt(0)}</div><div class="emp-corp elps" style="color:${isL?c:'#fff'};">${O(V('c-corp'),'Company')}</div></div>
+/* ───────── templates ───────── */
+const TPL=[
+/* ── Classic ── */
+{id:'corp',name:'Classic',o:'p',def:{c:'#2f5bea',dark:false},fields:EMP,
+front({c,dk,v,raw}){
+  const bg=dk?'#16181d':'#fff',fg=dk?'#f2f3f5':'#17181c',mu=dk?'rgba(255,255,255,.48)':'#8c9099',ln=dk?'rgba(255,255,255,.08)':'rgba(0,0,0,.07)',fr=al(c,dk?.5:.38),band=dk?shade(c,.35):shade(c,.62),hc=dk?tint(c,.4):c,oc=onC(c);
+  const item=(l,k)=>`<div style="padding:6px 0;border-bottom:1px solid ${ln}">${lb(l,hc)}<div class="el" style="font-size:10.5px;font-weight:600;margin-top:3px;min-height:14px">${v(k)}</div></div>`;
+  return`<div class="card P" style="background:${bg};color:${fg}">
+  <svg class="abs deco" style="left:0;top:0" width="319" height="495"><polygon points="0,0 214,0 72,196 0,146" fill="${al(c,dk?.09:.05)}"/><polygon points="0,146 72,196 0,306" fill="${al(c,dk?.05:.03)}"/><polygon points="319,236 319,412 196,412" fill="${al(c,dk?.05:.03)}"/>
+    <path d="M28 66H275L291 82V396H44L28 380Z" fill="none" stroke="${fr}" stroke-width="1"/><path d="M28 66H74" stroke="${c}" stroke-width="3"/><path d="M291 350V396" stroke="${c}" stroke-width="3"/></svg>
+  <div class="abs deco" style="left:0;right:0;top:412px;bottom:0;background:${band}"></div>
+  <div class="abs deco" style="left:0;right:0;top:412px;height:3px;background:${c}"></div>
+  <div class="abs" style="left:28px;right:28px;top:28px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+    <div style="display:flex;align-items:center;gap:9px;min-width:0"><div class="mk" style="background:${c};color:${oc}">${mono(raw('org'))}</div><div style="min-width:0"><div class="el" style="font-size:11.5px;font-weight:700;min-height:15px">${v('org')}</div>${lb('Employee ID Card',mu,'margin-top:2px')}</div></div>
+    <div style="text-align:right;flex-shrink:0;max-width:96px">${lb('No.',mu)}<div class="mn el" style="font-size:8px;font-weight:500;margin-top:2px;min-height:11px">${v('no')}</div></div>
   </div>
-  
-  <div class="id-pbox" style="margin:8px auto 12px;border:1.5px solid ${bdr};border-radius:4px;">${pI('company')}</div>
-  
-  <div style="text-align:center; padding:0 30px; margin-bottom:10px;">
-    <div style="font-size:7px;letter-spacing:2px;color:${isL?c:L(c,.6)};margin-bottom:3px;">EMPLOYEE</div>
-    <div class="emp-nm elps" style="font-size:18px;font-weight:700;color:${tMain};letter-spacing:1px;margin-bottom:1px;">${O(V('c-name'))}</div>
-    <div class="elps" style="font-size:8.5px;color:${tSub};letter-spacing:1px;margin-bottom:6px;">${O(V('c-en'))}</div>
-    ${V('c-access')?`<div class="elps" style="display:inline-flex;align-items:center;justify-content:center;line-height:1;border:1px solid ${bdr};padding:2px 8px 3px;font-size:7px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};border-radius:2px;max-width:100%;">${V('c-access')}</div>`:''}
+  <div class="abs" style="left:42px;top:80px">${photo(114,152,{r:6,bg:dk?'#23262d':'#eef0f3',ph:dk?'#343841':'#d6dae0'})}</div>
+  <div class="abs" style="left:174px;right:42px;top:76px">${item('Department','dept')}${item('Joined','date1')}${item('Valid Thru','date2')}${item('Access','level')}</div>
+  <div class="abs" style="left:42px;right:42px;top:246px">
+    <div class="el" style="font-size:26px;font-weight:800;letter-spacing:-.04em;line-height:1.2;min-height:31px">${v('name')}</div>
+    <div class="el D" style="font-size:7.5px;font-weight:600;letter-spacing:.24em;color:${mu};text-transform:uppercase;margin-top:3px;min-height:10px">${v('nameEn')}</div>
+    <div style="display:flex;align-items:center;gap:7px;margin-top:10px"><i style="display:block;width:14px;height:2px;background:${c};flex-shrink:0"></i><span class="el" style="font-size:11px;font-weight:700;color:${hc};min-height:15px">${v('role')}</span></div>
   </div>
-  
-  <div style="padding:0 30px;">
-    <div class="emp-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="emp-fl" style="color:${isL?c:L(c,.6)};">DEPT</div><div class="emp-fv elps" style="color:${tMain};">${O(V('c-dept'))}</div></div>
-    <div class="emp-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="emp-fl" style="color:${isL?c:L(c,.6)};">POSITION</div><div class="emp-fv elps" style="color:${tMain};">${O(V('c-pos'))}</div></div>
-    
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
-      <div style="background:${fBg};padding:5px 8px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};margin-bottom:1px;">JOINED</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-join'))}</div></div>
-      <div style="background:${fBg};padding:5px 8px;border-radius:3px;min-width:0;"><div style="font-size:6px;letter-spacing:1.5px;color:${isL?c:L(c,.6)};margin-bottom:1px;">VALID</div><div class="elps" style="font-size:9px;color:${fTxt};font-weight:600;">${O(V('c-valid'))}</div></div>
+  <div class="abs" style="left:42px;right:42px;top:342px;display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid ${ln};padding-top:12px">
+    <div style="width:132px">${bars(raw('no'),fg,20)}</div>
+    <div style="display:flex;gap:3px">${[1,.55,.25].map(a=>`<i style="display:block;width:7px;height:7px;background:${al(c,a)}"></i>`).join('')}</div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;top:430px;bottom:28px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff">
+    <div class="el D" style="font-size:9px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;min-height:12px">${v('org')}</div>
+    <div class="D" style="flex-shrink:0;font-size:5.5px;font-weight:600;letter-spacing:.22em;opacity:.6;text-align:right;line-height:1.7">AUTHORIZED<br>PERSONNEL</div>
+  </div></div>`;},
+back({c,dk,v,raw}){
+  const bg=dk?'#16181d':'#fff',fg=dk?'#f2f3f5':'#17181c',mu=dk?'rgba(255,255,255,.5)':'#868b94',ln=dk?'rgba(255,255,255,.08)':'rgba(0,0,0,.07)',fr=al(c,dk?.5:.38),band=dk?shade(c,.35):shade(c,.62),hc=dk?tint(c,.4):c,oc=onC(c);
+  return`<div class="card P" style="background:${bg};color:${fg}">
+  <svg class="abs deco" style="left:0;top:0" width="319" height="495"><polygon points="319,0 105,0 247,196 319,146" fill="${al(c,dk?.09:.05)}"/><polygon points="319,146 247,196 319,306" fill="${al(c,dk?.05:.03)}"/>
+    <path d="M44 66H291V380L275 396H28V82Z" fill="none" stroke="${fr}" stroke-width="1"/><path d="M245 66H291" stroke="${c}" stroke-width="3"/><path d="M28 350V396" stroke="${c}" stroke-width="3"/></svg>
+  <div class="abs deco" style="left:0;right:0;top:412px;bottom:0;background:${band}"></div>
+  <div class="abs deco" style="left:0;right:0;top:412px;height:3px;background:${c}"></div>
+  <div class="abs" style="left:28px;right:28px;top:28px;display:flex;align-items:center;gap:9px"><div class="mk" style="background:${c};color:${oc}">${mono(raw('org'))}</div><div style="min-width:0"><div class="el" style="font-size:11.5px;font-weight:700;min-height:15px">${v('org')}</div>${lb('Identification',mu,'margin-top:2px')}</div></div>
+  <div class="abs" style="left:44px;right:42px;top:82px">
+    <div class="D" style="font-size:13px;font-weight:800;letter-spacing:-.01em">Terms of use</div>
+    <p style="font-size:8px;line-height:1.75;color:${mu};margin-top:8px">This card certifies the holder as an employee of the company named above. Wear it visibly on company premises. It may not be lent, transferred or duplicated. Report a lost card to HR immediately.</p>
+    <div style="margin-top:12px">${rows([['Name',v('name')],['Department',v('dept')],['Employee No.',v('no')],['Access',v('level')],['Valid Thru',v('date2')]],mu,ln,9)}</div>
+  </div>
+  <div class="abs" style="left:44px;right:42px;top:316px;display:flex;gap:14px;align-items:flex-end">
+    <div style="padding:4px;background:#fff;border-radius:6px;box-shadow:0 0 0 1px ${ln}">${qr(raw('no')||'EMPLOYEE',56)}</div>
+    <div style="flex:1;min-width:0">${lb('If found, return to',mu)}<div class="el" style="font-size:11px;font-weight:700;margin-top:4px;min-height:15px">${v('org')}</div><div style="margin-top:8px">${bars(raw('no'),fg,16)}</div></div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;top:430px;bottom:28px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff">
+    <div class="el D" style="font-size:9px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;min-height:12px">${v('org')}</div>
+    <div class="mn" style="flex-shrink:0;font-size:7px;opacity:.6">${YEAR}</div>
+  </div></div>`;}},
+
+/* ── Minimal ── */
+{id:'mono',name:'Minimal',o:'p',def:{c:'#e2562c',dark:false},fields:EMP,
+front({c,dk,v,raw}){
+  const bg=dk?'#121214':'#f5f4f0',fg=dk?'#ecebe8':'#131313',mu=dk?'rgba(236,235,232,.45)':'#8d8b85',ln=dk?'rgba(255,255,255,.12)':'rgba(19,19,19,.13)',hc=dk?tint(c,.35):c,oc=onC(c);
+  const cell=(l,val)=>`<div style="border-top:1px solid ${ln};padding:7px 0 0;min-width:0">${lb(l,mu)}<div class="el" style="font-size:10px;font-weight:600;margin-top:3px;min-height:13px">${val}</div></div>`;
+  return`<div class="card P" style="background:${bg};color:${fg}">
+  <div class="abs" style="left:28px;right:28px;top:28px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <span class="el" style="font-size:11px;font-weight:700;min-height:15px">${v('org')}</span>
+    <span style="display:flex;align-items:center;gap:6px;flex-shrink:0">${lb('Staff ID',mu)}<i style="display:block;width:7px;height:7px;border-radius:50%;background:${c}"></i></span>
+  </div>
+  <div class="abs deco" style="left:0;right:0;top:58px;height:1px;background:${ln}"></div>
+  <div class="abs" style="left:28px;top:74px">${photo(132,176,{r:4,bg:dk?'#1d1d20':'#e4e2dc',ph:dk?'#2c2c30':'#cfccc4'})}</div>
+  <div class="abs" style="left:174px;right:28px;top:74px;height:176px;display:flex;flex-direction:column">
+    <div style="width:56px;height:56px;background:${c};color:${oc};display:flex;align-items:center;justify-content:center"><span style="font-size:24px;font-weight:800">${mono(raw('org'))}</span></div>
+    ${lb('Employee',mu,'margin-top:12px')}${lb('Identification',mu,'margin-top:3px')}
+    <div style="margin-top:auto">${lb('No.',mu)}<div class="mn el" style="font-size:10px;font-weight:600;margin-top:3px;min-height:13px">${v('no')}</div>${lb('Access',mu,'margin-top:9px')}<div class="el" style="font-size:10px;font-weight:700;margin-top:3px;min-height:13px;color:${hc}">${v('level')}</div></div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;top:272px">
+    <div class="el" style="font-size:7.5px;font-weight:700;letter-spacing:.24em;color:${hc};text-transform:uppercase;min-height:10px">${v('nameEn')}</div>
+    <div class="el" style="font-size:${fz(raw('name'),30,8)}px;font-weight:800;letter-spacing:-.05em;line-height:1.15;margin-top:3px;min-height:35px;display:flex;align-items:flex-end">${v('name')}</div>
+    <div class="el" style="font-size:11px;color:${mu};margin-top:3px;min-height:15px">${v('role')}<span class="${raw('role')&&raw('dept')?'':'emp'}"> · </span>${v('dept')}</div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;bottom:84px">${bars(raw('no'),fg,26)}</div>
+  <div class="abs" style="left:28px;right:28px;bottom:28px;display:grid;grid-template-columns:1.3fr 1fr 1fr;column-gap:14px">${cell('Department',v('dept'))}${cell('Issued',v('date1'))}${cell('Expires',v('date2'))}</div>
+  </div>`;},
+back({c,dk,v,raw}){
+  const oc=onC(c),bg=dk?shade(c,.45):c;
+  return`<div class="card P" style="background:${bg};color:${oc}">
+  <svg class="abs deco" style="left:0;top:0" width="319" height="495"><circle cx="300" cy="96" r="128" fill="none" stroke="${al(oc,.14)}" stroke-width="1"/><circle cx="300" cy="96" r="88" fill="none" stroke="${al(oc,.1)}" stroke-width="1"/></svg>
+  <div class="abs" style="${SAFE};display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><span class="el" style="font-size:11px;font-weight:700;min-height:15px">${v('org')}</span>${lb('Staff ID',al(oc,.6))}</div>
+    <div style="margin-top:58px;font-size:27px;font-weight:300;letter-spacing:-.04em;line-height:1.15">If found,<br>please return to</div>
+    <div class="el" style="font-size:${fz(raw('org'),27,13)}px;font-weight:800;letter-spacing:-.04em;line-height:1.2;margin-top:2px;min-height:33px">${v('org')}</div>
+    <p style="margin-top:14px;font-size:8.5px;line-height:1.7;opacity:.78">This card remains the property of the issuing company. Personal and non-transferable. Present on request.</p>
+    <div style="margin-top:auto;padding:12px;background:#fff;border-radius:10px;color:#16171a">${bars(raw('no'),'#16171a',32)}
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;gap:10px"><div style="min-width:0"><div class="mn el" style="font-size:9px;font-weight:600;min-height:12px">${v('no')}</div>${lb('Valid thru '+'<span>'+v('date2')+'</span>','#8c8c93','margin-top:4px')}</div>${qr(raw('no')||'ID',44)}</div>
     </div>
+  </div></div>`;}},
+
+/* ── Horizon ── */
+{id:'horizon',name:'Horizon',o:'p',def:{c:'#0f8a7e',dark:false},fields:EMP,
+front({c,dk,v,raw}){
+  const bg=dk?'#16181d':'#fff',fg=dk?'#f2f3f5':'#17181c',mu=dk?'rgba(255,255,255,.46)':'#8c9099',ln=dk?'rgba(255,255,255,.08)':'rgba(0,0,0,.07)',oc=onC(c),hc=dk?tint(c,.45):shade(c,.05);
+  const cell=(l,k,span)=>`<div style="min-width:0;${span?'grid-column:span 2;':''}">${lb(l,mu)}<div class="el" style="font-size:10.5px;font-weight:600;margin-top:3px;min-height:14px">${v(k)}</div></div>`;
+  return`<div class="card P" style="background:${bg};color:${fg}">
+  <svg class="abs deco" style="left:0;top:0" width="319" height="495"><polygon points="0,0 319,0 319,190 0,262" fill="${c}"/><polygon points="0,262 319,190 319,204 0,276" fill="${al(c,.28)}"/><polygon points="0,0 319,0 319,40 0,122" fill="rgba(255,255,255,.08)"/></svg>
+  <div class="abs" style="left:28px;top:28px;display:flex;align-items:center;gap:8px;color:${oc}"><div class="mk" style="width:22px;height:22px;font-size:10px;border-radius:6px;background:${al(oc,.2)}">${mono(raw('org'))}</div><span style="font-size:6.5px;font-weight:700;letter-spacing:.26em;opacity:.85">EMPLOYEE</span></div>
+  <div class="abs" style="left:28px;width:132px;top:72px;color:${oc}">
+    <div class="el" style="font-size:15px;font-weight:800;letter-spacing:-.02em;line-height:1.25;min-height:19px">${v('org')}</div>${lb('Employee ID',al(oc,.7),'margin-top:4px')}
+    ${lb('No.',al(oc,.7),'margin-top:30px')}<div class="mn el" style="font-size:9.5px;font-weight:600;margin-top:3px;min-height:12px">${v('no')}</div>
+    ${lb('Valid thru',al(oc,.7),'margin-top:9px')}<div class="el" style="font-size:9.5px;font-weight:600;margin-top:3px;min-height:12px">${v('date2')}</div>
   </div>
-  
-  <div class="emp-bot"><div class="emp-id" style="color:${isL?'#aaa':'rgba(255,255,255,.7)'};">${O(V('c-id'),'EMP-0000')}</div><div style="width:14px;height:14px;border:1px solid ${bdr};border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${sealSVG(isL?c:A(c,.4),8)}</div></div>
-  </div>`;
+  <div class="abs" style="left:174px;top:64px;padding:3px;background:rgba(255,255,255,.96);border-radius:11px">${photo(111,148,{r:8,bg:'#eef0f3',ph:'#d6dae0'})}</div>
+  <div class="abs" style="left:28px;right:28px;top:292px;bottom:28px;display:flex;flex-direction:column">
+    <div class="el" style="font-size:${fz(raw('name'),26,9)}px;font-weight:800;letter-spacing:-.04em;line-height:1.15;min-height:30px;display:flex;align-items:flex-end">${v('name')}</div>
+    <div class="el" style="margin-top:3px;font-size:7.5px;font-weight:600;letter-spacing:.24em;color:${mu};text-transform:uppercase;min-height:10px">${v('nameEn')}</div>
+    <div style="display:flex;align-items:center;gap:7px;margin-top:9px"><i style="display:block;width:14px;height:2px;background:${c};flex-shrink:0"></i><span class="el" style="font-size:10.5px;font-weight:700;color:${hc};min-height:14px">${v('role')}</span></div>
+    <div style="margin-top:auto;padding-top:11px;border-top:1px solid ${ln};display:grid;grid-template-columns:1fr 1fr;gap:9px 14px">${cell('Department','dept',1)}${cell('Joined','date1')}${cell('Access','level')}</div>
+    <div style="margin-top:12px">${bars(raw('no'),fg,16)}</div>
+  </div></div>`;},
+back({c,dk,v,raw}){
+  const bg=dk?'#16181d':'#fff',fg=dk?'#f2f3f5':'#17181c',mu=dk?'rgba(255,255,255,.5)':'#868b94',ln=dk?'rgba(255,255,255,.08)':'rgba(0,0,0,.07)',oc=onC(c);
+  return`<div class="card P" style="background:${bg};color:${fg}">
+  <div class="abs deco" style="left:0;right:0;top:34px;height:44px;background:${dk?'#050506':'#1b1c20'}"></div>
+  <svg class="abs deco" style="left:0;top:0" width="319" height="495"><polygon points="0,495 0,442 50,495" fill="${c}"/><polygon points="319,0 262,0 319,26" fill="${c}"/></svg>
+  <div class="abs" style="left:28px;right:28px;top:96px;bottom:28px;display:flex;flex-direction:column">
+    <div style="height:34px;border-radius:4px;background:${dk?'rgba(255,255,255,.06)':tint(c,.9)};display:flex;align-items:flex-end;padding:0 9px 6px">${lb('Authorized signature',mu)}</div>
+    <p style="font-size:8px;line-height:1.75;color:${mu};margin-top:12px">This card is the property of the issuing company and must be returned upon request or termination of employment. Non-transferable.</p>
+    <div style="margin-top:16px;display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:10px">${[['Name','name'],['Department','dept'],['Valid Thru','date2']].map(([l,k])=>`<div style="min-width:0;padding-left:8px;border-left:2px solid ${c}">${lb(l,mu)}<div class="el" style="font-size:10px;font-weight:600;margin-top:3px;min-height:13px">${v(k)}</div></div>`).join('')}</div>
+    <div style="margin-top:auto;display:flex;gap:14px;align-items:flex-end">
+      <div style="padding:5px;background:#fff;border-radius:8px;box-shadow:0 0 0 1px ${ln}">${qr(raw('no')||'EMPLOYEE',68)}</div>
+      <div style="flex:1;min-width:0">${lb('If found, return to',mu)}<div class="el" style="font-size:11px;font-weight:700;margin-top:4px;min-height:15px">${v('org')}</div><div style="margin-top:8px">${bars(raw('no'),fg,16)}</div></div>
+    </div>
+    <div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px solid ${ln}"><div style="display:flex;align-items:center;gap:7px;min-width:0"><div class="mk" style="width:18px;height:18px;font-size:9px;border-radius:5px;background:${c};color:${oc}">${mono(raw('org'))}</div><span class="el" style="font-size:10px;font-weight:700;min-height:14px">${v('org')}</span></div><span class="mn" style="font-size:7.5px;color:${mu};flex-shrink:0">${v('no')}</span></div>
+  </div></div>`;}},
+
+/* ── Student ── */
+{id:'student',name:'Student',o:'p',def:{c:'#2f6fd0',dark:false},fields:STU,
+front({c,dk,v,raw}){
+  const bg=dk?'#13161c':'#fff',ink=dk?'#f2f4f7':shade(c,.62),mu=dk?'rgba(255,255,255,.5)':al(shade(c,.5),.6),ln=al(c,dk?.3:.2),hc=dk?tint(c,.4):shade(c,.08),oc=onC(c),stamp='#d8443a';
+  const kl=(t,m=10)=>`<div style="font-size:7.5px;font-weight:700;color:${hc};margin-top:${m}px">${t}</div>`;
+  return`<div class="card P" style="background:${bg};color:${ink}">
+  <svg class="abs deco" style="left:0;top:0" width="319" height="120"><polygon points="0,0 319,0 319,92 0,112" fill="${c}"/><polygon points="0,0 232,0 0,78" fill="rgba(255,255,255,.1)"/><polygon points="0,112 319,92 319,97 0,117" fill="${al(c,.3)}"/></svg>
+  <div class="abs" style="left:28px;right:28px;top:28px;display:flex;align-items:center;gap:10px;color:${oc}">${seal(al(oc,.9),30)}<div style="min-width:0;flex:1"><div class="el" style="font-size:13.5px;font-weight:700;min-height:18px">${v('school')}</div>${lb('Student Identification'+(raw('slevel')?' · '+esc(raw('slevel')):''),al(oc,.75),'margin-top:3px')}</div></div>
+  <div class="abs deco" style="left:35px;top:129px;width:108px;height:144px;border-radius:8px;background:${al(c,dk?.4:.2)}"></div>
+  <div class="abs" style="left:28px;top:122px">${photo(108,144,{r:8,bg:dk?'#22262e':'#eef2f8',ph:dk?'#343945':al(c,.22)})}</div>
+  <div class="abs" style="left:156px;right:28px;top:122px">
+    <div style="display:flex;align-items:baseline;gap:6px;padding-bottom:8px;border-bottom:1px solid ${ln}"><span class="Ks" style="font-size:16px;font-weight:700;color:${hc};letter-spacing:.06em">학생증</span>${lb('Student ID',mu)}</div>
+    ${kl('성명')}<div class="el" style="font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:2px;min-height:24px">${v('name')}</div>
+    ${kl('학년 / 반')}<div class="el" style="font-size:11px;font-weight:600;margin-top:2px;min-height:15px">${v('grade')}</div>
+    ${kl('학번')}<div class="el mn" style="font-size:10px;font-weight:500;margin-top:2px;min-height:13px">${v('stno')}</div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;top:284px;display:grid;grid-template-columns:1fr 1fr;border-top:1.5px solid ${c};border-bottom:1px solid ${ln}">
+    <div style="padding:8px 0;min-width:0">${kl('입학일',0)}<div class="el" style="font-size:11px;font-weight:600;margin-top:3px;min-height:15px">${v('enroll')}</div></div>
+    <div style="padding:8px 0 8px 12px;border-left:1px solid ${ln};min-width:0">${kl('졸업 예정',0)}<div class="el" style="font-size:11px;font-weight:600;margin-top:3px;min-height:15px">${v('grad')}</div></div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;top:344px">
+    <div class="Ks" style="font-size:9.5px;line-height:1.6">위 학생은 본교에 재학 중임을 증명합니다.</div>
+    <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px"><span class="Ks el" style="font-size:11.5px;font-weight:700;letter-spacing:.06em;min-height:16px">${v('school')}</span><span class="Ks" style="font-size:11.5px;font-weight:700;flex-shrink:0">장</span><div class="Ks" style="width:30px;height:30px;border-radius:50%;border:1.6px solid ${stamp};color:${stamp};display:flex;align-items:center;justify-content:center;transform:rotate(-10deg);font-size:8px;font-weight:700;flex-shrink:0;margin-left:2px;margin-right:4px">직인</div></div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;bottom:28px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px">
+    <div style="width:150px">${bars(raw('stno'),ink,22)}</div>
+    <div style="text-align:right">${lb('Issued',mu)}<div class="mn" style="font-size:8.5px;font-weight:500;margin-top:3px">${today()}</div></div>
+  </div></div>`;},
+back({c,dk,v,raw}){
+  const bg=dk?'#13161c':'#fff',ink=dk?'#f2f4f7':shade(c,.62),mu=dk?'rgba(255,255,255,.55)':al(shade(c,.5),.65),ln=al(c,dk?.3:.18),hc=dk?tint(c,.4):shade(c,.08),oc=onC(c);
+  const rules=['본 학생증은 타인에게 대여하거나 양도할 수 없습니다.','교내에서는 항상 지참하여야 합니다.','분실 시 즉시 교무실에 신고하십시오.','졸업 또는 전학 시 학교에 반납합니다.'];
+  return`<div class="card P" style="background:${bg};color:${ink}">
+  <svg class="abs deco" style="left:0;top:0" width="319" height="40"><polygon points="0,0 319,0 319,20 0,32" fill="${c}"/></svg>
+  <div class="abs deco" style="right:-54px;bottom:60px;opacity:${dk?.06:.06}">${seal(c,200)}</div>
+  <div class="abs" style="left:28px;right:28px;top:50px;bottom:28px;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:baseline;gap:8px"><span class="Ks" style="font-size:16px;font-weight:700;color:${hc};letter-spacing:.04em">유의사항</span>${lb('Notice',mu)}</div>
+    <div style="margin-top:14px">${rules.map((r,i)=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:5px 0"><span class="D" style="width:15px;height:15px;border-radius:50%;background:${c};color:${oc};display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;flex-shrink:0">${i+1}</span><span style="font-size:8.5px;line-height:1.6;color:${mu};padding-top:1px">${r}</span></div>`).join('')}</div>
+    <div style="margin-top:16px;padding:4px 12px;border-radius:10px;background:${al(c,dk?.12:.06)}">${rows([['성명',v('name')],['학번',v('stno')],['학교',v('school')],['유효기간',v('grad')],['발급일',today()]],mu,ln,9)}</div>
+    <div style="margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:14px">
+      <div style="flex:1;min-width:0">${bars(raw('stno'),ink,22)}<div class="mn el" style="font-size:7.5px;color:${mu};margin-top:5px;min-height:10px">${v('stno')}</div></div>
+      <div style="padding:4px;background:#fff;border-radius:6px;box-shadow:0 0 0 1px ${ln}">${qr(raw('stno')||'STUDENT',52)}</div>
+    </div>
+  </div></div>`;}},
+
+/* ── University ── */
+{id:'univ',name:'University',o:'p',def:{c:'#c7a456',dark:true},fields:UNI,
+front({c,dk,v,raw}){
+  const bg=dk?'linear-gradient(160deg,#182235,#0b0f19)':'#fbf9f3',fg=dk?'#f1efe8':'#1c1b18',mu=dk?'rgba(241,239,232,.5)':'rgba(28,27,24,.5)',hc=dk?tint(c,.15):shade(c,.22),ln=al(c,dk?.3:.38),oc=onC(c);
+  const it=(l,k,m)=>`<div style="padding:6px 0;border-bottom:1px solid ${ln};min-width:0">${lb(l,mu)}<div class="el${m?' mn':''}" style="font-size:10.5px;font-weight:600;margin-top:3px;min-height:14px">${v(k)}</div></div>`;
+  return`<div class="card P" style="background:${bg};color:${fg}">
+  <div class="abs deco" style="left:0;top:0;bottom:0;width:52px;background:${c}"></div>
+  <div class="abs deco" style="left:52px;top:0;bottom:0;width:2px;background:${al(c,.35)}"></div>
+  <div class="abs" style="left:32px;top:467px;transform:rotate(-90deg);transform-origin:0 0;white-space:nowrap;font-size:6.5px;font-weight:700;letter-spacing:.34em;color:${oc}">STUDENT IDENTIFICATION · ${YEAR}</div>
+  <div class="abs deco" style="right:-80px;top:250px;opacity:${dk?.07:.08}">${seal(c,250)}</div>
+  <div class="abs" style="left:70px;right:28px;top:28px;bottom:28px;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:9px">${seal(hc,30)}<div style="min-width:0;flex:1"><div class="el" style="font-size:14px;font-weight:700;min-height:19px">${v('univ')}</div><div class="el" style="font-size:6px;font-weight:600;letter-spacing:.24em;color:${mu};margin-top:2px;min-height:8px">${v('univEn')}</div></div></div>
+    <div style="margin-top:12px;height:1px;background:linear-gradient(90deg,${al(c,.7)},${al(c,0)})"></div>
+    <div style="margin-top:14px;display:flex;gap:14px">
+      <div style="padding:3px;border:1px solid ${ln};align-self:flex-start">${photo(96,128,{r:0,bg:dk?'#1d2433':'#efebe1',ph:dk?'#2e3648':'#dcd5c4'})}</div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+        <span style="align-self:flex-start;font-size:6px;font-weight:700;letter-spacing:.2em;padding:3px 7px;border:1px solid ${ln};color:${hc}">STUDENT</span>
+        <div style="margin-top:4px">${it('Student No.','uno',1)}${it('Year','year')}${it('Admitted','admit')}</div>
+      </div>
+    </div>
+    <div class="el" style="margin-top:18px;font-size:${fz(raw('name'),24,8)}px;font-weight:700;letter-spacing:-.02em;min-height:30px;display:flex;align-items:flex-end">${v('name')}</div>
+    <div class="el" style="font-size:7.5px;font-weight:600;letter-spacing:.24em;color:${mu};margin-top:2px;text-transform:uppercase;min-height:10px">${v('nameEn')}</div>
+    <div class="el" style="font-size:10.5px;color:${hc};margin-top:9px;font-weight:700;min-height:14px">${v('major')}</div>
+    <div style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:6px">${[['Library','lib'],['Dormitory','dorm']].map(([l,k])=>`<div style="padding:7px 9px;border:1px solid ${ln};min-width:0">${lb(l,mu)}<div class="el" style="font-size:10px;font-weight:600;margin-top:3px;min-height:13px">${v(k)}</div></div>`).join('')}</div>
+    <div style="margin-top:auto">${lb('Valid with current enrollment',mu)}<div style="margin-top:7px">${bars(raw('uno'),fg,18)}</div></div>
+  </div></div>`;},
+back({c,dk,v,raw}){
+  const bg=dk?'linear-gradient(160deg,#182235,#0b0f19)':'#fbf9f3',fg=dk?'#f1efe8':'#1c1b18',mu=dk?'rgba(241,239,232,.5)':'rgba(28,27,24,.5)',hc=dk?tint(c,.15):shade(c,.22),ln=al(c,dk?.28:.32),oc=onC(c);
+  return`<div class="card P" style="background:${bg};color:${fg}">
+  <div class="abs deco" style="left:0;top:0;bottom:0;width:52px;background:${c}"></div>
+  <div class="abs deco" style="left:52px;top:0;bottom:0;width:2px;background:${al(c,.35)}"></div>
+  <div class="abs" style="left:32px;top:467px;transform:rotate(-90deg);transform-origin:0 0;white-space:nowrap;font-size:6.5px;font-weight:700;letter-spacing:.34em;color:${oc}">ACCESS &amp; PRIVILEGES</div>
+  <div class="abs" style="left:70px;right:28px;top:28px;bottom:28px;display:flex;flex-direction:column">
+    <div class="el" style="font-size:13px;font-weight:700;min-height:18px">${v('univ')}</div>
+    ${lb('Campus access',hc,'margin-top:4px')}
+    <div style="margin-top:14px">${rows([['Name',v('name')],['Major',v('major')],['Library',v('lib')],['Laboratory','Allowed'],['Dormitory',v('dorm')]],mu,ln,9)}</div>
+    <p style="margin-top:16px;font-size:7.8px;line-height:1.7;color:${mu}">For personal use only. Must be carried on campus and cannot be lent or transferred. Report loss to Student Affairs.</p>
+    <div style="margin-top:auto;display:flex;gap:12px;align-items:flex-end">
+      <div style="padding:4px;background:#fff;flex-shrink:0">${qr(raw('uno')||'STUDENT',64)}</div>
+      <div style="flex:1;min-width:0">${bars(raw('uno'),fg,18)}<div class="mn el" style="font-size:7.5px;margin-top:5px;min-height:10px">${v('uno')}</div></div>
+    </div>
+  </div></div>`;}},
+
+/* ── Sentinel / Guide ── */
+{id:'sentinel',name:'Sentinel',o:'p',def:{c:'#22c3c3',dark:true},fields:SGB,
+front({c,dk,v,raw}){
+  const base=dk?'#0a0d12':'#eef1f4',fg=dk?'#e8edf1':'#0d1217',mu=dk?'rgba(232,237,241,.48)':'rgba(13,18,23,.5)',hc=dk?tint(c,.3):shade(c,.3),pn=al(c,dk?.08:.1),ln=al(c,dk?.28:.35),oc=onC(c);
+  const cls=raw('cls'),cl=cls?cls.split('-')[0]:'',tp=raw('stype').toLowerCase();
+  const sync=60+Math.floor(rng((raw('code')||'x')+'sync')()*40);
+  const l2=(t,m=0)=>`<div class="Tc" style="font-size:6.5px;font-weight:700;letter-spacing:.2em;color:${hc};margin-top:${m}px;text-transform:uppercase">${t}</div>`;
+  const seg=(t,on)=>`<div class="Tc" style="flex:1;text-align:center;padding:4px 0 3px;font-size:7px;font-weight:700;letter-spacing:.14em;${on?`background:${c};color:${oc}`:`color:${mu}`}">${t}</div>`;
+  const box=(l,k,m,span)=>`<div style="background:${pn};border-left:2px solid ${c};padding:6px 9px;min-width:0;${span?'grid-column:span 2;':''}">${l2(l)}<div class="el${m?' mn':''}" style="font-size:10.5px;font-weight:600;margin-top:3px;min-height:14px">${v(k)}</div></div>`;
+  const brk=`<svg class="deco" width="114" height="152" style="position:absolute;left:0;top:0"><path d="M0 14V0H14M100 0H114V14M114 138V152H100M14 152H0V138" fill="none" stroke="${c}" stroke-width="2.4"/></svg>`;
+  return`<div class="card P" style="background:radial-gradient(260px 220px at 100% 0%,${al(c,dk?.22:.16)},transparent 70%),linear-gradient(${al(c,dk?.045:.07)} 1px,transparent 1px),linear-gradient(90deg,${al(c,dk?.045:.07)} 1px,transparent 1px),${base};background-size:auto,22px 22px,22px 22px,auto;color:${fg}">
+  <div class="abs deco Tc" style="right:-26px;top:150px;font-size:300px;font-weight:700;line-height:1;color:${al(c,dk?.07:.09)}">${esc(cl||'S')}</div>
+  <div class="abs deco" style="left:0;top:0">${stripes(al(c,.5),319,20)}</div>
+  <div class="abs deco" style="left:0;top:477px">${stripes(al(c,.5),319,18)}</div>
+  <div class="abs" style="left:28px;right:28px;top:28px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+    <div style="display:flex;align-items:center;gap:8px;min-width:0">${hexL(hc,28)}<div style="min-width:0"><div class="Tc" style="font-size:13px;font-weight:700;letter-spacing:.22em">S.G.B</div><div class="Tc el" style="font-size:5.5px;font-weight:600;letter-spacing:.16em;color:${mu};margin-top:1px">SENTINEL GUIDANCE BUREAU</div></div></div>
+    <div style="position:relative;width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><svg class="deco" width="32" height="32" style="position:absolute;left:0;top:0"><polygon points="7,1 31,1 31,25 25,31 1,31 1,7" fill="${al(c,.16)}" stroke="${c}" stroke-width="1.2"/></svg><span class="Tc" style="position:relative;font-size:${cl.length>1?12:15}px;font-weight:700;color:${hc}">${esc(cl||'–')}</span></div>
+  </div>
+  <div class="abs deco" style="left:28px;right:28px;top:68px;height:1px;background:${ln}"></div>
+  <div class="abs deco" style="left:28px;top:67px;width:36px;height:3px;background:${c}"></div>
+  <div class="abs" style="left:28px;top:82px;width:114px;height:152px">${photo(114,152,{r:0,bg:dk?'#121821':'#dde3e8',ph:al(c,.3)})}${brk}<div class="Tc" style="position:absolute;left:0;bottom:0;padding:3px 7px 2px;background:${c};color:${oc};font-size:6.5px;font-weight:700;letter-spacing:.16em">VERIFIED</div></div>
+  <div class="abs" style="left:156px;right:28px;top:80px">
+    ${l2('Codename')}<div class="el Tc" style="font-size:${fz(raw('code'),20,9)}px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-top:1px;min-height:25px;display:flex;align-items:center">${v('code')}</div>
+    ${l2('Name',9)}<div class="el" style="font-size:11.5px;font-weight:600;margin-top:2px;min-height:15px">${v('name')}</div>
+    ${l2('Ability',9)}<div class="el" style="font-size:10.5px;font-weight:600;color:${hc};margin-top:2px;min-height:14px">${v('ability')}</div>
+    <div class="tog" data-k="stype" style="display:flex;gap:2px;padding:2px;margin-top:12px;border:1px solid ${ln}">${seg('SENTINEL',tp==='sentinel')}${seg('GUIDE',tp==='guide')}</div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;top:248px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline">${l2('Resonance')}<span class="Tc" style="font-size:8px;font-weight:700;color:${hc};letter-spacing:.1em">SYNC ${sync}%</span></div>
+    <div style="margin-top:6px">${wave((raw('code')||'x')+'w',263,32,c)}</div>
+  </div>
+  <div class="abs" style="left:28px;right:28px;top:306px;display:grid;grid-template-columns:1fr 1fr;gap:6px">${box('Class','cls')}${box('Reg. No.','sno',1)}${box('Affiliation','aff',0,1)}</div>
+  <div class="abs" style="left:28px;right:28px;bottom:28px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px">
+    <div style="width:156px">${bars(raw('sno'),fg,18)}<div class="mn el" style="font-size:7.5px;margin-top:4px;color:${mu};min-height:10px">${v('sno')}</div></div>
+    <div style="display:flex;align-items:center;gap:6px">${warn(hc,14)}<div class="Tc" style="font-size:6px;font-weight:700;letter-spacing:.16em;color:${mu};line-height:1.5">AUTHORIZED<br>PERSONNEL ONLY</div></div>
+  </div></div>`;},
+back({c,dk,v,raw}){
+  const base=dk?'#0a0d12':'#eef1f4',fg=dk?'#e8edf1':'#0d1217',mu=dk?'rgba(232,237,241,.5)':'rgba(13,18,23,.55)',hc=dk?tint(c,.3):shade(c,.3),pn=al(c,dk?.08:.1),ln=al(c,dk?.28:.35);
+  const dr=(l,val,m)=>`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:6px 0;border-bottom:1px dashed ${ln}"><span class="Tc" style="font-size:6.5px;font-weight:700;letter-spacing:.2em;color:${mu}">${l}</span><span class="el${m?' mn':''}" style="font-size:9.5px;font-weight:600;text-align:right">${val}</span></div>`;
+  const brk=`<svg class="deco" width="76" height="76" style="position:absolute;left:-4px;top:-4px"><path d="M0 12V0H12M64 0H76V12M76 64V76H64M12 76H0V64" fill="none" stroke="${c}" stroke-width="2"/></svg>`;
+  return`<div class="card P" style="background:linear-gradient(${al(c,dk?.045:.07)} 1px,transparent 1px),linear-gradient(90deg,${al(c,dk?.045:.07)} 1px,transparent 1px),${base};background-size:22px 22px,22px 22px,auto;color:${fg}">
+  <div class="abs deco" style="left:0;top:0">${stripes(al(c,.5),319,20)}</div>
+  <div class="abs deco" style="left:0;top:477px">${stripes(al(c,.5),319,18)}</div>
+  <div class="abs" style="left:28px;right:28px;top:28px;display:flex;align-items:center;gap:8px">${hexL(hc,28)}<div style="min-width:0"><div class="Tc" style="font-size:13px;font-weight:700;letter-spacing:.22em">S.G.B</div><div class="Tc el" style="font-size:5.5px;font-weight:600;letter-spacing:.16em;color:${mu};margin-top:1px">IDENTIFICATION DIVISION</div></div></div>
+  <div class="abs deco" style="left:28px;right:28px;top:68px;height:1px;background:${ln}"></div>
+  <div class="abs deco" style="left:28px;top:67px;width:36px;height:3px;background:${c}"></div>
+  <div class="abs" style="left:28px;right:28px;top:84px;bottom:28px;display:flex;flex-direction:column">
+    <div style="padding:11px 12px;background:${pn};border:1px solid ${ln}"><div style="display:flex;align-items:center;gap:6px">${warn(hc,13)}<span class="Tc" style="font-size:7.5px;font-weight:700;letter-spacing:.18em;color:${hc}">SECURITY NOTICE</span></div><p style="font-size:7.8px;line-height:1.7;color:${mu};margin-top:6px">Property of the Sentinel Guidance Bureau. Unauthorized possession, duplication or use is prohibited under the Sentinel Management Act. Report loss within 24 hours.</p></div>
+    <div style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="Tc" style="font-size:6.5px;font-weight:700;letter-spacing:.2em;color:${hc}">CLEARANCE LEVEL</span><span class="Tc" style="font-size:8px;font-weight:700;color:${hc}">${esc(raw('cls').split('-')[0]||'—')}</span></div><div style="display:flex;gap:3px;margin-top:6px">${[1,2,3,4,5].map(i=>`<i style="display:block;flex:1;height:6px;background:${i<=({SS:5,S:4,A:3,B:2,C:1}[raw('cls').split('-')[0]]||0)?c:al(c,.15)}"></i>`).join('')}</div></div>
+    <div style="margin-top:8px">${dr('REG.',v('sno'),1)}${dr('TYPE',v('stype'))}${dr('CLASS',v('cls'))}${dr('DIVISION',v('aff'))}${dr('ISSUED',today(),1)}</div>
+    <div style="margin-top:auto;display:flex;gap:16px;align-items:flex-end">
+      <div style="position:relative;padding:4px;background:#fff;flex-shrink:0">${qr(raw('sno')||'SGB',60)}${brk}</div>
+      <div style="flex:1;min-width:0">${bars(raw('sno'),fg,22)}<div class="Tc el" style="font-size:5.5px;font-weight:600;letter-spacing:.2em;color:${mu};margin-top:6px">PROPERTY OF S.G.B · DO NOT DUPLICATE</div></div>
+    </div>
+  </div></div>`;}},
+
+/* ── Lovers · Big Heart ── */
+{id:'lv_heart',name:'Lovers',o:'p',def:{c:'#f98fb6',dark:false},fields:LUV,
+front({c,dk,v,raw,o}){
+  const B=bgHeart(c,dk),ink=dk?'#fff':mix(shade(c,.5),'#7a2a45',.35),mu=dk?tint(c,.4):shade(c,.14),tc=dk?tint(c,.55):shade(c,.1),ol=dk?shade(c,.86):'#fff',box=dk?al('#ffffff',.08):'#fff',oc=lum(c)>.6?shade(c,.6):'#fff';
+  const bx=(l,k)=>`<div style="padding:7px 10px;border-radius:11px;background:${box};box-shadow:0 0 0 1px ${al(c,dk?.3:.16)};min-width:0"><div style="font-size:5.8px;font-weight:800;letter-spacing:.14em;color:${mu}">${l}</div><div class="el" style="font-size:9.5px;font-weight:700;margin-top:2px;min-height:13px">${v(k)}</div></div>`;
+  return`<div class="card P" style="background:${B.css};color:${ink}">${B.svg}
+  <div class="abs" style="left:30px;top:34px;font-size:6.5px;font-weight:800;letter-spacing:.24em;color:${mu};text-transform:uppercase"><span class="${o('club').trim()}">${v('club')} · </span>OFFICIAL</div>
+  <div class="abs scr" style="left:36px;top:42px;font-size:50px;line-height:1;color:${tc};transform:rotate(-7deg);text-shadow:${outl(ol,2.6)},0 4.5px 0 ${dk?shade(c,.5):shade(c,.22)}">Lovers</div>
+  <div class="abs scr" style="left:140px;top:86px;font-size:46px;line-height:1;color:${tc};transform:rotate(-7deg);text-shadow:${outl(ol,2.6)},0 4.5px 0 ${dk?shade(c,.5):shade(c,.22)}">Club</div>
+  <div class="abs" style="left:38px;top:160px;padding:4px;background:#fff;border-radius:13px;box-shadow:0 0 0 1px ${al(c,.25)},0 8px 16px -10px ${al(shade(c,.4),.55)}">${photo(90,120,{r:10,bg:tint(c,.86),ph:tint(c,.55)})}</div>
+  <div class="abs" style="left:150px;right:30px;top:178px">
+    <div class="el" style="font-size:${fz(raw('name'),20,8)}px;font-weight:800;letter-spacing:-.03em;min-height:25px">${v('name')}</div>
+    <div class="el${o('nick')}" style="font-size:8.5px;font-weight:600;color:${mu};margin-top:1px">@${v('nick')}</div>
+    <div style="margin-top:12px;font-size:5.8px;font-weight:800;letter-spacing:.14em;color:${mu}">LOVE LEVEL</div>
+    <div class="el" style="display:inline-block;max-width:100%;margin-top:4px;padding:3px 10px 4px;border-radius:99px;background:${c};color:${oc};font-size:9px;font-weight:800;min-height:20px">${v('llv')}</div>
+  </div>
+  <div class="abs" style="left:30px;right:30px;top:302px;display:grid;grid-template-columns:1fr 1fr;gap:6px">${bx('BIRTHDAY','birth')}${bx('MY BIAS','bias')}${bx('LOVE SINCE','since')}${bx('MEMBERSHIP','mem')}</div>
+  <div class="abs deco" style="left:0;right:0;top:398px;bottom:0;background:${dk?shade(c,.86):'#fffafd'}"></div><div class="abs deco" style="left:0;right:0;top:398px;height:4px;background:${c}"></div>
+  <div class="abs" style="left:28px;right:28px;top:414px;display:flex;align-items:center;gap:10px">
+    <div style="width:66px;flex-shrink:0">${bars(raw('lno'),dk?'#fff':shade(c,.45),30)}</div>
+    <div style="width:30px;height:30px;border-radius:6px;background:${c};display:flex;align-items:center;justify-content:center;flex-shrink:0">${heart(oc,14)}</div>
+    <div style="min-width:0;flex:1"><div style="font-size:9.5px;font-weight:900;letter-spacing:.04em;line-height:1.1;color:${tc}">LOVERS CLUB</div><div class="el" style="font-size:6px;font-weight:700;letter-spacing:.14em;color:${mu};margin-top:2px;min-height:8px">LICENSE No. ${v('lno')}</div><div style="margin-top:4px">${ico(al(c,.85))}</div></div>
+  </div></div>`;},
+back(x){const B=bgHeart(x.c,x.dk);B.ty=42;B.svg+=`<svg class="abs deco" style="left:0;top:0" width="319" height="495"><g transform="translate(46 50)">${spkP(x.dk?al('#ffffff',.6):'#fff',14)}</g><g transform="translate(62 36)">${spkP(al(x.c,.7),8)}</g></svg>`;const tc=x.dk?tint(x.c,.55):shade(x.c,.1),ol=x.dk?shade(x.c,.86):'#fff';return luvBack(x,B,`<span class="scr" style="display:inline-block;font-size:40px;line-height:1.1;color:${tc};transform:rotate(-5deg);text-shadow:${outl(ol,2.4)},0 4px 0 ${x.dk?shade(x.c,.5):shade(x.c,.22)}">Lovers Club</span>`);}},
+
+];
+const T=Object.fromEntries(TPL.map(t=>[t.id,t]));
+const PALETTE=['#18181b','#5b6577','#2f5bea','#2f6fd0','#0f8a7e','#22c3c3','#1f8a5b','#c7a456','#e2562c','#c2415a','#f98fb6','#8b7cf6','#6d4ae0'];
+const SELK=new Set(TPL.flatMap(t=>t.fields.filter(f=>f.sel).map(f=>f.k)));
+const LABEL={};TPL.forEach(t=>t.fields.forEach(f=>{LABEL[f.k]=LABEL[f.k]||f.l;}));
+
+/* ───────── state ───────── */
+const KEY='idstudio.v5';
+let S={tpl:'corp',v:{},style:{},photo:{src:null,ratio:.75,x:0,y:0,z:1},strap:true,side:'f',tab:'info'};
+try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d)S={...S,...d,v:{...(d.v||{})},photo:{...S.photo,...(d.photo||{})}};}catch(e){}
+TPL.forEach(t=>{if(!S.style[t.id])S.style[t.id]={...t.def};});
+if(S.style.lv_heart&&['#f490b8','#e889ad','#ec9fd3'].includes(String(S.style.lv_heart.c).toLowerCase()))S.style.lv_heart.c='#f98fb6';
+if(!T[S.tpl])S.tpl='corp';
+if(S.tab!=='style')S.tab='info';
+let saveT;function persist(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){try{localStorage.setItem(KEY,JSON.stringify({...S,photo:{...S.photo,src:null}}))}catch(_){}}},400);}
+
+/* ───────── render ───────── */
+function build(id,side){
+  const t=T[id],st=S.style[id];
+  const raw=k=>String(S.v[k]??'');
+  const x={c:st.c,dk:st.dark,raw,
+    v:k=>`<span data-k="${k}" data-p="${esc(LABEL[k]||k)}">${esc(raw(k))}</span>`,
+    o:k=>raw(k).trim()?'':' emp'};
+  return side==='b'?t.back(x):t.front(x);
 }
-
-function empB(){
-  const c = ac.company, isL = th.company === 'light';
-  const bg = isL ? '#f7f7f5' : `linear-gradient(160deg,#303340,#3a3d48)`;
-  const tMain = isL ? '#222' : '#fff';
-  const tSub = isL ? '#888' : 'rgba(255,255,255,.6)';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
-
-  return `<div class="emp-bk" style="background:${bg};"><div class="emp-bk-inner"><div class="emp-bk-corp elps" style="color:${tMain}">${O(V('c-corp'),'Company')}</div><div class="emp-bk-sep" style="background:${c};"></div><div class="emp-bk-notice" style="color:${isL?c:L(c,.6)}">NOTICE</div><div class="emp-bk-rules" style="border-color:${c};color:${isL?'#666':'rgba(255,255,255,.8)'};">This card certifies the holder as an official employee.<br>Must be worn visibly at all times within premises.<br>Cannot be lent, transferred, or duplicated.<br>Report loss to HR immediately for reissue.<br>Misuse is subject to disciplinary action.</div>${V('c-access')?`<div style="margin-bottom:10px;"><div style="font-size:7px;letter-spacing:2px;color:${tSub};margin-bottom:3px;">ACCESS LEVEL</div><div class="elps" style="font-size:10px;font-weight:700;color:${isL?'#555':'#fff'};">${V('c-access')}</div></div>`:''}<div class="emp-bk-bar">${barcode(V('c-id')||'EMP-0000', bcC, bcT)}</div><div class="emp-bk-foot"><div class="emp-bk-id" style="color:${tSub}">${O(V('c-id'),'EMP-0000')}</div><div class="emp-bk-qr" id="qr-co" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div></div></div></div>`;
+const dims=t=>t.o==='l'?[495,319]:[319,495];
+let scale=1,raf=0;
+function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;renderCard();});}
+function renderCard(){
+  if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#stage [data-k]'))return;
+  const t=T[S.tpl],[W,H]=dims(t);
+  const fl=$('#flip');fl.style.width=(W-2*BLEED)+'px';fl.style.height=(H-2*BLEED)+'px';fl.classList.toggle('b',S.side==='b');
+  $('#ff').innerHTML=build(S.tpl,'f');$('#fb').innerHTML=build(S.tpl,'b');
+  fillQR($('#ff'));fillQR($('#fb'));
+  const st=$('#strap');st.hidden=!S.strap;st.style.setProperty('--sc',shade(S.style[S.tpl].c,.1));
+  fit();persist();
 }
-
-/* ── SGB ── */
-function sgbF(){
-  const c = ac.sentinel, isL = th.sentinel === 'light', cls = V('s-class'), clsL = cls ? cls.split('-')[0] : '', tp = V('s-type');
-  const bg = isL ? `#fff` : `linear-gradient(170deg,${D(c,.15)},#060810,${D(c,.1)})`;
-  const bars = Array.from({length:45}, (_,i)=>{
-    return `<div class="sgb-bar-s" style="height:${2+Math.random()*9}px;background:${isL ? A(c,.4+Math.random()*.6) : A(c,.4+Math.random()*.5)};"></div>`;
+function fit(){
+  const t=T[S.tpl],[W0,H0]=dims(t),W=W0-2*BLEED,H=H0-2*BLEED,st=$('#stage'),sh=S.strap?110:0,mob=innerWidth<=860;
+  const aw=st.clientWidth-48,ah=mob?1e9:st.clientHeight-140;
+  scale=Math.max(.45,Math.min(1.25,aw/W,ah/(H+sh)));
+  $('#rig').style.transform=`scale(${scale})`;
+  st.style.height=mob?Math.round((H+sh)*scale+140)+'px':'';
+}
+function renderList(){$('#tlist').innerHTML=TPL.map(t=>`<button class="tb${t.id===S.tpl?' on':''}" data-id="${t.id}"><i style="background:${S.style[t.id].c}"></i>${t.name}</button>`).join('');}
+function renderFields(){
+  $('#fields').innerHTML=T[S.tpl].fields.map(f=>{
+    const ctl=f.sel?`<select class="inp" data-k="${f.k}"><option value="">선택</option>${f.sel.map(o=>`<option${S.v[f.k]===o?' selected':''}>${esc(o)}</option>`).join('')}</select>`
+      :`<input class="inp" data-k="${f.k}" value="${esc(S.v[f.k]??'')}" placeholder="${esc(f.ph||'')}">`;
+    return`<div class="fd${f.h?' h':''}"><label>${f.l}${f.gen?`<button class="gen" data-gen="${f.gen}" data-k="${f.k}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 12a8 8 0 11-2.3-5.7M20 4v5h-5"/></svg>생성</button>`:''}</label>${ctl}</div>`;
   }).join('');
-  const bcColor = isL ? c : 'rgba(255,255,255,0.8)';
-  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.6)';
-
-  return `<div class="sgb" style="background:${bg};">
-    <div class="sgb-glow" style="width:100px;height:100px;background:${isL?A(c,.04):A(c,.15)};top:-15px;left:-15px;"></div>
-    <div class="sgb-glow" style="width:70px;height:70px;background:${isL?A(c,.03):A(c,.1)};bottom:40px;right:-15px;"></div>
-    
-    <div class="sgb-hdr">
-      <div class="sgb-org">
-        <div class="sgb-seal" style="border-color:${isL?A(c,.4):A(c,.5)};">${sealSVG(isL?A(c,.7):L(c,.5),16)}</div>
-        <div style="flex:1;min-width:0;">
-          <div class="sgb-nm elps" style="color:${isL?c:'#fff'};">S G B</div>
-          <div class="sgb-sub elps" style="color:${isL?A(c,.6):'rgba(255,255,255,.7)'}">SENTINEL GUIDANCE BUREAU</div>
-        </div>
-      </div>
-      <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
-        ${tp ? `<div class="sgb-type" style="border-color:${isL?A(c,.4):A(c,.5)};color:${isL?c:'#fff'};">${tp.toUpperCase()}</div>` : ''}
-        ${clsL ? `<div class="sgb-class-badge" style="background:${c};color:#fff;">${clsL}</div>` : ''}
-      </div>
-    </div>
-    
-    <div class="id-pbox" style="margin:4px auto 8px;border:1.5px solid ${isL?A(c,.4):A(c,.4)};background:${isL?'#fff':'rgba(0,0,0,.3)'};">${pI('sentinel')}</div>
-    <div class="sgb-code elps" style="color:${isL?'#222':'#fff'};padding:0 30px;">${O(V('s-code'))}</div>
-    <div class="sgb-ability" style="padding:0 30px;"><span class="sgb-pill elps" style="border-color:${isL?A(c,.4):A(c,.4)};color:${isL?c:'#fff'};">${O(V('s-ability'),'ABILITY')}</span></div>
-    
-    <div class="sgb-fields">
-      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="sgb-fl" style="color:${isL?c:L(c,.6)};">CLASS</div><div class="sgb-fv elps" style="color:${isL?'#333':'#fff'}">${O(cls)}</div></div>
-      <div class="sgb-fr" style="border-bottom-color:${isL?A(c,.15):'rgba(255,255,255,.1)'}"><div class="sgb-fl" style="color:${isL?c:L(c,.6)};">AFFILIATION</div><div class="sgb-fv elps" style="color:${isL?'#333':'#fff'}">${O(V('s-aff'))}</div></div>
-    </div>
-    <div class="sgb-bot">
-      <div class="sgb-idno elps" style="color:${isL?A(c,.8):'rgba(255,255,255,.6)'};">NO. ${O(V('s-id'),'SGB-0000')}</div>
-      <div class="sgb-res">${bars}</div>
-      <div>${barcode(V('s-id')||'SGB-0000', bcColor, bcText)}</div>
-    </div>
-  </div>`;
 }
-
-function sgbB(){
-  const c = ac.sentinel, isL = th.sentinel === 'light';
-  const bg = isL ? `#fff` : `linear-gradient(170deg,${D(c,.1)},#040710)`;
-  const bdr = isL ? A(c,.2) : 'rgba(255,255,255,.1)';
-  const tMain = isL ? c : '#fff';
-  const bcColor = isL ? c : 'rgba(255,255,255,0.8)';
-  const bcText = isL ? A(c,.6) : 'rgba(255,255,255,0.6)';
-
-  return `<div class="sgb-bk" style="background:${bg};">
-    <div class="sgb-bk-hdr" style="border-bottom:1px solid ${bdr};"><div class="sgb-bk-title elps" style="color:${tMain};">SENTINEL GUIDANCE BUREAU</div><div class="sgb-bk-sub elps" style="color:${isL?A(c,.6):'rgba(255,255,255,.7)'}">IDENTIFICATION DIVISION</div></div>
-    <div class="sgb-bk-body">
-      <div class="sgb-bk-warn" style="border:1px solid ${bdr};"><div class="sgb-bk-wl" style="color:${isL?c:L(c,.6)};">NOTICE</div><div class="sgb-bk-wt" style="color:${isL?'#555':'rgba(255,255,255,.8)'};">This card is the property of the Sentinel Guidance Bureau. Unauthorized possession, duplication, or use is strictly prohibited under the Sentinel Management Act. Lost or stolen cards must be reported to the assigned division within 24 hours. Failure to comply may result in ability suppression protocols being engaged.</div></div>
-      <div class="sgb-bk-bar">${barcode(V('s-id')||'SGB-0000', bcColor, bcText)}</div>
-      <div class="sgb-bk-qr-row">
-        <div class="sgb-bk-qr" id="qr-se" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div>
-        <div class="sgb-bk-codes">
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>REG.</span><span class="elps" style="color:${isL?c:'#fff'};">${O(V('s-id'),'—')}</span></div>
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>TYPE</span><span class="elps" style="color:${isL?c:'#fff'};">${O(V('s-type'),'—')}</span></div>
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>ISSUED</span><span class="elps" style="color:${isL?c:'#fff'}">${new Date().toLocaleDateString('ko-KR')}</span></div>
-          <div class="sgb-cr" style="border-bottom:1px solid ${bdr};color:${isL?'#777':'rgba(255,255,255,.6)'}"><span>AUTH</span><span class="elps" style="color:${isL?c:'#fff'};">SGB-HQ</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="sgb-bk-ft" style="color:${isL?A(c,.4):'rgba(255,255,255,.4)'}">SENTINEL GUIDANCE BUREAU</div>
-  </div>`;
+function renderPhotoCtl(){
+  const p=S.photo;$('#pctl').hidden=!p.src;
+  $('#dropTh').innerHTML=p.src?`<img src="${p.src}" alt="">`:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a6a6ad" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>`;
+  $('#dropT').textContent=p.src?'사진 바꾸기':'사진 올리기';$('#zoom').value=p.z;
 }
-
-/* ── STUDENT ── */
-function stuF(){
-  const c = ac.student, isL = th.student === 'light';
-  const bg = isL ? L(c,.88) : `linear-gradient(140deg, #1e2229, #14161a)`;
-  const tMain = isL ? D(c,.4) : '#fff';
-  const tSub = isL ? D(c,.45) : 'rgba(255,255,255,.7)';
-  const bdr = isL ? A(c,.15) : 'rgba(255,255,255,.1)';
-  const pBg = isL ? L(c,.92) : 'rgba(255,255,255,.05)';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
-
-  return `<div class="stu" style="background:${bg};">
-  <div class="stu-deco" style="width:180px;height:180px;background:${c};top:-50px;right:-50px;opacity:${isL?'.07':'.15'}"></div>
-  <div class="stu-deco" style="width:90px;height:90px;background:${c};bottom:40px;left:-25px;opacity:${isL?'.07':'.15'}"></div>
-  <div class="stu-hdr" style="background:linear-gradient(130deg,${D(c,.6)},${c});">
-    <div class="stu-seal" style="border-color:rgba(255,255,255,.3)">${sealSVG('rgba(255,255,255,.5)',14)}</div>
-    <div style="flex:1;min-width:0;">
-      <div class="stu-school elps" style="color:#fff;">${O(V('st-school'))}</div>
-      <div class="stu-type elps" style="color:rgba(255,255,255,.8)">STUDENT ID${V('st-level')?'  /  '+V('st-level'):''}</div>
-    </div>
-  </div>
-  <div class="id-pbox" style="margin:4px auto 8px;border:2px solid ${isL?A(c,.3):A(c,.5)};border-radius:4px;background:${pBg};">${pI('student')}</div>
-  <div class="stu-nm elps" style="color:${tMain};">${O(V('st-name'))}</div>
-  <div class="stu-fields">
-    <div class="stu-dr" style="color:${tSub};border-bottom:1px solid ${bdr};"><span style="color:${isL?D(c,.45):L(c,.6)}">ENROLLMENT</span><span class="elps" style="color:${isL?'#333':'#fff'}">${O(V('st-enroll'))}</span></div>
-    <div class="stu-dr" style="color:${tSub};border-bottom:1px solid ${bdr};"><span style="color:${isL?D(c,.45):L(c,.6)}">GRADUATION</span><span class="elps" style="color:${isL?'#333':'#fff'}">${O(V('st-grad'))}</span></div>
-    <div class="stu-dr" style="color:${tSub};"><span style="color:${isL?D(c,.45):L(c,.6)}">GRADE</span><span class="elps" style="color:${isL?'#333':'#fff'}">${O(V('st-grade'))}</span></div>
-  </div>
-  <div class="stu-note elps" style="color:${tSub};opacity:.6">This card certifies the holder as a registered student.</div>
-  <div class="stu-bot">${barcode(V('st-id')||'STU-0000', bcC, bcT)}</div>
-  <div class="stu-bar-a" style="background:linear-gradient(90deg,${D(c,.6)},${c},${D(c,.6)});"></div></div>`;
+function renderStyle(){
+  const st=S.style[S.tpl];
+  $$('#themeSeg .thm').forEach(b=>{b.classList.toggle('on',(b.dataset.th==='1')===st.dark);b.querySelector('.pv').style.setProperty('--a',st.c);});
+  const inPal=PALETTE.includes(st.c.toLowerCase());
+  $('#sws').innerHTML=PALETTE.map(c=>`<button class="sw${st.c.toLowerCase()===c?' on':''}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join('')+`<label class="sw custom${inPal?'':' on'}" title="직접 고르기"><input type="color" id="cpick" value="${st.c}"></label>`;
+  $('#strapTg').classList.toggle('on',S.strap);
 }
+function setTab(tab){S.tab=tab;$$('#ptabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));$$('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==tab);persist();}
+function setSide(s){S.side=s;$$('#sideSeg button').forEach(b=>b.classList.toggle('on',b.dataset.side===s));$('#flip').classList.toggle('b',s==='b');persist();}
 
-function stuB(){
-  const c = ac.student, isL = th.student === 'light';
-  const bg = isL ? '#fff' : '#14161a';
-  const tMain = isL ? D(c,.45) : '#fff';
-  const tSub = isL ? '#aaa' : 'rgba(255,255,255,.6)';
-  const tTxt = isL ? '#222' : '#fff';
-  const bdr = isL ? '#f0f0f0' : 'rgba(255,255,255,.1)';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
+/* ───────── events ───────── */
+$('#ptabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.tab);});
+$('#sideSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setSide(b.dataset.side);});
+$('#tlist').addEventListener('click',e=>{const b=e.target.closest('.tb');if(!b)return;S.tpl=b.dataset.id;setSide('f');renderList();renderFields();renderStyle();renderCard();});
+$('#fields').addEventListener('input',e=>{const k=e.target.dataset.k;if(!k)return;S.v[k]=e.target.value;schedule();});
+$('#fields').addEventListener('click',e=>{
+  const b=e.target.closest('[data-gen]');if(!b)return;e.preventDefault();
+  const g=b.dataset.gen,n=()=>Math.floor(Math.random()*9000+1000);
+  const val=g==='Y'?`${YEAR}-${Math.floor(Math.random()*90000+10000)}`:`${g}-${n()}`;
+  S.v[b.dataset.k]=val;const inp=$(`#fields input[data-k="${b.dataset.k}"]`);if(inp)inp.value=val;schedule();
+});
+$('#clearF').onclick=()=>{T[S.tpl].fields.forEach(f=>S.v[f.k]='');renderFields();schedule();};
+$('#themeSeg').addEventListener('click',e=>{const b=e.target.closest('.thm');if(!b)return;S.style[S.tpl].dark=b.dataset.th==='1';renderStyle();renderCard();});
+$('#sws').addEventListener('click',e=>{const b=e.target.closest('.sw[data-c]');if(!b)return;S.style[S.tpl].c=b.dataset.c;renderStyle();renderList();renderCard();});
+$('#sws').addEventListener('input',e=>{if(e.target.id!=='cpick')return;S.style[S.tpl].c=e.target.value;$$('#sws .sw').forEach(s=>s.classList.toggle('on',s.classList.contains('custom')));renderList();schedule();});
+$('#strapTg').onclick=()=>{S.strap=!S.strap;renderStyle();renderCard();};
 
-  return `<div class="stu-bk" style="background:${bg}"><div class="stu-bk-title" style="color:${tMain};">Student ID<div class="stu-bk-sub elps" style="color:${tSub}">STUDENT IDENTITY CARD</div></div><div class="stu-bk-body">
-  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${isL?c:L(c,.6)};">NAME</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-name'))}</div></div>
-  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${isL?c:L(c,.6)};">GRADE</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-grade'))}</div></div>
-  <div class="stu-bk-row" style="border-bottom-color:${bdr}"><div class="stu-bk-rl" style="color:${isL?c:L(c,.6)};">NO.</div><div class="elps" style="color:${tTxt};flex:1;">${O(V('st-id'))}</div></div>
-  <div class="stu-bk-notice" style="color:${isL?c:L(c,.6)};">NOTICE</div>
-  <div class="stu-bk-rules" style="border-color:${c};color:${isL?'#888':'rgba(255,255,255,.8)'}">This card is for personal use only.<br>Must be carried at all times on campus.<br>Cannot be lent or transferred to others.<br>Report loss immediately for reissue.<br>Replacement fees may apply for damage.</div>
-  ${V('st-id')?`<div>${barcode(V('st-id'), bcC, bcT)}</div>`:''}</div>
-  <div class="stu-bk-stamp elps" style="color:${c};opacity:.3">${V('st-school')}</div>
-  <div class="stu-bk-bar2" style="background:linear-gradient(90deg,${D(c,.6)},${c},${D(c,.6)});"></div></div>`;
+/* ── inline editing on the card ── */
+function caretEnd(el){const r=document.createRange();r.selectNodeContents(el);r.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(r);}
+$('#stage').addEventListener('click',e=>{
+  const el=e.target.closest('#stage [data-k]');if(!el||el.isContentEditable)return;
+  const k=el.dataset.k;
+  if(SELK.has(k)){
+    setTab('info');const s=$(`#fields select[data-k="${k}"]`);
+    if(s){s.scrollIntoView({block:'center',behavior:'smooth'});s.focus();s.classList.add('flash');setTimeout(()=>s.classList.remove('flash'),900);try{s.showPicker()}catch(_){}}
+    return;
+  }
+  el.contentEditable='plaintext-only';if(el.contentEditable!=='plaintext-only')el.contentEditable='true';
+  el.classList.add('editing');el.focus();caretEnd(el);
+});
+$('#stage').addEventListener('input',e=>{
+  const el=e.target.closest&&e.target.closest('[data-k]');if(!el||!el.isContentEditable)return;
+  const k=el.dataset.k,val=el.textContent.replace(/\n/g,'');S.v[k]=val;
+  const inp=$(`#fields input[data-k="${k}"]`);if(inp)inp.value=val;
+  $$(`#stage [data-k="${k}"]`).forEach(x=>{if(x!==el&&!x.classList.contains('tog'))x.textContent=val;});
+  persist();
+});
+$('#stage').addEventListener('keydown',e=>{const el=e.target.closest&&e.target.closest('[data-k]');if(el&&el.isContentEditable&&(e.key==='Enter'||e.key==='Escape')){e.preventDefault();el.blur();}});
+$('#stage').addEventListener('focusout',e=>{const el=e.target.closest&&e.target.closest('[data-k]');if(!el||!el.isContentEditable)return;el.removeAttribute('contenteditable');el.classList.remove('editing');setTimeout(renderCard,0);});
+$('#stage').addEventListener('paste',e=>{const el=e.target.closest&&e.target.closest('[data-k]');if(!el||!el.isContentEditable)return;e.preventDefault();document.execCommand('insertText',false,(e.clipboardData.getData('text/plain')||'').replace(/\s*\n\s*/g,' '));});
+
+/* photo upload */
+function loadFile(f){
+  if(!f||!f.type.startsWith('image/'))return;
+  const rd=new FileReader();
+  rd.onload=ev=>{const img=new Image();img.onload=()=>{
+    const m=1600,k=Math.min(1,m/Math.max(img.naturalWidth,img.naturalHeight));
+    const cv=document.createElement('canvas');cv.width=Math.round(img.naturalWidth*k);cv.height=Math.round(img.naturalHeight*k);
+    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+    S.photo={src:cv.toDataURL('image/jpeg',.93),ratio:cv.width/cv.height,x:0,y:0,z:1};
+    renderPhotoCtl();renderCard();toast('사진을 적용했어요');
+  };img.src=ev.target.result;};
+  rd.readAsDataURL(f);
 }
+$('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.value='';});
+const drop=$('#drop');
+['dragenter','dragover'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
+$('#zoom').addEventListener('input',e=>{S.photo.z=+e.target.value;applyPhoto();persist();});
+$('#pReset').onclick=()=>{S.photo.x=0;S.photo.y=0;S.photo.z=1;renderPhotoCtl();renderCard();};
+$('#pDel').onclick=()=>{S.photo={src:null,ratio:.75,x:0,y:0,z:1};renderPhotoCtl();renderCard();};
 
-/* ── UNIVERSITY ── */
-function uniF(){
-  const c = ac.university, isL = th.university === 'light';
-  const bg = isL ? `linear-gradient(155deg,#fdfcfb,#fff,#fcfaf5)` : `linear-gradient(155deg,${D(c,.2)},#101218,${D(c,.15)})`;
-  const tMain = isL ? '#222' : '#fff';
-  const tSub = isL ? '#666' : 'rgba(255,255,255,.8)';
-  const bdr = isL ? A(c,.3) : A(c,.4);
-  const cellBg = isL ? A(c,.06) : A(c,.05);
-  const pBg = isL ? '#fff' : 'rgba(255,255,255,.03)';
+function applyPhoto(){$$('#stage [data-ph] img').forEach(i=>i.style.transform=`translate(${S.photo.x}px,${S.photo.y}px) scale(${S.photo.z})`);}
+let drag=null;
+$('#stage').addEventListener('pointerdown',e=>{
+  const ph=e.target.closest('#ff [data-ph]');if(!ph||!S.photo.src||S.side!=='f')return;
+  e.preventDefault();drag={x:e.clientX,y:e.clientY,ox:S.photo.x,oy:S.photo.y};document.body.classList.add('dragging');
+});
+addEventListener('pointermove',e=>{if(!drag)return;S.photo.x=drag.ox+(e.clientX-drag.x)/scale;S.photo.y=drag.oy+(e.clientY-drag.y)/scale;applyPhoto();});
+addEventListener('pointerup',()=>{if(!drag)return;drag=null;document.body.classList.remove('dragging');persist();});
+$('#stage').addEventListener('wheel',e=>{
+  if(!e.target.closest('#ff [data-ph]')||!S.photo.src||S.side!=='f')return;
+  e.preventDefault();S.photo.z=Math.min(4,Math.max(1,S.photo.z*(e.deltaY<0?1.06:1/1.06)));$('#zoom').value=S.photo.z;applyPhoto();persist();
+},{passive:false});
+addEventListener('resize',fit);
 
-  return `<div class="uni" style="background:${bg};--acbg:${A(c,.08)};">
-  <div class="uni-bg"></div>
-  <div class="uni-top" style="border-bottom-color:${A(c,.15)}">
-    <div class="uni-seal" style="border-color:${bdr}">${sealSVG(isL?A(c,.6):L(c,.6),20)}</div>
-    <div style="flex:1;min-width:0;">
-      <div class="uni-nm elps" style="color:${isL?c:'#fff'}">${O(V('u-univ'))}</div>
-      <div class="uni-en elps" style="color:${isL?A(c,.6):'rgba(255,255,255,.7)'}">STUDENT IDENTIFICATION</div>
-    </div>
-    <div class="uni-badge" style="border-color:${isL?A(c,.3):A(c,.6)};color:${isL?c:'#fff'};">STUDENT</div>
-  </div>
-  <div class="uni-body">
-    <div class="id-pbox" style="margin:0 auto 10px;border:1px solid ${bdr};background:${pBg}">${pI('university')}</div>
-    <div class="uni-name elps" style="color:${tMain};width:100%;text-align:center;">${O(V('u-name'))}</div>
-    <div class="uni-dept elps" style="color:${isL?c:L(c,.6)};width:100%;text-align:center;">${O(V('u-dept'))}</div>
-    <div class="uni-grid">
-      <div class="uni-cell" style="background:${cellBg};border-color:${A(c,.1)}"><div class="uni-cl" style="color:${isL?c:L(c,.6)}">YEAR</div><div class="uni-cv elps" style="color:${tMain}">${O(V('u-year'))}</div></div>
-      <div class="uni-cell" style="background:${cellBg};border-color:${A(c,.1)}"><div class="uni-cl" style="color:${isL?c:L(c,.6)}">ADMITTED</div><div class="uni-cv elps" style="color:${tMain}">${O(V('u-admit'))}</div></div>
-    </div>
-    <div class="uni-id-row" style="border-top-color:${A(c,.1)}">
-      <div class="uni-idl" style="color:${isL?c:L(c,.6)}">STUDENT NO.</div><div class="uni-id elps" style="color:${tSub}">${O(V('u-id'))}</div>
-    </div>
-  </div>
-  <div class="uni-gbar" style="background:linear-gradient(90deg,transparent,${c},${L(c,.3)},${c},transparent);"></div></div>`;
+/* ───────── export (58×90mm work size, 600dpi) ───────── */
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function shot(side){
+  const xp=$('#xp');xp.innerHTML=build(S.tpl,side);fillQR(xp);
+  try{await document.fonts.ready}catch(e){}
+  await sleep(200);
+  await Promise.all([...xp.querySelectorAll('img')].map(i=>i.complete&&i.naturalWidth?0:new Promise(r=>{i.onload=i.onerror=r;})));
+  const cv=await html2canvas(xp.firstElementChild,{scale:DPI/25.4/PX,backgroundColor:'#ffffff',useCORS:true,logging:false,scrollX:-window.scrollX,scrollY:-window.scrollY});
+  xp.innerHTML='';return cv;
 }
-
-function uniB(){
-  const c = ac.university, isL = th.university === 'light';
-  const bg = isL ? '#fff' : `linear-gradient(155deg,${D(c,.15)},#12141a)`;
-  const tMain = isL ? '#333' : '#fff';
-  const tSub = isL ? '#777' : 'rgba(255,255,255,.8)';
-  const bdr = isL ? 'rgba(0,0,0,.06)' : 'rgba(255,255,255,.1)';
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
-
-  return `<div class="uni-bk" style="background:${bg}">
-  <div class="uni-bk-top" style="border-bottom-color:${A(c,.15)}"><div class="uni-bk-t elps" style="color:${isL?c:'#fff'}">${O(V('u-univ'))}</div></div>
-  <div class="uni-bk-body">
-    <div class="uni-al" style="color:${isL?c:L(c,.6)}">ACCESS</div>
-    <div class="uni-alist">
-      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.7)'}"><span>Library</span><span class="elps" style="color:${isL?c:'#fff'}">${O(V('u-lib'))}</span></div>
-      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.7)'}"><span>Lab</span><span class="elps" style="color:${isL?c:'#fff'}">Allowed</span></div>
-      <div class="uni-arow" style="border-bottom-color:${bdr};color:${isL?'#555':'rgba(255,255,255,.7)'}"><span>Dormitory</span><span class="elps" style="color:${isL?c:'#fff'}">${O(V('u-dorm'))}</span></div>
-    </div>
-    <div class="uni-bk-notice" style="color:${isL?c:L(c,.6)}">NOTICE</div>
-    <div class="uni-bk-rules" style="color:${tSub};border-left-color:${A(c,.4)}">This card is for personal use only.<br>Must be carried at all times on campus.<br>Cannot be lent or transferred.<br>Report loss to student affairs immediately.</div>
-    <div class="uni-qr-row">
-      <div class="uni-qr" id="qr-un" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div>
-      <div class="uni-bc" style="background:${isL?'none':'#fff'}">${barcode(V('u-id')||'0000', bcC, bcT)}</div>
-    </div>
-  </div>
-  <div class="uni-gbar" style="background:linear-gradient(90deg,transparent,${c},${L(c,.3)},${c},transparent);"></div>
-  <div class="uni-bk-ft" style="color:${isL?A(c,.3):'rgba(255,255,255,.4)'}">STUDENT IDENTIFICATION CARD</div></div>`;
+function crc32(b){let crc=-1;for(let n=0;n<b.length;n++){let c=(crc^b[n])&255;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;crc=(crc>>>8)^c;}return(crc^-1)>>>0;}
+async function withDpi(blob){
+  const b=new Uint8Array(await blob.arrayBuffer()),ppm=Math.round(DPI/0.0254);
+  const ch=new Uint8Array(21),dv=new DataView(ch.buffer);
+  dv.setUint32(0,9);ch.set([112,72,89,115],4);dv.setUint32(8,ppm);dv.setUint32(12,ppm);ch[16]=1;dv.setUint32(17,crc32(ch.subarray(4,17)));
+  const out=new Uint8Array(b.length+21);out.set(b.subarray(0,33));out.set(ch,33);out.set(b.subarray(33),54);
+  return new Blob([out],{type:'image/png'});
 }
-
-/* ── LOVERS ── */
-function luvF(){
-  const c = ac.lovers, isL = th.lovers === 'light';
-  const bg = isL ? L(c,.92) : D(c,.85);
-  const tMain = isL ? D(c,.25) : '#fff';
-  const tSub = isL ? c : L(c,.6);
-  const bdr = isL ? A(c,.15) : A(c,.25);
-  const pBg = isL ? A(c,.06) : A(c,.1);
-  const hearts = Array.from({length:6},()=>heartSVG(isL?A(c,.18):A(c,.4),9)).join('');
-
-  return `<div class="luv" style="background:${bg};--lc:${c};">
-  <div class="luv-border" style="border-color:${isL?L(c,.55):A(c,.4)};"></div>
-  <div class="luv-border-inner" style="border-color:${isL?A(c,.2):A(c,.5)};"></div>
-  <div class="luv-dots"></div>
-  <div class="luv-bg-deco" style="width:100px;height:100px;background:${c};top:-25px;right:-25px;opacity:${isL?'.1':'.15'}"></div>
-  <div class="luv-bg-deco" style="width:60px;height:60px;background:${c};bottom:50px;left:-15px;opacity:${isL?'.1':'.15'}"></div>
-  <div class="luv-inner">
-    <div class="luv-heart-top">${heartSVG(isL?D(c,.5):L(c,.4),14)}</div>
-    <div class="luv-top"><div class="luv-club elps" style="color:${isL?D(c,.2):'#fff'};">${O(V('lv-club'),"Lover's Club")}</div><div class="luv-label elps" style="color:${tSub}">LOVERS CARD</div></div>
-    <div class="luv-pw">
-      <div class="luv-photo" style="border-color:${isL?L(c,.4):c};background:${pBg};">${ph.lovers?pI('lovers'):`<div class="np"><div class="np-h" style="border-color:${A(c,.2)}"></div><div class="np-b" style="border-color:${A(c,.15)}"></div></div>`}</div>
-      <div class="luv-lvl" style="background:${c};color:#fff;">LOVERS</div>
-    </div>
-    <div class="luv-nm elps" style="color:${tMain};">${O(V('lv-name'))}</div>
-    <div class="luv-nick elps" style="color:${tSub};">@${V('lv-nick')||'nickname'}</div>
-    <div class="luv-info">
-      <div class="luv-row" style="border-bottom-color:${bdr};"><span class="luv-rl" style="color:${tSub}">DATE OF BIRTH</span><span class="luv-rv elps" style="color:${tMain}">${O(V('lv-birth'))}</span></div>
-      <div class="luv-row" style="border-bottom-color:${bdr};"><span class="luv-rl" style="color:${tSub}">CLASS</span><span class="luv-rv elps" style="color:${tMain}">${O(V('lv-class'))}</span></div>
-      <div class="luv-row" style="border-bottom-color:${bdr};"><span class="luv-rl" style="color:${tSub}">NUMBER</span><span class="luv-rv elps" style="color:${tMain}">${O(V('lv-number'))}</span></div>
-      <div class="luv-row" style="border-bottom-color:${bdr};"><span class="luv-rl" style="color:${tSub}">NAME</span><span class="luv-rv elps" style="color:${tMain}">${O(V('lv-bias'))}</span></div>
-      <div class="luv-row" style="border-bottom-color:${bdr};"><span class="luv-rl" style="color:${tSub}">POSITION</span><span class="luv-rv elps" style="color:${tMain}">${O(V('lv-pos'))}</span></div>
-      <div class="luv-row" style="border-bottom-color:${bdr};"><span class="luv-rl" style="color:${tSub}">MEMBERSHIP</span><span class="luv-rv elps" style="color:${tMain}">${O(V('lv-mem'))}</span></div>
-    </div>
-  </div>
-  <div class="luv-bid elps" style="color:${tSub};">${O(V('lv-id'),'FC-0000')}</div>
-  <div class="luv-hearts-row">${hearts}</div></div>`;
-}
-
-function luvB(){
-  const c = ac.lovers, isL = th.lovers === 'light';
-  const bg = isL ? L(c,.93) : D(c,.85);
-  const tMain = isL ? D(c,.25) : '#fff';
-  const tSub = isL ? c : L(c,.6);
-  const bcC = isL ? '#000' : 'rgba(255,255,255,.8)';
-  const bcT = isL ? '#888' : 'rgba(255,255,255,.5)';
-  const hearts = Array.from({length:6},()=>heartSVG(isL?A(c,.15):A(c,.35),9)).join('');
-
-  return `<div class="luv-bk" style="background:${bg};">
-  <div class="luv-bk-border" style="border-color:${isL?L(c,.55):A(c,.4)};"></div>
-  <div class="luv-bk-inner">
-    <div class="luv-bk-title elps" style="color:${isL?D(c,.18):'#fff'};">${O(V('lv-club'),"Lover's Club")}</div>
-    <div class="luv-bk-sub elps" style="color:${tSub}">MEMBERSHIP CARD</div>
-    <div class="luv-bk-notice" style="color:${tSub};">NOTICE</div>
-    <div class="luv-bk-rules" style="border-color:${c};color:${isL?'#777':'rgba(255,255,255,.8)'}">Welcome to the family!<br>This card certifies your official membership.<br>Carry it with pride and share the love.<br>This card cannot be transferred or duplicated.<br>Lost cards can be reissued through the club.</div>
-    <div class="luv-bk-qr" id="qr-lv" style="border:${isL?`1px solid ${A(c,.3)}`:'none'}"></div>
-    <div class="luv-bk-bar" style="background:${isL?'#fff':'none'};padding:${isL?'3px':'0'}">${barcode(V('lv-id')||'FC-0000', bcC, bcT)}</div>
-  </div>
-  <div class="luv-bk-hearts">${hearts}</div></div>`;
-}
-
-const TM={company:{f:empF,b:empB},sentinel:{f:sgbF,b:sgbB},student:{f:stuF,b:stuB},university:{f:uniF,b:uniB},lovers:{f:luvF,b:luvB}};
-
-function render(){
-  const t=TM[cur];
-  document.getElementById('cf').innerHTML=t.f();
-  document.getElementById('cb').innerHTML=t.b();
-  setTimeout(genQR,80);
-}
-
-function genQR(){
-  const m={company:{el:'qr-co',d:V('c-id')||'EMP'},sentinel:{el:'qr-se',d:V('s-id')||'SGB'},university:{el:'qr-un',d:V('u-id')||'U'},lovers:{el:'qr-lv',d:V('lv-id')||'FC'}};
-  const q=m[cur];if(!q)return;
-  const el=document.getElementById(q.el);if(!el)return;
-  el.innerHTML='';
+function dl(cv,name){cv.toBlob(async b=>{try{b=await withDpi(b)}catch(_){}const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);},'image/png');}
+async function doSave(kind){
+  $('#saveMenu').classList.remove('open');toast('이미지를 만드는 중…',true);
+  const n=S.tpl,ts=Date.now();
   try{
-    new QRCode(el,{text:q.d,width:44,height:44,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
-    const img=el.querySelector('img');
-    if(img){img.style.display='block';img.style.margin='auto';}
-  }catch(e){}
+    if(kind==='cur'){dl(await shot(S.side),`${n}-${S.side==='b'?'back':'front'}-58x90mm.png`);}
+    else if(kind==='both'){const f=await shot('f'),b=await shot('b');dl(f,`${n}-front-58x90mm.png`);await sleep(500);dl(b,`${n}-back-58x90mm.png`);}
+    else{const f=await shot('f'),b=await shot('b'),g=Math.round(DPI/25.4*6);const cv=document.createElement('canvas');cv.width=f.width+b.width+g;cv.height=Math.max(f.height,b.height);const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.drawImage(f,0,0);x.drawImage(b,f.width+g,0);dl(cv,`${n}-sheet-${ts}.png`);}
+    toast('저장했어요');
+  }catch(e){console.error(e);toast('저장에 실패했어요');}
 }
+$('#saveBtn').onclick=e=>{e.stopPropagation();$('#saveMenu').classList.toggle('open');};
+$('#saveMenu').addEventListener('click',e=>{const b=e.target.closest('[data-save]');if(b)doSave(b.dataset.save);});
+document.addEventListener('click',e=>{if(!e.target.closest('.menu-wrap'))$('#saveMenu').classList.remove('open');});
+let toT;function toast(m,stay){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toT);if(!stay)toT=setTimeout(()=>t.classList.remove('show'),2000);}
 
-function initP(iid,type,zid,pcid){
-  const inp=document.getElementById(iid);if(!inp)return;
-  inp.addEventListener('change',e=>{
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=ev=>{
-      ph[type]=ev.target.result; pC[type]={z:1,x:0,y:0};
-      const img=new Image();
-      img.onload=()=>{phDim[type]=img.naturalWidth/img.naturalHeight;render();};
-      img.src=ev.target.result;
-      const z=document.getElementById(zid);
-      z.innerHTML=`<img src="${ev.target.result}"><input type="file" id="${iid}" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;">`;
-      document.getElementById(pcid).classList.remove('hidden');
-      document.getElementById(pcid).querySelector('input[type=range]').value=1;
-      initP(iid,type,zid,pcid);render();
-    };
-    r.readAsDataURL(f);
-  });
-}
-
-['co','se','st','un','lv'].forEach(id=>{
-  const m={co:'company',se:'sentinel',st:'student',un:'university',lv:'lovers'};
-  const el=document.getElementById('zm-'+id);
-  if(el)el.addEventListener('input',e=>{pC[m[id]].z=parseFloat(e.target.value);render();});
-});
-
-document.addEventListener('mousedown',e=>{
-  const el=e.target.closest('.id-pbox img,.luv-photo img');
-  if(!el)return;
-  e.preventDefault();
-  const sx=e.clientX,sy=e.clientY,cr=pC[cur],ox=cr.x,oy=cr.y;
-  const mv=ev=>{cr.x=ox+(ev.clientX-sx)/cr.z;cr.y=oy+(ev.clientY-sy)/cr.z;render();};
-  const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};
-  document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
-});
-
-function flipCard(){
-  flipped=!flipped;
-  document.getElementById('wr').classList.toggle('fl2',flipped);
-  document.getElementById('flab').textContent=flipped?'BACK':'FRONT';
-}
-
-async function cap(el, isBack = false){
-  return html2canvas(el, {
-    scale: 6,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: null,
-    logging: false,
-    imageTimeout: 0,
-    onclone: (doc) => {
-      const wr = doc.getElementById('wr');
-      if (wr) {
-        wr.classList.remove('fl2');
-        wr.style.transform = 'none';
-      }
-      if (isBack) {
-        const cb = doc.getElementById('cb');
-        if (cb) {
-          cb.classList.remove('back');
-          cb.style.transform = 'none';
-          cb.style.visibility = 'visible';
-          cb.style.backfaceVisibility = 'visible';
-        }
-      }
-    }
-  });
-}
-
-async function saveFace(){
-  toast('Processing...');
-  try{
-    const isBack = flipped;
-    const c = await cap(document.getElementById(isBack ? 'cb' : 'cf'), isBack);
-    dl(c, `${cur}-${isBack ? 'back' : 'front'}-${Date.now()}.png`);
-    toast('Saved');
-  }catch(e){console.error(e);toast('Failed');}
-}
-
-async function saveBoth(){
-  toast('Processing...');
-  try{
-    const f = await cap(document.getElementById('cf'), false);
-    const b = await cap(document.getElementById('cb'), true);
-    dl(f, `${cur}-front-${Date.now()}.png`);
-    await new Promise(r => setTimeout(r, 450)); 
-    dl(b, `${cur}-back-${Date.now()}.png`);
-    toast('Both saved');
-  }catch(e){console.error(e);toast('Failed');}
-}
-
-function dl(c,n){const a=document.createElement('a');a.download=n;a.href=c.toDataURL('image/png');a.click();}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
-function gid(id,pfx){const n=String(Math.floor(Math.random()*9000)+1000);document.getElementById(id).value=pfx+'-'+n;render();}
-
-document.querySelectorAll('.tab').forEach(b=>{
-  b.addEventListener('click',()=>{
-    cur=b.dataset.type; flipped=false;
-    document.getElementById('wr').classList.remove('fl2');
-    document.getElementById('flab').textContent='FRONT';
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    b.classList.add('active');
-    ['company','sentinel','student','university','lovers'].forEach(t=>{document.getElementById(`f-${t}`).classList.add('hidden');});
-    document.getElementById(`f-${cur}`).classList.remove('hidden');
-    document.getElementById('ls').style.background=ac[cur];
-    render();
-  });
-});
-
-document.querySelectorAll('.sw').forEach(sw => {
-  sw.addEventListener('click', () => {
-    const type = sw.dataset.t;
-    document.querySelectorAll(`.sw[data-t="${type}"]`).forEach(x => x.classList.remove('on'));
-    sw.classList.add('on');
-    
-    ac[type] = sw.dataset.c; 
-    th[type] = sw.dataset.tm; 
-    
-    if (cur === type) {
-      document.getElementById('ls').style.background = sw.dataset.c;
-      render();
-    }
-  });
-});
-
-document.querySelectorAll('input,select').forEach(el=>{el.addEventListener('input',()=>render());el.addEventListener('change',()=>render());});
-initP('pi-co','company','pz-co','pc-co');initP('pi-se','sentinel','pz-se','pc-se');initP('pi-st','student','pz-st','pc-st');initP('pi-un','university','pz-un','pc-un');initP('pi-lv','lovers','pz-lv','pc-lv');
-render();
+/* ───────── init ───────── */
+renderList();renderFields();renderPhotoCtl();renderStyle();setSide(S.side);setTab(S.tab);renderCard();
+if(document.fonts)document.fonts.ready.then(()=>renderCard());
 </script>
 </body>
 </html>
