@@ -101,6 +101,16 @@ input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;bac
 .sw.on::after{content:'';position:absolute;inset:-4px;border:1.5px solid var(--tx);border-radius:50%}
 .sw.custom{background:conic-gradient(#f87171,#fbbf24,#34d399,#60a5fa,#a78bfa,#f472b6,#f87171)}
 .sw.custom input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.gpre{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.gp{height:34px;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);position:relative;transition:transform .12s}
+.gp:hover{transform:translateY(-1px)}
+.gp.on::after{content:'';position:absolute;inset:-3px;border:1.5px solid var(--tx);border-radius:11px}
+.gcust{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--fill)}
+.gpick{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0}
+.gpick input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.gpick i{display:block;width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1),0 0 0 2px #fff}
+.gpick span{font-size:10.5px;color:var(--mu)}
+.gbar{flex:1;height:26px;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);align-self:flex-start}
 .srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:var(--fill)}
 .srow .k{font-size:12.5px;font-weight:600}
 .srow .d{font-size:11px;color:var(--mu);margin-top:2px}
@@ -229,6 +239,15 @@ body.dragging,body.dragging #ff [data-ph]{cursor:grabbing}
           <div class="sh">포인트 컬러</div>
           <div class="sws" id="sws"></div>
         </div>
+        <div class="grp" id="gradGrp" hidden>
+          <div class="sh">배경 그라데이션<button class="link" id="gReset">자동</button></div>
+          <div class="gpre" id="gpre"></div>
+          <div class="gcust">
+            <label class="gpick"><input type="color" id="g1"><i id="g1s"></i><span>위</span></label>
+            <div class="gbar" id="gbar"></div>
+            <label class="gpick"><input type="color" id="g2"><i id="g2s"></i><span>아래</span></label>
+          </div>
+        </div>
         <div class="grp">
           <div class="srow"><div><div class="k">목걸이 스트랩</div><div class="d">미리보기에만 보여요</div></div><button class="tg" id="strapTg" aria-label="스트랩 표시"></button></div>
         </div>
@@ -304,9 +323,10 @@ const hd=(x,y,s,col,gap=4.4,w=1.7)=>`<g transform="translate(${x} ${y}) scale(${
 const sd=(x,y,s,col,gap=4.2,w=1.6)=>`<g transform="translate(${x} ${y}) scale(${s/24})"><path d="${STP}" fill="none" stroke="${col}" stroke-width="${w*24/s}" stroke-dasharray="0 ${gap*24/s}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
 const ico=(c)=>{const st=`<svg width="7" height="7" viewBox="0 0 24 24"><path d="${STP}" fill="${c}"/></svg>`,tr=`<svg width="6" height="7" viewBox="0 0 6 7"><path d="M0 0L6 3.5 0 7z" fill="${c}"/></svg>`,ht=heart(c,7);return`<span style="display:inline-flex;align-items:center;gap:2px">${st+st+st}<i style="width:4px"></i>${tr+tr+tr}<i style="width:4px"></i>${ht+ht+ht}</span>`;};
 const outl=(col,w=2)=>[[0,w],[w,0],[-w,0],[0,-w],[w*.72,w*.72],[-w*.72,w*.72],[w*.72,-w*.72],[-w*.72,-w*.72]].map(([x,y])=>`${x}px ${y}px 0 ${col}`).join(',');
-function bgHeart(c,dk){const bg=dk?shade(c,.8):mix(tint(c,.8),'#fff6df',.45),h1=dk?shade(c,.64):'#fff',h2=dk?shade(c,.7):'#fff',dc=dk?tint(c,.2):c;
+function gradAuto(c){return[tint(c,.62),mix(tint(c,.8),'#fff6df',.45)];}
+function bgHeart(c,dk,g){const ga=gradAuto(c),g1=(g&&g.g1)||ga[0],g2=(g&&g.g2)||ga[1],bg=dk?shade(g2,.8):g2,h1=dk?shade(c,.64):'#fff',h2=dk?shade(c,.7):'#fff',dc=dk?tint(c,.2):c;
   const wt=dk?al('#ffffff',.5):'#fff',sp=(x,y,z,col)=>`<g transform="translate(${x} ${y})">${spkP(col,z)}</g>`;
-  return{css:`radial-gradient(${al('#ffffff',dk?.05:.5)} 1.1px,transparent 1.4px) 0 0/16px 16px,linear-gradient(180deg,${dk?shade(c,.74):tint(c,.62)},${dk?shade(c,.77):tint(c,.76)} 45%,${bg})`,
+  return{css:`radial-gradient(${al('#ffffff',dk?.05:.5)} 1.1px,transparent 1.4px) 0 0/16px 16px,linear-gradient(180deg,${dk?shade(g1,.74):g1},${dk?shade(mix(g1,g2,.5),.77):mix(g1,g2,.42)} 45%,${bg})`,
   svg:`<svg class="abs deco" style="left:0;top:0" width="319" height="495">${hp(-4,52,196,`fill="${h1}" fill-opacity="${dk?1:.92}"`)}${hp(128,74,196,`fill="${h2}" fill-opacity="${dk?1:.6}"`)}${hd(-4,52,196,al(dc,.5),5,1.6)}
   ${sd(238,26,48,al(dc,.55),4.6,1.6)}
   ${sp(280,150,15,wt)}${sp(296,174,8,al(dc,.7))}${sp(22,48,10,al(dc,.6))}${sp(206,30,8,wt)}${sp(270,292,10,wt)}${sp(30,196,9,wt)}</svg>`};}
@@ -619,9 +639,9 @@ back({c,dk,v,raw}){
   </div></div>`;}},
 
 /* ── Lovers · Big Heart ── */
-{id:'lv_heart',name:'Lovers',o:'p',def:{c:'#f98fb6',dark:false},fields:LUV,
-front({c,dk,v,raw,o}){
-  const B=bgHeart(c,dk),ink=dk?'#fff':mix(shade(c,.5),'#7a2a45',.35),mu=dk?tint(c,.4):shade(c,.14),tc=dk?tint(c,.55):shade(c,.1),ol=dk?shade(c,.86):'#fff',box=dk?al('#ffffff',.08):'#fff',oc=lum(c)>.6?shade(c,.6):'#fff';
+{id:'lv_heart',name:'Lovers',o:'p',grad:true,def:{c:'#f98fb6',dark:false},fields:LUV,
+front({c,dk,v,raw,o,g1,g2}){
+  const B=bgHeart(c,dk,{g1,g2}),ink=dk?'#fff':mix(shade(c,.5),'#7a2a45',.35),mu=dk?tint(c,.4):shade(c,.14),tc=dk?tint(c,.55):shade(c,.1),ol=dk?shade(c,.86):'#fff',box=dk?al('#ffffff',.08):'#fff',oc=lum(c)>.6?shade(c,.6):'#fff';
   const bx=(l,k)=>`<div style="padding:7px 10px;border-radius:11px;background:${box};box-shadow:0 0 0 1px ${al(c,dk?.3:.16)};min-width:0"><div style="font-size:5.8px;font-weight:800;letter-spacing:.14em;color:${mu}">${l}</div><div class="el" style="font-size:9.5px;font-weight:700;margin-top:2px;min-height:13px">${v(k)}</div></div>`;
   return`<div class="card P" style="background:${B.css};color:${ink}">${B.svg}
   <div class="abs" style="left:30px;top:34px;font-size:6.5px;font-weight:800;letter-spacing:.24em;color:${mu};text-transform:uppercase"><span class="${o('club').trim()}">${v('club')} · </span>OFFICIAL</div>
@@ -641,11 +661,12 @@ front({c,dk,v,raw,o}){
     <div style="width:30px;height:30px;border-radius:6px;background:${c};display:flex;align-items:center;justify-content:center;flex-shrink:0">${heart(oc,14)}</div>
     <div style="min-width:0;flex:1"><div style="font-size:9.5px;font-weight:900;letter-spacing:.04em;line-height:1.1;color:${tc}">LOVERS CLUB</div><div class="el" style="font-size:6px;font-weight:700;letter-spacing:.14em;color:${mu};margin-top:2px;min-height:8px">LICENSE No. ${v('lno')}</div><div style="margin-top:4px">${ico(al(c,.85))}</div></div>
   </div></div>`;},
-back(x){const B=bgHeart(x.c,x.dk);B.ty=42;B.svg+=`<svg class="abs deco" style="left:0;top:0" width="319" height="495"><g transform="translate(46 50)">${spkP(x.dk?al('#ffffff',.6):'#fff',14)}</g><g transform="translate(62 36)">${spkP(al(x.c,.7),8)}</g></svg>`;const tc=x.dk?tint(x.c,.55):shade(x.c,.1),ol=x.dk?shade(x.c,.86):'#fff';return luvBack(x,B,`<span class="scr" style="display:inline-block;font-size:40px;line-height:1.1;color:${tc};transform:rotate(-5deg);text-shadow:${outl(ol,2.4)},0 4px 0 ${x.dk?shade(x.c,.5):shade(x.c,.22)}">Lovers Club</span>`);}},
+back(x){const B=bgHeart(x.c,x.dk,x);B.ty=42;B.svg+=`<svg class="abs deco" style="left:0;top:0" width="319" height="495"><g transform="translate(46 50)">${spkP(x.dk?al('#ffffff',.6):'#fff',14)}</g><g transform="translate(62 36)">${spkP(al(x.c,.7),8)}</g></svg>`;const tc=x.dk?tint(x.c,.55):shade(x.c,.1),ol=x.dk?shade(x.c,.86):'#fff';return luvBack(x,B,`<span class="scr" style="display:inline-block;font-size:40px;line-height:1.1;color:${tc};transform:rotate(-5deg);text-shadow:${outl(ol,2.4)},0 4px 0 ${x.dk?shade(x.c,.5):shade(x.c,.22)}">Lovers Club</span>`);}},
 
 ];
 const T=Object.fromEntries(TPL.map(t=>[t.id,t]));
 const PALETTE=['#18181b','#5b6577','#2f5bea','#2f6fd0','#0f8a7e','#22c3c3','#1f8a5b','#c7a456','#e2562c','#c2415a','#f98fb6','#8b7cf6','#6d4ae0'];
+const GRADS=[['#fbc4d9','#fff1dc'],['#fbc4d9','#ffffff'],['#ffc4d2','#ffe2c9'],['#fbc4d9','#d3eaff'],['#fbc4d9','#d6f3e5'],['#ffe3ee','#ffb2cf']];
 const SELK=new Set(TPL.flatMap(t=>t.fields.filter(f=>f.sel).map(f=>f.k)));
 const LABEL={};TPL.forEach(t=>t.fields.forEach(f=>{LABEL[f.k]=LABEL[f.k]||f.l;}));
 
@@ -663,7 +684,7 @@ let saveT;function persist(){clearTimeout(saveT);saveT=setTimeout(()=>{try{local
 function build(id,side){
   const t=T[id],st=S.style[id];
   const raw=k=>String(S.v[k]??'');
-  const x={c:st.c,dk:st.dark,raw,
+  const x={c:st.c,dk:st.dark,raw,g1:st.g1,g2:st.g2,
     v:k=>`<span data-k="${k}" data-p="${esc(LABEL[k]||k)}">${esc(raw(k))}</span>`,
     o:k=>raw(k).trim()?'':' emp'};
   return side==='b'?t.back(x):t.front(x);
@@ -706,6 +727,11 @@ function renderStyle(){
   const inPal=PALETTE.includes(st.c.toLowerCase());
   $('#sws').innerHTML=PALETTE.map(c=>`<button class="sw${st.c.toLowerCase()===c?' on':''}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join('')+`<label class="sw custom${inPal?'':' on'}" title="직접 고르기"><input type="color" id="cpick" value="${st.c}"></label>`;
   $('#strapTg').classList.toggle('on',S.strap);
+  const gg=!!T[S.tpl].grad;$('#gradGrp').hidden=!gg;
+  if(gg){const ga=gradAuto(st.c),a=st.g1||ga[0],b=st.g2||ga[1];
+    $('#gpre').innerHTML=GRADS.map(([x,y],i)=>`<button class="gp${st.g1===x&&st.g2===y?' on':''}" data-i="${i}" style="background:linear-gradient(180deg,${x},${y})" aria-label="그라데이션 ${i+1}"></button>`).join('');
+    $('#g1').value=a;$('#g2').value=b;$('#g1s').style.background=a;$('#g2s').style.background=b;$('#gbar').style.background=`linear-gradient(90deg,${a},${b})`;
+    $('#gReset').style.visibility=st.g1||st.g2?'visible':'hidden';}
 }
 function setTab(tab){S.tab=tab;$$('#ptabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));$$('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==tab);persist();}
 function setSide(s){S.side=s;$$('#sideSeg button').forEach(b=>b.classList.toggle('on',b.dataset.side===s));$('#flip').classList.toggle('b',s==='b');persist();}
@@ -725,6 +751,9 @@ $('#clearF').onclick=()=>{T[S.tpl].fields.forEach(f=>S.v[f.k]='');renderFields()
 $('#themeSeg').addEventListener('click',e=>{const b=e.target.closest('.thm');if(!b)return;S.style[S.tpl].dark=b.dataset.th==='1';renderStyle();renderCard();});
 $('#sws').addEventListener('click',e=>{const b=e.target.closest('.sw[data-c]');if(!b)return;S.style[S.tpl].c=b.dataset.c;renderStyle();renderList();renderCard();});
 $('#sws').addEventListener('input',e=>{if(e.target.id!=='cpick')return;S.style[S.tpl].c=e.target.value;$$('#sws .sw').forEach(s=>s.classList.toggle('on',s.classList.contains('custom')));renderList();schedule();});
+$('#gpre').addEventListener('click',e=>{const b=e.target.closest('.gp');if(!b)return;const[x,y]=GRADS[+b.dataset.i];Object.assign(S.style[S.tpl],{g1:x,g2:y});renderStyle();renderCard();});
+['g1','g2'].forEach(k=>$('#'+k).addEventListener('input',e=>{const st=S.style[S.tpl];if(!st.g1||!st.g2){const ga=gradAuto(st.c);st.g1=st.g1||ga[0];st.g2=st.g2||ga[1];}st[k]=e.target.value;$('#'+k+'s').style.background=e.target.value;$('#gbar').style.background=`linear-gradient(90deg,${st.g1},${st.g2})`;$('#gReset').style.visibility='visible';$$('#gpre .gp').forEach(x=>x.classList.remove('on'));schedule();}));
+$('#gReset').onclick=()=>{const st=S.style[S.tpl];delete st.g1;delete st.g2;renderStyle();renderCard();};
 $('#strapTg').onclick=()=>{S.strap=!S.strap;renderStyle();renderCard();};
 
 /* ── inline editing on the card ── */
