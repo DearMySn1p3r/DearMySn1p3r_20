@@ -132,6 +132,10 @@ input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;bac
 .face.b{transform:rotateY(180deg)}
 .face>.card{position:absolute;left:-11px;top:-11px}
 #ff [data-ph]{cursor:grab;touch-action:none}
+#ff [data-ph].noimg{cursor:pointer}
+#ff [data-ph]::after{content:'';position:absolute;inset:0;border-radius:inherit;display:flex;align-items:center;justify-content:center;font:600 9px/1.3 var(--sans);color:#fff;letter-spacing:0;text-align:center;opacity:0;transition:opacity .15s;pointer-events:none}
+#ff [data-ph]:not(.noimg):hover::after{content:'클릭: 사진 바꾸기\A드래그: 위치 조정';white-space:pre;opacity:1;background:rgba(0,0,0,.28)}
+body.dragging #ff [data-ph]::after{opacity:0!important}
 body.dragging,body.dragging #ff [data-ph]{cursor:grabbing}
 #stage [data-k]{cursor:text;border-radius:3px;outline:1.5px dashed transparent;outline-offset:1px;transition:outline-color .12s,background .12s}
 #stage [data-k]:hover{outline-color:rgba(59,130,246,.7)}
@@ -217,7 +221,7 @@ body.dragging,body.dragging #ff [data-ph]{cursor:grabbing}
             <input type="file" id="file" accept="image/*" hidden>
           </label>
           <div id="pctl" hidden>
-            <div class="prow"><span class="k">확대</span><input type="range" id="zoom" min="1" max="4" step=".01" value="1"></div>
+            <div class="prow"><span class="k">확대</span><input type="range" id="zoom" min="1" max="6" step=".01" value="1"></div>
             <div class="pacts"><button class="link" id="pReset">위치 초기화</button><button class="link" id="pDel">삭제</button></div>
           </div>
         </div>
@@ -262,7 +266,7 @@ body.dragging,body.dragging #ff [data-ph]{cursor:grabbing}
     </div>
     <div class="dock">
       <div class="seg" id="sideSeg"><button class="on" data-side="f">앞면</button><button data-side="b">뒷면</button></div>
-      <span class="dock-t">글씨를 눌러 수정 · 사진은 드래그</span>
+      <span class="dock-t">글씨·사진을 눌러 수정 · 사진은 드래그</span>
     </div>
   </section>
 </main>
@@ -348,13 +352,16 @@ const warn=(c,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="non
 const stripes=(c,w,h)=>{let s='';for(let x=-h;x<w+h;x+=11)s+=`<path d="M${x} ${h}L${x+h} 0" stroke="${c}" stroke-width="4.5"/>`;return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="overflow:hidden">${s}</svg>`;};
 function wave(seed,w,h,c){const r=rng(seed);const ph=r()*6;let d='';const n=72;for(let i=0;i<=n;i++){const x=i/n*w,env=Math.sin(Math.PI*i/n);const y=h/2+Math.sin(i*.52+ph)*h*.34*env*(.65+r()*.35)+Math.sin(i*1.9+ph*2)*h*.07*env;d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1);}return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><path d="M0 ${h/2}H${w}" stroke="${al(c,.3)}" stroke-dasharray="2 3"/><path d="${d}" fill="none" stroke="${c}" stroke-width="1.4" stroke-linejoin="round"/></svg>`;}
 const sil=c=>`<svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMax slice" style="position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden"><circle cx="50" cy="50" r="19" fill="${c}"/><path d="M13 120c0-25 16.5-41 37-41s37 16 37 41z" fill="${c}"/></svg>`;
+const ZMIN=1,ZMAX=6;
+function coverSize(w,h,ratio){return ratio>w/h?[h*ratio,h]:[w,w/ratio];}
+function clampXY(w,h,x,y,z,ratio){const[iw,ih]=coverSize(w,h,ratio),mx=Math.max(0,(iw*z-w)/2),my=Math.max(0,(ih*z-h)/2);return[Math.max(-mx,Math.min(mx,x)),Math.max(-my,Math.min(my,y))];}
 function photo(w,h,o={}){
   const p=S.photo;let inner;
-  if(p.src){const br=w/h;let iw,ih;if(p.ratio>br){ih=h;iw=h*p.ratio}else{iw=w;ih=w/p.ratio}
-    inner=`<img src="${p.src}" alt="" draggable="false" style="left:${(w-iw)/2}px;top:${(h-ih)/2}px;width:${iw}px;height:${ih}px;transform:translate(${p.x}px,${p.y}px) scale(${p.z})">`;}
+  if(p.src){const[iw,ih]=coverSize(w,h,p.ratio),[cx,cy]=clampXY(w,h,p.x,p.y,p.z,p.ratio);
+    inner=`<img src="${p.src}" alt="" draggable="false" style="left:${(w-iw)/2}px;top:${(h-ih)/2}px;width:${iw}px;height:${ih}px;transform:translate(${cx}px,${cy}px) scale(${p.z})">`;}
   else inner=sil(o.ph||'rgba(0,0,0,.14)');
   const r=typeof o.r==='string'?o.r:(o.r??8)+'px';
-  return`<div class="ph" data-ph style="width:${w}px;height:${h}px;border-radius:${r};background:${o.bg||'#eceef1'}">${inner}</div>`;
+  return`<div class="ph${p.src?'':' noimg'}" data-ph data-w="${w}" data-h="${h}" style="width:${w}px;height:${h}px;border-radius:${r};background:${o.bg||'#eceef1'}">${inner}</div>`;
 }
 
 /* ───────── fields ───────── */
@@ -798,21 +805,34 @@ const drop=$('#drop');
 ['dragenter','dragover'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add('over');}));
 ['dragleave','drop'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove('over');}));
 drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
-$('#zoom').addEventListener('input',e=>{S.photo.z=+e.target.value;applyPhoto();persist();});
+function frontFrame(){const f=$('#ff [data-ph]');return f?[+f.dataset.w,+f.dataset.h]:null;}
+function clampState(){const f=frontFrame();if(!f||!S.photo.src)return;[S.photo.x,S.photo.y]=clampXY(f[0],f[1],S.photo.x,S.photo.y,S.photo.z,S.photo.ratio);}
+function applyPhoto(){const p=S.photo;$$('#stage [data-ph]').forEach(f=>{const i=f.querySelector('img');if(!i)return;const[cx,cy]=clampXY(+f.dataset.w,+f.dataset.h,p.x,p.y,p.z,p.ratio);i.style.transform=`translate(${cx}px,${cy}px) scale(${p.z})`;});}
+function setZoom(z){S.photo.z=Math.min(ZMAX,Math.max(ZMIN,z));clampState();$('#zoom').value=S.photo.z;applyPhoto();persist();}
+$('#zoom').addEventListener('input',e=>setZoom(+e.target.value));
 $('#pReset').onclick=()=>{S.photo.x=0;S.photo.y=0;S.photo.z=1;renderPhotoCtl();renderCard();};
 $('#pDel').onclick=()=>{S.photo={src:null,ratio:.75,x:0,y:0,z:1};renderPhotoCtl();renderCard();};
 
-function applyPhoto(){$$('#stage [data-ph] img').forEach(i=>i.style.transform=`translate(${S.photo.x}px,${S.photo.y}px) scale(${S.photo.z})`);}
-let drag=null;
+/* drag to move · pinch / wheel to zoom · tap to choose a photo */
+let drag=null;const ptrs=new Map();
 $('#stage').addEventListener('pointerdown',e=>{
-  const ph=e.target.closest('#ff [data-ph]');if(!ph||!S.photo.src||S.side!=='f')return;
-  e.preventDefault();drag={x:e.clientX,y:e.clientY,ox:S.photo.x,oy:S.photo.y};document.body.classList.add('dragging');
+  const ph=e.target.closest('#ff [data-ph]');if(!ph||S.side!=='f'||e.button>0)return;
+  e.preventDefault();if(!ptrs.size&&S.photo.src)clampState();ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===1){drag={x:e.clientX,y:e.clientY,ox:S.photo.x,oy:S.photo.y,moved:false,has:!!S.photo.src,pinch:null};if(drag.has)document.body.classList.add('dragging');}
+  else if(ptrs.size===2&&drag&&drag.has){const[a,b]=[...ptrs.values()];drag.pinch={d0:Math.hypot(a.x-b.x,a.y-b.y)||1,z0:S.photo.z};drag.moved=true;}
 });
-addEventListener('pointermove',e=>{if(!drag)return;S.photo.x=drag.ox+(e.clientX-drag.x)/scale;S.photo.y=drag.oy+(e.clientY-drag.y)/scale;applyPhoto();});
-addEventListener('pointerup',()=>{if(!drag)return;drag=null;document.body.classList.remove('dragging');persist();});
+addEventListener('pointermove',e=>{
+  if(!drag||!ptrs.has(e.pointerId))return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(drag.pinch&&ptrs.size>=2){const[a,b]=[...ptrs.values()];setZoom(drag.pinch.z0*Math.hypot(a.x-b.x,a.y-b.y)/drag.pinch.d0);return;}
+  const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>4)drag.moved=true;if(!drag.has||!drag.moved)return;
+  S.photo.x=drag.ox+dx/scale;S.photo.y=drag.oy+dy/scale;clampState();applyPhoto();
+});
+function endPtr(e,cancel){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(ptrs.size)return;const d=drag;drag=null;document.body.classList.remove('dragging');if(!d)return;if(!cancel&&!d.moved){$('#file').click();return;}if(d.has){clampState();persist();}}
+addEventListener('pointerup',e=>endPtr(e,false));
+addEventListener('pointercancel',e=>endPtr(e,true));
 $('#stage').addEventListener('wheel',e=>{
   if(!e.target.closest('#ff [data-ph]')||!S.photo.src||S.side!=='f')return;
-  e.preventDefault();S.photo.z=Math.min(4,Math.max(1,S.photo.z*(e.deltaY<0?1.06:1/1.06)));$('#zoom').value=S.photo.z;applyPhoto();persist();
+  e.preventDefault();setZoom(S.photo.z*Math.exp(-e.deltaY*.0018));
 },{passive:false});
 addEventListener('resize',fit);
 
